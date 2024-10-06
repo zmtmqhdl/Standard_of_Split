@@ -1,5 +1,6 @@
 package com.example.alcoholdutch.View.Components
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -9,24 +10,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alcoholdutch.ui.theme.AlcoholDutchTheme
 
 @Composable
-fun btn_basic(
+fun BTN_Basic(
     content: String,
     modifier: Modifier = Modifier,
-    contentColor: Color = Color.White,
+    fontSize: TextUnit = 12.sp
 ) {
     Button(
         onClick = {},  // 클릭 기능이 없는 버튼
-        modifier = modifier,
+        modifier = modifier
+            .height(50.dp)
     ) {
         Text(
             text = content,
-            color = contentColor,
-            fontSize = 12.sp
+            fontSize = fontSize,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -48,6 +51,8 @@ fun BTN_Circle(
         )
     }
 }
+
+// 버튼이 글씨가 커지면 버튼에서 튕겨져 나감
 
 @Preview
 @Composable
