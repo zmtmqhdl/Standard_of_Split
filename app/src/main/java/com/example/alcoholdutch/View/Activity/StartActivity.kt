@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,30 +30,38 @@ import androidx.compose.ui.unit.sp
 import com.example.alcoholdutch.View.Activity.ui.theme.AlcoholDutchTheme
 import com.example.alcoholdutch.View.Components.BTN_Basic
 import com.example.alcoholdutch.View.Components.BTN_Circle
+import com.example.alcoholdutch.ViewModel.PersonnelCount
 
 class StartActivity : ComponentActivity() {
+
+    private val personnelCount by viewModels<PersonnelCount>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             AlcoholDutchTheme {
-                StartScreen()
-                }
+                StartScreen(personnelCount)  // ViewModel을 StartScreen에 전달
             }
         }
     }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun StartActivityPreview() {
+    // Preview에서는 ViewModel을 사용할 수 없으므로 더미 ViewModel을 전달합니다.
+    val dummyPersonnelCount = PersonnelCount()  // 빈 ViewModel을 생성
     AlcoholDutchTheme {
-        StartScreen()
+        StartScreen(personnelCount = dummyPersonnelCount)
     }
 }
 
-@Preview(showBackground = true, widthDp = 200, heightDp = 200)
 @Composable
-fun StartScreen() {
+fun StartScreen(personnelCount: PersonnelCount) {
+
+    val count by personnelCount.count.observeAsState(2)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,14 +72,20 @@ fun StartScreen() {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BTN_Circle(content = "-")
+            BTN_Circle(
+                content = "-",
+                onClick = { personnelCount.decrement()}  // 감소 버튼 클릭 시
+            )
             Text(
-                text = "0",
+                text = "$count",  // 숫자를 표시
                 modifier = Modifier.padding(horizontal = 40.dp),
                 fontSize = 60.sp,
                 fontWeight = FontWeight.Bold
             )
-            BTN_Circle(content = "+")
+            BTN_Circle(
+                content = "+",
+                onClick = { personnelCount.increment()}  // 증가 버튼 클릭 시
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))  // Row와 BTN_Basic 사이에 간격 추가
@@ -77,6 +94,7 @@ fun StartScreen() {
             content = "정산하기",
             modifier = Modifier.fillMaxWidth(0.6f),
             fontSize = 25.sp,
+            onClick = {}
         )
     }
 }

@@ -19,10 +19,11 @@ import com.example.alcoholdutch.ui.theme.AlcoholDutchTheme
 fun BTN_Basic(
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 12.sp
+    fontSize: TextUnit = 12.sp,
+    onClick: () -> Unit
 ) {
     Button(
-        onClick = {},  // 클릭 기능이 없는 버튼
+        onClick = onClick,  // 클릭 기능이 없는 버튼
         modifier = modifier
             .height(50.dp)
     ) {
@@ -37,10 +38,11 @@ fun BTN_Basic(
 @Composable
 fun BTN_Circle(
     content: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Button(
-        onClick = {},
+        onClick = onClick,
         shape = CircleShape,
         modifier = modifier.size(50.dp),
     ) {
@@ -58,6 +60,6 @@ fun BTN_Circle(
 @Composable
 fun ButtonPreview() {
     AlcoholDutchTheme {
-        BTN_Circle(content = "+")
+        BTN_Circle(content = "+", onClick = {})
     }
 }
