@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.alcoholdutch"
+    namespace = "com.example.standardofsplit"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.alcoholdutch"
+        applicationId = "com.example.standardofsplit"
         minSdk = 34
         targetSdk = 34
         versionCode = 1

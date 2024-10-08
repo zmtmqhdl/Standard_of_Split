@@ -1,4 +1,4 @@
-package com.example.alcoholdutch
+package com.example.standardofsplit
 
 import org.junit.Test
 

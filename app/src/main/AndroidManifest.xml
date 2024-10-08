@@ -12,7 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AlcoholDutch"
         tools:targetApi="31">
-
+        <activity
+            android:name=".View.Activity.CalculatorActivity"
+            android:exported="false"
+            android:label="@string/title_activity_calculator"
+            android:theme="@style/Theme.AlcoholDutch" />
         <!-- StartActivity가 앱의 첫 화면이 되도록 intent-filter를 추가 -->
         <activity
             android:name=".View.Activity.StartActivity"
@@ -21,6 +25,7 @@
             android:theme="@style/Theme.AlcoholDutch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

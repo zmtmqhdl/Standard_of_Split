@@ -1,4 +1,4 @@
-package com.example.alcoholdutch.View.Activity.ui.theme
+package com.example.standardofsplit.ViewModel.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

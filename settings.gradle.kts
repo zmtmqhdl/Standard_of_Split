@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AlcoholDutch"
+rootProject.name = "StandardOfSplit"
 include(":app")
  

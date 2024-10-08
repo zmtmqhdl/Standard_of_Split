@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AlcoholDutch</string>
     <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_calculator">CalculatorActivity</string>
 </resources>

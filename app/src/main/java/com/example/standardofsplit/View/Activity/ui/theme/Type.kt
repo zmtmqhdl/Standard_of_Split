@@ -1,4 +1,4 @@
-package com.example.alcoholdutch.View.Activity.ui.theme
+package com.example.standardofsplit.View.Activity.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
