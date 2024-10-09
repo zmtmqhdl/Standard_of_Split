@@ -27,7 +27,7 @@ import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 @Composable
 fun StartScreen(
     personnelCount: PersonnelCount,
-    IntentToReceiptActivity: () -> Unit
+    intentToReceiptActivity: () -> Unit
 ) {
 
     val count by personnelCount.count.observeAsState(2)
@@ -65,7 +65,7 @@ fun StartScreen(
             modifier = Modifier.fillMaxWidth(0.6f),
             fontSize = 25.sp,
             onClick = {
-                IntentToReceiptActivity() // ReceiptActivity로 이동
+                intentToReceiptActivity() // ReceiptActivity로 이동
             }
         )
     }
@@ -78,7 +78,7 @@ fun StartPreview() {
     StandardOfSplitTheme {
         StartScreen(
             personnelCount = dummyPersonnelCount,
-            IntentToReceiptActivity = {}
+            intentToReceiptActivity = {}
         )
     }
 }

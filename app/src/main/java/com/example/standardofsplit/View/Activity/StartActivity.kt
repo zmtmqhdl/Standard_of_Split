@@ -21,7 +21,7 @@ class StartActivity : ComponentActivity() {
             StandardOfSplitTheme {
                 StartScreen(
                     personnelCount = personnelCount,
-                    IntentToReceiptActivity = {
+                    intentToReceiptActivity = {
                         val intent = Intent(this, ReceiptActivity::class.java)
                         startActivity(intent)
                     }
