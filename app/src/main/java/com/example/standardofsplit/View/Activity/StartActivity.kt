@@ -24,10 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.View.Activity.ui.theme.AlcoholDutchTheme
 import com.example.standardofsplit.View.Components.BTN_Basic
 import com.example.standardofsplit.View.Components.BTN_Circle
 import com.example.standardofsplit.ViewModel.PersonnelCount
+import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class StartActivity : ComponentActivity() {
 
@@ -37,7 +37,7 @@ class StartActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AlcoholDutchTheme {
+            StandardOfSplitTheme {
                 StartScreen(personnelCount)  // ViewModel을 StartScreen에 전달
             }
         }
@@ -49,7 +49,7 @@ class StartActivity : ComponentActivity() {
 fun StartPreview() {
     // Preview에서는 ViewModel을 사용할 수 없으므로 더미 ViewModel을 전달합니다.
     val dummyPersonnelCount = PersonnelCount()  // 빈 ViewModel을 생성
-    AlcoholDutchTheme {
+    StandardOfSplitTheme {
         StartScreen(personnelCount = dummyPersonnelCount)
     }
 }

@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">AlcoholDutch</string>
+    <string name="app_name">StandardOfSplit</string>
     <string name="title_activity_start">StartActivity</string>
     <string name="title_activity_calculator">CalculatorActivity</string>
+    <string name="title_activity_receipt">ReceiptActivity</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

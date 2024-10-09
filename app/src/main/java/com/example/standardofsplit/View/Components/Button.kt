@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.ui.theme.AlcoholDutchTheme
+import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 @Composable
 fun BTN_Basic(
@@ -58,7 +58,7 @@ fun BTN_Circle(
 @Preview
 @Composable
 fun ButtonPreview() {
-    AlcoholDutchTheme {
+    StandardOfSplitTheme {
         BTN_Circle(content = "+", onClick = {})
     }
 }
