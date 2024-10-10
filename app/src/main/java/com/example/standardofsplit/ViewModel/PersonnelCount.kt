@@ -5,19 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PersonnelCount : ViewModel() {
-    private val personcount = MutableLiveData(2)  // 기본값을 2로 설정
-
-    val count: LiveData<Int> = personcount
+    private val personCount = MutableLiveData(2)  // 기본값을 2로 설정
+    val count: LiveData<Int> = personCount
 
     fun increment() {
-        if (personcount.value ?: 2 < 8) {
-            personcount.value = (personcount.value ?: 2) + 1
+        if (personCount.value ?: 2 < 8) {
+            personCount.value = (personCount.value ?: 2) + 1
         }
     }
 
     fun decrement() {
-        if (personcount.value ?: 2 > 2) {
-            personcount.value = (personcount.value ?: 2) - 1
+        if (personCount.value ?: 2 > 2) {
+            personCount.value = (personCount.value ?: 2) - 1
         }
     }
 }
