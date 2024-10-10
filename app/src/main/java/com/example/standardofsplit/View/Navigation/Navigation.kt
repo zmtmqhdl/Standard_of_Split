@@ -1,14 +1,5 @@
 package com.example.standardofsplit.View.Navigation
 
-import StartScreen
-import com.example.standardofsplit.View.Screen.ReceiptScreen
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.example.standardofsplit.View.Screen.CalculatorScreen
-import com.example.standardofsplit.ViewModel.PersonnelCount
-
 enum class NAV_Route(val route: String) {
     StartScreen("StartScreen"),
     MainScreen("MainScreen"),

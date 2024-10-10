@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ReceiptCount: ViewModel() {
+class Receipt: ViewModel() {
     private val receiptCount = MutableLiveData(1)
     val count: LiveData<Int> = receiptCount
 

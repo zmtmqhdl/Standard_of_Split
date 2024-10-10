@@ -6,12 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.example.standardofsplit.View.Screen.ReceiptScreen
-import com.example.standardofsplit.ViewModel.ReceiptCount
+import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class ReceiptActivity : ComponentActivity() {
 
-    private val receiptCount by viewModels<ReceiptCount>()
+    private val receipt by viewModels<Receipt>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,7 @@ class ReceiptActivity : ComponentActivity() {
         setContent {
             StandardOfSplitTheme {
                 ReceiptScreen(
-                    receiptCount = receiptCount
+                    receipt = receipt
                 )
             }
         }

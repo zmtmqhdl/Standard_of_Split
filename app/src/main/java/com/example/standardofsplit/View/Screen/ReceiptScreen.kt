@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,19 +23,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.BTN_Basic
+import com.example.standardofsplit.View.Components.BTN_Circle
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
-import com.example.standardofsplit.ViewModel.ReceiptCount
+import com.example.standardofsplit.ViewModel.Receipt
 
 @Composable
 fun ReceiptScreen(
-    receiptCount: ReceiptCount
+    receipt: Receipt
 ) {
     // 리스트 크기를 관리하는 상태 변수
-    val count by receiptCount.count.observeAsState(1)
+    val count by receipt.count.observeAsState(1)
     val names: List<String> = List(count) { "$it" }
 
     Column {
@@ -73,15 +77,26 @@ fun ReceiptScreen(
                     }
                 }
             }
+            item {
+                BTN_Circle(
+                    content = "+",
+                    modifier = Modifier
+                        .size(90.dp) // 크기를 설정 (예: 56dp x 56dp)
+                        .clip(CircleShape) // 동그란 형태로 클립
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    onClick = { receipt.increment() },
+                    fontSize = 80.sp
+                )
+            }
         }
-
         BTN_Basic(
-            content = "영수증 추가",
+            content = "정산",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             fontSize = 16.sp,
-            onClick = { receiptCount.increment() }
+            onClick = {}
         )
     }
 }
@@ -89,10 +104,10 @@ fun ReceiptScreen(
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    val dummyReceiptCount = ReceiptCount()
+    val dummyReceipt = Receipt()
     StandardOfSplitTheme {
         ReceiptScreen(
-            receiptCount = dummyReceiptCount
+            receipt = dummyReceipt
         )
     }
 }

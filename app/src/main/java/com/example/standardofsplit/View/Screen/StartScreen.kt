@@ -17,20 +17,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.standardofsplit.View.Components.BTN_Basic
 import com.example.standardofsplit.View.Components.BTN_Circle
-import com.example.standardofsplit.ViewModel.PersonnelCount
+import com.example.standardofsplit.ViewModel.Start
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 @Composable
 fun StartScreen(
-    personnelCount: PersonnelCount,
+    start: Start,
     intentToReceiptActivity: () -> Unit
 ) {
 
-    val count by personnelCount.count.observeAsState(2)
+    val count by start.count.observeAsState(2)
 
     Column(
         modifier = Modifier
@@ -44,7 +42,7 @@ fun StartScreen(
         ) {
             BTN_Circle(
                 content = "-",
-                onClick = { personnelCount.decrement() }  // 감소 버튼 클릭 시
+                onClick = { start.decrement() }  // 감소 버튼 클릭 시
             )
             Text(
                 text = "$count",  // 숫자를 표시
@@ -54,7 +52,7 @@ fun StartScreen(
             )
             BTN_Circle(
                 content = "+",
-                onClick = { personnelCount.increment() }  // 증가 버튼 클릭 시
+                onClick = { start.increment() }  // 증가 버튼 클릭 시
             )
         }
 
@@ -74,10 +72,10 @@ fun StartScreen(
 @Preview(showBackground = true)
 @Composable
 fun StartPreview() {
-    val dummyPersonnelCount = PersonnelCount()
+    val dummyStart = Start()
     StandardOfSplitTheme {
         StartScreen(
-            personnelCount = dummyPersonnelCount,
+            start = dummyStart,
             intentToReceiptActivity = {}
         )
     }

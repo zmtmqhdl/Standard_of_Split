@@ -7,12 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import com.example.standardofsplit.ViewModel.PersonnelCount
+import com.example.standardofsplit.ViewModel.Start
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class StartActivity : ComponentActivity() {
 
-    private val personnelCount by viewModels<PersonnelCount>()
+    private val start by viewModels<Start>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class StartActivity : ComponentActivity() {
         setContent {
             StandardOfSplitTheme {
                 StartScreen(
-                    personnelCount = personnelCount,
+                    start = start,
                     intentToReceiptActivity = {
                         val intent = Intent(this, ReceiptActivity::class.java)
                         startActivity(intent)

@@ -38,7 +38,8 @@ fun BTN_Basic(
 fun BTN_Circle(
     content: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    fontSize: TextUnit = 12.sp,
 ) {
     Button(
         onClick = onClick,

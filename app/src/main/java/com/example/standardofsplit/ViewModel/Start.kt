@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class PersonnelCount : ViewModel() {
+class Start : ViewModel() {
     private val personCount = MutableLiveData(2)  // 기본값을 2로 설정
     val count: LiveData<Int> = personCount
 
