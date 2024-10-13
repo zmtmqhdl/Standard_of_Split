@@ -35,17 +35,19 @@ import com.example.standardofsplit.ViewModel.Receipt
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt
+    receipt: Receipt,
+    intentToCalculatorActivity: () -> Unit
 ) {
     // 리스트 크기를 관리하는 상태 변수
     val count by receipt.count.observeAsState(1)
-    val names: List<String> = List(count) { "$it" }
 
     Column {
-        LazyColumn(modifier = Modifier
-            .padding(vertical = 4.dp)
-            .weight(1f)) {
-            items(items = names) { name ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .weight(1f)
+        ) {
+            items(count) { _ -> // 굳이 이름을 쓸 필요가 없으니 _로 처리
                 var expanded by rememberSaveable { mutableStateOf(false) }
 
                 val extraPadding by animateDpAsState(
@@ -67,8 +69,7 @@ fun ReceiptScreen(
                                 .weight(1f)
                                 .padding(bottom = extraPadding.coerceAtLeast(0.dp))
                         ) {
-                            Text(text = "Hello, ")
-                            Text(text = name)
+                            Text(text = "항목")
                         }
                         ElevatedButton(
                             onClick = { expanded = !expanded }
@@ -99,7 +100,7 @@ fun ReceiptScreen(
                 .fillMaxWidth()
                 .padding(16.dp),
             fontSize = 16.sp,
-            onClick = {}
+            onClick = { intentToCalculatorActivity() }
         )
     }
 }
@@ -110,7 +111,8 @@ fun GreetingPreview() {
     val dummyReceipt = Receipt()
     StandardOfSplitTheme {
         ReceiptScreen(
-            receipt = dummyReceipt
+            receipt = dummyReceipt,
+            intentToCalculatorActivity = {}
         )
     }
 }

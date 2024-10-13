@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,7 +20,11 @@ class ReceiptActivity : ComponentActivity() {
         setContent {
             StandardOfSplitTheme {
                 ReceiptScreen(
-                    receipt = receipt
+                    receipt = receipt,
+                    intentToCalculatorActivity = {
+                        val intent = Intent(this, CalculatorActivity::class.java)
+                        startActivity(intent)
+                    }
                 )
             }
         }
