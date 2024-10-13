@@ -4,6 +4,7 @@ package com.example.standardofsplit.View.Screen
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,16 +79,18 @@ fun ReceiptScreen(
                 }
             }
             item {
-                BTN_Circle(
-                    content = "+",
-                    modifier = Modifier
-                        .size(90.dp) // 크기를 설정 (예: 56dp x 56dp)
-                        .clip(CircleShape) // 동그란 형태로 클립
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = { receipt.increment() },
-                    fontSize = 80.sp
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center // 버튼을 가로로 가운데 정렬
+                ) {
+                    BTN_Basic(
+                        content = "영수증 추가",
+                        modifier = Modifier
+                            .padding(16.dp),
+                        fontSize = 16.sp,
+                        onClick = { receipt.increment() }
+                    )
+                }
             }
         }
         BTN_Basic(
