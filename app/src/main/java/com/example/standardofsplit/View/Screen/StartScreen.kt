@@ -28,7 +28,7 @@ fun StartScreen(
     intentToReceiptActivity: () -> Unit
 ) {
 
-    val count by start.count.observeAsState(2)
+    val personcount by start.personCount.observeAsState(2)
 
     Column(
         modifier = Modifier
@@ -45,7 +45,7 @@ fun StartScreen(
                 onClick = { start.decrement() }  // 감소 버튼 클릭 시
             )
             Text(
-                text = "$count",  // 숫자를 표시
+                text = "$personcount",  // 숫자를 표시
                 modifier = Modifier.padding(horizontal = 40.dp),
                 fontSize = 60.sp,
                 fontWeight = FontWeight.Bold

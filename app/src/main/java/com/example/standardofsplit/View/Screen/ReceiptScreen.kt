@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,12 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.BTN_Basic
-import com.example.standardofsplit.View.Components.BTN_Circle
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 import com.example.standardofsplit.ViewModel.Receipt
 
@@ -38,16 +35,16 @@ fun ReceiptScreen(
     receipt: Receipt,
     intentToCalculatorActivity: () -> Unit
 ) {
-    // 리스트 크기를 관리하는 상태 변수
-    val count by receipt.count.observeAsState(1)
+    val menuName by receipt.menuName.observeAsState("")
+    val menuQuantity by receipt.menuQuantity.observeAsState("1")
+    val menuPrice by receipt.menuPrice.observeAsState("")
+    val items by receipt.items.observeAsState(listOf())
 
     Column {
-        LazyColumn(
-            modifier = Modifier
-                .padding(vertical = 4.dp)
-                .weight(1f)
-        ) {
-            items(count) { _ -> // 굳이 이름을 쓸 필요가 없으니 _로 처리
+        LazyColumn(modifier = Modifier
+            .padding(vertical = 4.dp)
+            .weight(1f)) {
+            items(items = items) { (name, price) ->
                 var expanded by rememberSaveable { mutableStateOf(false) }
 
                 val extraPadding by animateDpAsState(
@@ -63,18 +60,43 @@ fun ReceiptScreen(
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 8.dp)
                 ) {
-                    Row(modifier = Modifier.padding(24.dp)) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "항목")
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+                            ) {
+                                Text(text = name) // 메뉴 이름
+                                if (expanded) {
+                                    Text(text = price) // 가격
+                                }
+                            }
+                            ElevatedButton(
+                                onClick = { expanded = !expanded }
+                            ) {
+                                Text(if (expanded) "Show less" else "Show more")
+                            }
                         }
-                        ElevatedButton(
-                            onClick = { expanded = !expanded }
-                        ) {
-                            Text(if (expanded) "Show less" else "Show more")
+                        if (expanded) {
+                            // 확장되면 메뉴 이름 | 가격 형식으로 출력
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = "메뉴 이름")
+                                Text(text = "가격")
+                            }
+                            Divider(modifier = Modifier.padding(vertical = 4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = name)  // 실제 메뉴 이름
+                                Text(text = price) // 실제 가격
+                            }
                         }
                     }
                 }
