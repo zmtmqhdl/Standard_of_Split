@@ -35,9 +35,6 @@ fun ReceiptScreen(
     receipt: Receipt,
     intentToCalculatorActivity: () -> Unit
 ) {
-    val menuName by receipt.menuName.observeAsState("")
-    val menuQuantity by receipt.menuQuantity.observeAsState("1")
-    val menuPrice by receipt.menuPrice.observeAsState("")
     val items by receipt.items.observeAsState(listOf())
 
     Column {

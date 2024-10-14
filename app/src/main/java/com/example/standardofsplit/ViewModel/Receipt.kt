@@ -8,15 +8,6 @@ class Receipt: ViewModel() {
     private val _receiptCount = MutableLiveData(0)
     val receiptCount: LiveData<Int> = _receiptCount
 
-    private val _menuName = MutableLiveData("")
-    val menuName: LiveData<String> = _menuName
-
-    private val _menuQuantity = MutableLiveData("1")
-    val menuQuantity: LiveData<String> = _menuQuantity
-
-    private val _menuPrice = MutableLiveData("")
-    val menuPrice: LiveData<String> = _menuPrice
-
     private val _items = MutableLiveData<List<Triple<String, String, String>>>(listOf())
     val items: LiveData<List<Triple<String, String, String>>> = _items
 
