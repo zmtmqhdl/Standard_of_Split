@@ -104,13 +104,14 @@ fun ReceiptItem(item: items) {
                 }
             }
             if (expanded) {
-                // Divider 위에 헤더 추가
                 Column {
+                    // 헤더 추가
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "상품명", modifier = Modifier.weight(1f)) // 상품명 헤더
+                        Text(text = "개당 가격", modifier = Modifier.padding(start = 16.dp)) // 개당 가격 헤더
                         Text(text = "수량", modifier = Modifier.padding(start = 16.dp)) // 수량 헤더
                         Text(text = "총 가격", modifier = Modifier.padding(start = 16.dp)) // 총 가격 헤더
                     }
@@ -132,12 +133,22 @@ fun ReceiptItem(item: items) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = menu, modifier = Modifier.weight(1f)) // 상품명
+                            Text(text = "${price}원", modifier = Modifier.padding(start = 16.dp)) // 개당 가격
                             Text(text = "${item.MenuQuantity[index]}", modifier = Modifier.padding(start = 16.dp)) // 수량
                             Text(text = "${totalItemPrice}원", modifier = Modifier.padding(start = 16.dp)) // 총 가격
                         }
                     }
                 }
+                BTN_Basic(
+                    content = "내역 추가",
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                    fontSize = 16.sp,
+                    onClick = {
+                    }
+                )
+
             }
+
         }
     }
 }
