@@ -12,15 +12,14 @@ import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class ReceiptActivity : ComponentActivity() {
 
-    private val receipt by viewModels<Receipt>()
+    private val receipt: Receipt by viewModels()  // ViewModel 선언
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StandardOfSplitTheme {
                 ReceiptScreen(
-                    receipt = receipt,
+                    receipt = receipt, // ViewModel 전달
                     intentToCalculatorActivity = {
                         val intent = Intent(this, CalculatorActivity::class.java)
                         startActivity(intent)
@@ -29,4 +28,3 @@ class ReceiptActivity : ComponentActivity() {
             }
         }
     }
-}

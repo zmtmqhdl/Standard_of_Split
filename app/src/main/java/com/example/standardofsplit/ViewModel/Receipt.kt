@@ -3,22 +3,24 @@ package com.example.standardofsplit.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.standardofsplit.Model.items
 
 class Receipt: ViewModel() {
-    private val _receiptCount = MutableLiveData(0)
-    val receiptCount: LiveData<Int> = _receiptCount
+    private val _items = MutableLiveData<List<items>>(listOf())
+    val items: LiveData<List<items>> = _items
 
-    private val _items = MutableLiveData<List<Triple<String, String, String>>>(listOf())
-    val items: LiveData<List<Triple<String, String, String>>> = _items
+    // 영수증 추가 기능
+    fun addItem() {
+        val currentItems = _items.value ?: listOf()
 
+        // 새로운 영수증 항목 추가
+        val newItem = items(
+            ReceiptName = "Receipt ${currentItems.size + 1}",
+            MenuName = listOf("Menu ${currentItems.size + 1}", "Menu ${currentItems.size + 2}"),
+            MenuQuantity = listOf("${currentItems.size + 1}개", "${currentItems.size + 2}개"),
+            MenuPrice = listOf("${(currentItems.size + 1) * 1000}원", "${(currentItems.size + 2) * 1000}원")
+        )
 
-    fun increment() {
-        _receiptCount.value = (_receiptCount.value ?: 1) + 1
-        updateItems()
-    }
-
-    private fun updateItems() {
-        val _receiptCount = _receiptCount.value ?: 1
-        _items.value = List(_receiptCount) { Triple("Menu $it", "${(it + 1)}개", "${(it + 1) * 1000}원") }
+        _items.value = currentItems + newItem  // 리스트에 새로운 항목 추가
     }
 }
