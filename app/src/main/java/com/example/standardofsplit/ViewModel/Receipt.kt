@@ -16,9 +16,9 @@ class Receipt: ViewModel() {
         // 새로운 영수증 항목 추가
         val newItem = items(
             ReceiptName = "Receipt ${currentItems.size + 1}",
-            MenuName = listOf("Menu ${currentItems.size + 1}", "Menu ${currentItems.size + 2}"),
-            MenuQuantity = listOf("${currentItems.size + 1}개", "${currentItems.size + 2}개"),
-            MenuPrice = listOf("${(currentItems.size + 1) * 1000}원", "${(currentItems.size + 2) * 1000}원")
+            MenuName = mutableListOf("Menu ${currentItems.size + 1}", "Menu ${currentItems.size + 2}"),
+            MenuQuantity = mutableListOf("${currentItems.size + 1}개", "${currentItems.size + 2}개"),
+            MenuPrice = mutableListOf("${(currentItems.size + 1) * 1000}원", "${(currentItems.size + 2) * 1000}원")
         )
 
         _items.value = currentItems + newItem  // 리스트에 새로운 항목 추가
