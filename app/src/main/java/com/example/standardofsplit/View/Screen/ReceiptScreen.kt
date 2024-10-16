@@ -6,11 +6,14 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -97,6 +100,15 @@ fun ReceiptItem(item: items) {
                     }.sum()
                     Text(text = "${totalPrice}원")
                 }
+                if (expanded) {
+                    BTN_Basic(
+                        content = "내역 추가",
+                        modifier = Modifier.fillMaxWidth(0.3f),
+                        fontSize = 16.sp,
+                        onClick = {
+                        }
+                    )
+                }
                 ElevatedButton(
                     onClick = { expanded = !expanded }
                 ) {
@@ -139,18 +151,43 @@ fun ReceiptItem(item: items) {
                         }
                     }
                 }
-                BTN_Basic(
-                    content = "내역 추가",
-                    modifier = Modifier.fillMaxWidth(0.6f),
-                    fontSize = 16.sp,
-                    onClick = {
-                    }
-                )
 
             }
-
         }
     }
+}
+
+@Composable
+fun MenuDialog (
+    onDismiss: () -> Unit,
+    onConfirm: (String, Int, Int) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                // 값 수정 로직 추가
+//                onConfirm(updatedMenuName, updatedQuantity, updatedPrice)
+                onDismiss
+            }) {
+                Text("확인")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("취소")
+            }
+        },
+        title = { Text("항목 수정") },
+        text = {
+            Column {
+                // 각 값을 수정할 수 있는 TextField 등 입력 UI 추가
+                TextField(value = "a", onValueChange = { /* 수정된 메뉴명 처리 */ })
+                TextField(value = "quantity".toString(), onValueChange = { /* 수정된 수량 처리 */ })
+                TextField(value = "price".toString(), onValueChange = { /* 수정된 가격 처리 */ })
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
