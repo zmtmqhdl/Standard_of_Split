@@ -26,10 +26,7 @@ class StartActivity : ComponentActivity() {
                         startActivity(intent)
                     }
                 )
-//                val navController = rememberNavController()
-//                NAV(Controller = navController, personnelCount = personnelCount)
             }
-
         }
     }
 }

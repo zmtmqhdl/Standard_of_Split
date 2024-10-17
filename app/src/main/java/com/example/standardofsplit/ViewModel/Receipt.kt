@@ -1,1 +1,24 @@
 package com.example.standardofsplit.ViewModel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.example.standardofsplit.Model.ReceiptClass
+
+class Receipt : ViewModel() {
+    private val _receiptCount = MutableLiveData(0)
+    val receiptCount: LiveData<Int> = _receiptCount
+
+    private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
+    val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
+
+    fun receiptIncrement() {
+        _receiptCount.value = (_receiptCount.value ?: 0) + 1
+    }
+
+    fun addReceipt(receipt: ReceiptClass) {
+        val cureenttList = _receipts.value ?: mutableListOf()
+        cureenttList.add(receipt)
+        _receipts.value = cureenttList
+    }
+}
