@@ -1,8 +1,9 @@
 package com.example.standardofsplit.Model
 
-data class items(
-    var ReceiptName: String,
-    val MenuName: MutableList<String>,
-    val MenuQuantity: MutableList<String>,
-    val MenuPrice: MutableList<String>
+data class ReceiptClass(
+    var ReceiptNumber: Int,
+    var PlaceName: String,
+    val ProductName: MutableList<String>,
+    val ProductQuantity: MutableList<String>,
+    val ProductPrice: MutableList<String>
 )
