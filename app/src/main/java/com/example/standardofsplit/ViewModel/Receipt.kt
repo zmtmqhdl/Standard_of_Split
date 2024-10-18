@@ -17,8 +17,8 @@ class Receipt : ViewModel() {
     }
 
     fun addReceipt(receipt: ReceiptClass) {
-        val cureenttList = _receipts.value ?: mutableListOf()
-        cureenttList.add(receipt)
-        _receipts.value = cureenttList
+        val currentList = _receipts.value ?: mutableListOf()
+        currentList.add(receipt)
+        _receipts.value = currentList
     }
 }
