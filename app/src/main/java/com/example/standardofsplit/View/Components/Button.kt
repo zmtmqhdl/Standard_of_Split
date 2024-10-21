@@ -40,7 +40,6 @@ fun BTN_Basic(
             .shadow(4.dp, RoundedCornerShape(28.dp)),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF1F4EF5),  // 배경색 변경
-            contentColor = Color.White  // 텍스트 색상
         )
     ) {
         Text(
