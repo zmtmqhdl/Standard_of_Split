@@ -60,8 +60,6 @@ fun StartScreen(
 
         BTN_Basic(
             content = "정산하기",
-            modifier = Modifier.fillMaxWidth(0.6f),
-            fontSize = 25.sp,
             onClick = {
                 intentToReceiptActivity() // ReceiptActivity로 이동
             }

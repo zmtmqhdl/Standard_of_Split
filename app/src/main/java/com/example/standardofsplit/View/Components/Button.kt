@@ -1,35 +1,54 @@
 package com.example.standardofsplit.View.Components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.draw.shadow
+
 
 @Composable
 fun BTN_Basic(
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 12.sp,
+    fontSize: TextUnit = 26.sp,  // 기본 글자 크기
     onClick: () -> Unit
 ) {
     Button(
-        onClick = onClick,  // 클릭 기능이 없는 버튼
+        onClick = onClick,
         modifier = modifier
-            .height(50.dp)
+            .height(53.dp)
+            .width(353.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .shadow(4.dp, RoundedCornerShape(28.dp)),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF1F4EF5),  // 배경색 변경
+            contentColor = Color.White  // 텍스트 색상
+        )
     ) {
         Text(
             text = content,
             fontSize = fontSize,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
         )
     }
 }
