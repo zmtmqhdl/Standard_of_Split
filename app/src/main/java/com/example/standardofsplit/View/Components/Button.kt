@@ -22,6 +22,11 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+
+val FTossShape = RoundedCornerShape(10.dp)
 
 
 @Composable
@@ -35,9 +40,8 @@ fun BTN_Basic(
         onClick = onClick,
         modifier = modifier
             .height(53.dp)
-            .width(353.dp)
-            .clip(RoundedCornerShape(28.dp))
-            .shadow(4.dp, RoundedCornerShape(28.dp)),
+            .width(353.dp),
+        shape = RoundedCornerShape(14.dp),  // 모서리를 살짝 둥글게 (4dp)
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF1F4EF5),  // 배경색 변경
         )
@@ -46,8 +50,11 @@ fun BTN_Basic(
             text = content,
             fontSize = fontSize,
             textAlign = TextAlign.Center,
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
+
         )
     }
 }
