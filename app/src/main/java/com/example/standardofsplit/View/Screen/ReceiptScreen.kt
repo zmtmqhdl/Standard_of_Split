@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,7 @@ fun ReceiptScreen(
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
 
-    ReceiptDetailList(receipts = receipts.value)
+    ReceiptDetailList(receipts = receipts.value, receiptViewModel = receipt)
 
     Box(modifier = Modifier.fillMaxSize()) {
         BTN_Basic(
@@ -41,29 +42,38 @@ fun ReceiptScreen(
 @Composable
 fun ReceiptDetailList(
     receipts: List<ReceiptClass>,
+    receiptViewModel: Receipt
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        for ((index, receipt_) in receipts.withIndex()) {
+        for (receipt in receipts) {
             ReceiptDetailButton(
-                receipt = receipt_,
-                index = index,
-                onClick = { receipts.increment() }
+                receipt = receipt,
+                onClick = { receiptViewModel.addReceipt(receipt) }
             )
         }
         BTN_Basic(
-            content = "영수증 추가") {
-        }
+            content = "영수증 추가",
+            onClick = {
+                val newReceipt = ReceiptClass(
+                    ReceiptNumber = receipts.size + 1,
+                    PlaceName = "New Place",
+                    ProductName = mutableListOf("Product 1"),
+                    ProductQuantity = mutableListOf("1"),
+                    ProductPrice = mutableListOf("100")
+                )
+                receiptViewModel.addReceipt(newReceipt)
+            }
+        )
     }
 }
 
 @Composable
 fun ReceiptDetailButton(
     receipt: ReceiptClass,
-    index: Int,
     onClick: () -> Unit
 ) {
     Button(onClick = onClick) {
