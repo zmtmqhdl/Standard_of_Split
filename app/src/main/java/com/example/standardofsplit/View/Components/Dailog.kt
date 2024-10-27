@@ -120,6 +120,64 @@ fun Receipt_Add_Dialog(
 }
 
 @Composable
+fun Receipt_Name_Dialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    name: String
+) {
+    var text1 by remember { mutableStateOf("") }
+
+    Dialog(onDismissRequest = { onDismiss }) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = Color.White,
+            modifier = Modifier
+                .width(500.dp)
+                .height(400.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Text(text = "영수증 이름", fontWeight = FontWeight.Bold)
+                TextField(
+                    value = text1,
+                    onValueChange = { newValue ->
+                        text1 = newValue // 새로운 입력 값을 상태에 반영
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxHeight(),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(fontSize = 16.sp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 35.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Small_Button(
+                        content = "취소",
+                        onClick = onDismiss
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Small_Button(
+                        content = "확인",
+                        onClick = onConfirm
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 fun PreviewMyApp() {
     // Dialog를 열기 위한 상태를 직접 설정

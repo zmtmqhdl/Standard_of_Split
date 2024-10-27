@@ -2,7 +2,6 @@ package com.example.standardofsplit.View.Screen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,13 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -33,12 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.Model.ReceiptClass
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.View.Components.Elevated_Button
 import com.example.standardofsplit.View.Components.Receipt_Add_Dialog
+import com.example.standardofsplit.View.Components.Receipt_Name_Dialog
 import com.example.standardofsplit.ViewModel.Receipt
 import kotlinx.coroutines.launch
 
@@ -71,7 +68,8 @@ fun ReceiptDetailList(
     val coroutineScope = rememberCoroutineScope()
 
     val expandedStates = remember { mutableStateListOf<Boolean>() }
-    val openDialog = remember { mutableStateOf(false) }
+    val addDialog = remember { mutableStateOf(false) }
+    val nameDialog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -109,8 +107,9 @@ fun ReceiptDetailList(
                         ) {
                             Text(
                                 text = receipt.PlaceName,
-                                modifier = Modifier.clickable(onClick = { println("텍스트 클릭됨!") })
+                                modifier = Modifier.clickable(onClick = { nameDialog.value = true})
                             )
+
 
                             Elevated_Button(content1 = "영수증 접기",
                                 content2 = "영수증 펼치기",
@@ -147,7 +146,11 @@ fun ReceiptDetailList(
                             }
                             Divider()
 
-                            for (i in 0 until receipts[index].ProductName.size) {
+                            val productNames = receipts[index].ProductName
+                            val productPrices = receipts[index].ProductPrice
+                            val productQuantities = receipts[index].ProductQuantity
+
+                            for (i in productNames.indices) {
                                 val productName = receipts[index].ProductName[i]
                                 val price = receipts[index].ProductPrice[i]
                                 val quantity = receipts[index].ProductQuantity[i]
@@ -189,13 +192,20 @@ fun ReceiptDetailList(
                             ) {
                                 Circle_Button(
                                     content = "+",
-                                    onClick = { openDialog.value = true }
+                                    onClick = { addDialog.value = true }
                                 )
-                                if (openDialog.value) {
+                                if (addDialog.value) {
                                     Receipt_Add_Dialog(
-                                        onDismiss = { openDialog.value = false },
+                                        onDismiss = { addDialog.value = false },
                                         onConfirm = { /* 확인 버튼 로직 추가 */ },
                                         index = index
+                                    )
+                                }
+                                if (nameDialog.value) {
+                                    Receipt_Name_Dialog(
+                                        onDismiss = { nameDialog.value = false },
+                                        onConfirm = { /* 확인 버튼 로직 추가 */ },
+                                        name = productNames[index]
                                     )
                                 }
                             }

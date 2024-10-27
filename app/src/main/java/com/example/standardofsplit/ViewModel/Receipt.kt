@@ -11,18 +11,30 @@ class Receipt : ViewModel() {
 //    private val _receiptCount = MutableLiveData(0)
 //    val receiptCount: LiveData<Int> = _receiptCount
 
-    private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
-    val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
 
-//    fun receiptIncrement() {
+    // fun receiptIncrement() {
 //        _receiptCount.value = (_receiptCount.value ?: 0) + 1
 //    }
 
+    private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
+    val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
 
+    init {
+        val defaultReceipt = ReceiptClass(
+            ReceiptNumber = 0,
+            PlaceName = "영수증",
+            ProductName = mutableListOf("상품"),
+            ProductQuantity = mutableListOf("0"),
+            ProductPrice = mutableListOf("0")
+        )
+        _receipts.value?.add(defaultReceipt)
+    }
 
     fun addReceipt(receipt: ReceiptClass) {
         val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
         currentList.add(receipt)
         _receipts.value = currentList
     }
+
+
 }
