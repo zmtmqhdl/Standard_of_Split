@@ -86,6 +86,8 @@ fun ReceiptDetailList(
             itemsIndexed(receipts) { index, receipt ->
                 expandedStates.add(false)
                 val expanded = expandedStates[index]
+                val productPrices = receipts[index].ProductPrice
+                val productQuantities = receipts[index].ProductQuantity
                 Card(
                     modifier = Modifier
                         .width(420.dp)
@@ -146,11 +148,7 @@ fun ReceiptDetailList(
                             }
                             Divider()
 
-                            val productNames = receipts[index].ProductName
-                            val productPrices = receipts[index].ProductPrice
-                            val productQuantities = receipts[index].ProductQuantity
-
-                            for (i in productNames.indices) {
+                            for (i in productPrices.indices) {
                                 val productName = receipts[index].ProductName[i]
                                 val price = receipts[index].ProductPrice[i]
                                 val quantity = receipts[index].ProductQuantity[i]
@@ -201,14 +199,16 @@ fun ReceiptDetailList(
                                         index = index
                                     )
                                 }
-                                if (nameDialog.value) {
-                                    Receipt_Name_Dialog(
-                                        onDismiss = { nameDialog.value = false },
-                                        onConfirm = { /* 확인 버튼 로직 추가 */ },
-                                        name = productNames[index]
-                                    )
-                                }
+
                             }
+                        }
+                        if (nameDialog.value) {
+                            Receipt_Name_Dialog(
+                                onDismiss = { nameDialog.value = false },
+                                onConfirm = { /* 확인 버튼 로직 추가 */ },
+                                name = receipts[index].PlaceName
+                            )
+
                         }
                     }
                 }
