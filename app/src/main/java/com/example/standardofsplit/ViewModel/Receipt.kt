@@ -18,6 +18,8 @@ class Receipt : ViewModel() {
 //        _receiptCount.value = (_receiptCount.value ?: 0) + 1
 //    }
 
+
+
     fun addReceipt(receipt: ReceiptClass) {
         val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
         currentList.add(receipt)

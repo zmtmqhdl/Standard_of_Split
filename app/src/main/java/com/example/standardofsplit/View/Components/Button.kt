@@ -33,7 +33,7 @@ fun Basic_Button(
         modifier = modifier
             .height(53.dp)
             .width(353.dp),
-        shape = RoundedCornerShape(8.dp),  // 모서리를 살짝 둥글게 (4dp)
+        shape = RoundedCornerShape(10.dp),  // 모서리를 살짝 둥글게 (4dp)
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF1F4EF5),  // 배경색 변경
         )
@@ -62,8 +62,8 @@ fun Small_Button(
         onClick = onClick,
         modifier = modifier
             .height(33.dp)
-            .width(83.dp),
-        shape = RoundedCornerShape(8.dp),
+            .width(73.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF1F4EF5),
         )
@@ -90,7 +90,7 @@ fun Elevated_Button(
 ) {
     ElevatedButton(
         onClick = onClick,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF1F4EF5)
         )
@@ -113,7 +113,7 @@ fun Circle_Button(
     ) {
         Text(
             text = content,
-            fontSize = 20.sp,
+            fontSize = fontSize,
             textAlign = TextAlign.Center
         )
     }
