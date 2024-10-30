@@ -1,13 +1,37 @@
-🖥️ N빵의 정석
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bb57927b-d536-48fb-95e4-58fd2da3f988" width="60%">
+</p>
 
-스터디를 함께하는 스터디원과 Android Studio의 virtual device에서 편하게 완성 앱을 공유할 수 있는 파일 공유 게시판 앱
+## 🖥️ N빵의 정석
+영수증을 입력 후 상품 별로 정산 인원을 선택하면 정산 비용을 자동으로 계산해주고, 정산 내역을 카카오톡을 통해 공유할 수 있는 Android App
 
-🧑‍💻 참여 인원
+<br>
 
-김태훈 : Android
+## 🧑‍💻 참여 인원
+|  <img src="https://github.com/user-attachments/assets/9bbe9e79-04b6-44b1-a68c-eae5a049c2ad" width="100" height="100">  |
+|:---:|
+| 김태훈 |
+| Android|
 
-🗓️ 개발 기간
+<br>
 
-20234.10 ~ 진행중
+## 🗓️ 개발 기간
+2024.10 ~ 진행 중
 
-📁 프로젝트 상세 설명
+<br>
+
+## 📁 프로젝트 상세 설명
+
+  <br>
+
+
+
+<br>
+
+## ✏️ 배운 내용
+
+
+<br>
+
+## 🛠️ 사용 기술
+[![My Skills](https://skillicons.dev/icons?i=androidstudio,kotlin)](https://skillicons.dev)
