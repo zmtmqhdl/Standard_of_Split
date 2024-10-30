@@ -5,19 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.Model.ReceiptClass
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class Receipt : ViewModel() {
-//
-//    private val _receiptCount = MutableLiveData(0)
-//    val receiptCount: LiveData<Int> = _receiptCount
-
-
-    // fun receiptIncrement() {
-//        _receiptCount.value = (_receiptCount.value ?: 0) + 1
-//    }
 
     private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
     val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
 
     init {
         val defaultReceipt = ReceiptClass(
@@ -35,6 +33,9 @@ class Receipt : ViewModel() {
         currentList.add(receipt)
         _receipts.value = currentList
     }
+
+    fun onAddDialogOpen() { _showDialog.value = true }
+    fun onAddDialogClose() { _showDialog.value = false }
 
 
 }

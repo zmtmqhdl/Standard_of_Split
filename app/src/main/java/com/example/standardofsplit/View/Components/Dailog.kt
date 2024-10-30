@@ -35,11 +35,11 @@ fun Receipt_Add_Dialog(
     onConfirm: () -> Unit,
     index: Int
 ) {
-    var text1 by remember { mutableStateOf("") }
-    var text2 by remember { mutableStateOf("") }
-    var text3 by remember { mutableStateOf("") }
+    var productName by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var quantity by remember { mutableStateOf("") }
 
-    Dialog(onDismissRequest = { onDismiss }) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Color.White,
@@ -51,52 +51,9 @@ fun Receipt_Add_Dialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(20.dp)
             ) {
-                Text(text = "상품명", fontWeight = FontWeight.Bold)
-                TextField(
-                    value = text1,
-                    onValueChange = { newValue ->
-                        text1 = newValue // 새로운 입력 값을 상태에 반영
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxHeight(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = TextStyle(fontSize = 16.sp)
-                )
-                Spacer(modifier = Modifier.padding(0.5.dp))
-                Text(text = "단가", fontWeight = FontWeight.Bold)
-                TextField(
-                    value = text2,
-                    onValueChange = { newValue ->
-                        text2 = newValue // 새로운 입력 값을 상태에 반영
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.height(50.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = TextStyle(fontSize = 16.sp)
-                )
-                Spacer(modifier = Modifier.padding(0.5.dp))
-                Text(text = "수량", fontWeight = FontWeight.Bold)
-                TextField(
-                    value = text3,
-                    onValueChange = { newValue ->
-                        text3 = newValue // 새로운 입력 값을 상태에 반영
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.height(50.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = TextStyle(fontSize = 16.sp)
-                )
+                InputField("상품명", productName) { productName = it }
+                InputField("단가", price) { price = it }
+                InputField("수량", quantity) { quantity = it }
 
                 Row(
                     modifier = Modifier
@@ -104,19 +61,36 @@ fun Receipt_Add_Dialog(
                         .padding(top = 35.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    Small_Button(
-                        content = "취소",
-                        onClick = onDismiss
-                    )
+                    Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button(
-                        content = "확인",
-                        onClick = onConfirm
-                    )
+                    Small_Button("확인", onClick = onConfirm)
                 }
             }
         }
     }
+}
+
+@Composable
+fun InputField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Text(text = label, fontWeight = FontWeight.Bold)
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxHeight(),
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent
+        ),
+        textStyle = TextStyle(fontSize = 16.sp)
+    )
+    Spacer(modifier = Modifier.padding(0.5.dp))
 }
 
 @Composable
@@ -125,9 +99,9 @@ fun Receipt_Name_Dialog(
     onConfirm: () -> Unit,
     name: String
 ) {
-    var text1 by remember { mutableStateOf("") }
+    var newName by remember { mutableStateOf(name) }
 
-    Dialog(onDismissRequest = { onDismiss }) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Color.White,
@@ -139,22 +113,7 @@ fun Receipt_Name_Dialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(20.dp)
             ) {
-                Text(text = "영수증 이름", fontWeight = FontWeight.Bold)
-                TextField(
-                    value = text1,
-                    onValueChange = { newValue ->
-                        text1 = newValue // 새로운 입력 값을 상태에 반영
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxHeight(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = TextStyle(fontSize = 16.sp)
-                )
+                InputField("영수증 이름", newName) { newName = it }
 
                 Row(
                     modifier = Modifier
@@ -162,15 +121,9 @@ fun Receipt_Name_Dialog(
                         .padding(top = 35.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    Small_Button(
-                        content = "취소",
-                        onClick = onDismiss
-                    )
+                    Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button(
-                        content = "확인",
-                        onClick = onConfirm
-                    )
+                    Small_Button("확인", onClick = onConfirm)
                 }
             }
         }
