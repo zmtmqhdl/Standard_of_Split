@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
@@ -35,6 +34,7 @@ import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.View.Components.Elevated_Button
 import com.example.standardofsplit.View.Components.Receipt_Add_Dialog
+import com.example.standardofsplit.View.Components.Receipt_Change_Dialog
 import com.example.standardofsplit.View.Components.Receipt_Name_Dialog
 import com.example.standardofsplit.ViewModel.Receipt
 import kotlinx.coroutines.launch
@@ -47,28 +47,63 @@ fun ReceiptScreen(
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
     val addDialog = remember { mutableStateOf(false) }
     val nameDialog = remember { mutableStateOf(false) }
+    val changeDialog = remember { mutableStateOf(false) }
     val selectedReceiptIndex = remember { mutableStateOf(-1) }
+    val selectedReceiptIIndex = remember { mutableStateOf(-1) }
 
     ReceiptDetailList(
         receipts = receipts.value,
         receiptViewModel = receipt,
         onAddClick = { index -> selectedReceiptIndex.value = index; addDialog.value = true },
-        onNameClick = { index -> selectedReceiptIndex.value = index; nameDialog.value = true }
+        onNameClick = { index -> selectedReceiptIndex.value = index; nameDialog.value = true },
+        onChangeClick = { index, iindex ->
+            selectedReceiptIndex.value = index; selectedReceiptIIndex.value =
+            iindex; changeDialog.value = true
+        }
     )
 
     if (addDialog.value) {
         Receipt_Add_Dialog(
             onDismiss = { addDialog.value = false },
-            onConfirm = { /* 확인 버튼 로직 추가 */ },
-            index = selectedReceiptIndex.value,
+            onConfirm = { newproductname, newprice, newquantity ->
+                receipt.updateReceipt(
+                    selectedReceiptIndex.value,
+                    newproductname,
+                    newprice,
+                    newquantity
+                )
+                changeDialog.value = true
+            },
         )
     }
 
     if (nameDialog.value) {
         Receipt_Name_Dialog(
             onDismiss = { nameDialog.value = false },
-            onConfirm = { /* 확인 버튼 로직 추가 */ },
+            onConfirm = { newName ->
+                receipt.updateReceiptName(selectedReceiptIndex.value, newName)
+                nameDialog.value = false
+            },
             name = receipts.value[selectedReceiptIndex.value].PlaceName
+        )
+    }
+
+    if (changeDialog.value) {
+        Receipt_Change_Dialog(
+            onDismiss = { changeDialog.value = false },
+            onConfirm = { newproductname, newprice, newquantity ->
+                receipt.updateReceiptDetail(
+                    selectedReceiptIndex.value,
+                    selectedReceiptIIndex.value,
+                    newproductname,
+                    newprice,
+                    newquantity
+                )
+                changeDialog.value = true
+            },
+            productName = receipts.value[selectedReceiptIndex.value].ProductName[selectedReceiptIIndex.value],
+            price = receipts.value[selectedReceiptIndex.value].ProductQuantity[selectedReceiptIIndex.value],
+            quantity = receipts.value[selectedReceiptIndex.value].ProductPrice[selectedReceiptIIndex.value]
         )
     }
 
@@ -89,7 +124,8 @@ fun ReceiptDetailList(
     receipts: List<ReceiptClass>,
     receiptViewModel: Receipt,
     onAddClick: (Int) -> Unit,
-    onNameClick: (Int) -> Unit
+    onNameClick: (Int) -> Unit,
+    onChangeClick: (Int, Int) -> Unit
 ) {
     val receiptlistState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -180,7 +216,7 @@ fun ReceiptDetailList(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable {  },
+                                        .clickable { onChangeClick(index, i) },
                                 ) {
                                     Row(
                                         modifier = Modifier

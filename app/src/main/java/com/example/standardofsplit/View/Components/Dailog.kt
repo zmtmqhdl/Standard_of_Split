@@ -14,7 +14,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.layout.width
@@ -26,18 +25,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun Receipt_Add_Dialog(
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    index: Int
+    onConfirm: (String, String, String) -> Unit,
 ) {
-    var productName by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf("") }
+    var newproductname by remember { mutableStateOf("") }
+    var newprice by remember { mutableStateOf("") }
+    var newquantity by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -51,9 +48,9 @@ fun Receipt_Add_Dialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(20.dp)
             ) {
-                InputField("상품명", productName) { productName = it }
-                InputField("단가", price) { price = it }
-                InputField("수량", quantity) { quantity = it }
+                InputField("상품명", newproductname) { newproductname = it }
+                InputField("단가", newprice) { newprice = it }
+                InputField("수량", newquantity) { newquantity = it }
 
                 Row(
                     modifier = Modifier
@@ -63,7 +60,7 @@ fun Receipt_Add_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = onConfirm)
+                    Small_Button("확인", onClick = { onConfirm(newproductname, newprice, newquantity) })
                 }
             }
         }
@@ -96,7 +93,7 @@ fun InputField(
 @Composable
 fun Receipt_Name_Dialog(
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: (String) -> Unit,
     name: String
 ) {
     var newName by remember { mutableStateOf(name) }
@@ -123,7 +120,7 @@ fun Receipt_Name_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = onConfirm)
+                    Small_Button("확인", onClick = { onConfirm(newName) })
                 }
             }
         }
@@ -131,12 +128,44 @@ fun Receipt_Name_Dialog(
 }
 
 @Composable
-@Preview(showBackground = true)
-fun PreviewMyApp() {
-    // Dialog를 열기 위한 상태를 직접 설정
-    Receipt_Add_Dialog(
-        onDismiss = {},
-        onConfirm = {},
-        index = 0// 직접 Boolean 값으로 전달
-    )
+fun Receipt_Change_Dialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, String, String) -> Unit,
+    productName: String,
+    price: String,
+    quantity: String,
+) {
+    var newproductname by remember { mutableStateOf(productName) }
+    var newprice by remember { mutableStateOf(price) }
+    var newquantity by remember { mutableStateOf(quantity) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = Color.White,
+            modifier = Modifier
+                .width(500.dp)
+                .height(400.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                InputField("상품명", newproductname) { newproductname = it }
+                InputField("단가", newprice) { newprice = it }
+                InputField("수량", newquantity) { newquantity = it }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 35.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Small_Button("취소", onClick = onDismiss)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Small_Button("확인", onClick = { onConfirm(newproductname, newprice, newquantity) })
+                }
+            }
+        }
+    }
 }

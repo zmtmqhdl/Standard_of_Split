@@ -1,21 +1,14 @@
 package com.example.standardofsplit.ViewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.Model.ReceiptClass
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class Receipt : ViewModel() {
 
     private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
     val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
-
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
 
     init {
         val defaultReceipt = ReceiptClass(
@@ -34,8 +27,24 @@ class Receipt : ViewModel() {
         _receipts.value = currentList
     }
 
-    fun onAddDialogOpen() { _showDialog.value = true }
-    fun onAddDialogClose() { _showDialog.value = false }
+    fun updateReceiptName(index: Int, newName: String) {
+        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
+        currentList[index].PlaceName = newName
+        _receipts.value = currentList
+    }
 
+    fun updateReceiptDetail(index: Int, iindex: Int, productName: String, productQuantity: String, productPrice: String) {
+        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
+        currentList[index].ProductName[iindex] = productName
+        currentList[index].ProductQuantity[iindex] = productQuantity
+        currentList[index].ProductPrice[iindex] = productPrice
+        _receipts.value = currentList
+    }
 
+    fun updateReceipt(index: Int, productName: String, productQuantity: String, productPrice: String) {
+        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
+        currentList[index].ProductName.add(productName)
+        currentList[index].ProductQuantity.add(productQuantity)
+        currentList[index].ProductPrice.add(productPrice)
+    }
 }
