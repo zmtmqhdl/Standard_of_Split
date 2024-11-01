@@ -154,7 +154,6 @@ fun Receipt_Change_Dialog(
                 InputField("상품명", newproductname) { newproductname = it }
                 InputField("단가", newprice) { newprice = it }
                 InputField("수량", newquantity) { newquantity = it }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
