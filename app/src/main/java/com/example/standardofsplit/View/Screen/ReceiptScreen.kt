@@ -54,11 +54,16 @@ fun ReceiptScreen(
     ReceiptDetailList(
         receipts = receipts.value,
         receiptViewModel = receipt,
-        onAddClick = { index -> selectedReceiptIndex.value = index; addDialog.value = true },
+        onAddClick = { index, iindex ->
+            selectedReceiptIndex.value = index;
+            selectedReceiptIIndex.value = iindex;
+            addDialog.value = true
+        },
         onNameClick = { index -> selectedReceiptIndex.value = index; nameDialog.value = true },
         onChangeClick = { index, iindex ->
-            selectedReceiptIndex.value = index; selectedReceiptIIndex.value =
-            iindex; changeDialog.value = true
+            selectedReceiptIndex.value = index;
+            selectedReceiptIIndex.value = iindex;
+            changeDialog.value = true
         }
     )
 
@@ -66,13 +71,13 @@ fun ReceiptScreen(
         Receipt_Add_Dialog(
             onDismiss = { addDialog.value = false },
             onConfirm = { newproductname, newprice, newquantity ->
-                receipt.updateReceipt(
+                receipt.updateAddReceipt(
                     selectedReceiptIndex.value,
                     newproductname,
                     newprice,
                     newquantity
                 )
-                changeDialog.value = true
+                addDialog.value = false
             },
         )
     }
@@ -123,7 +128,7 @@ fun ReceiptScreen(
 fun ReceiptDetailList(
     receipts: List<ReceiptClass>,
     receiptViewModel: Receipt,
-    onAddClick: (Int) -> Unit,
+    onAddClick: (Int, Int) -> Unit,
     onNameClick: (Int) -> Unit,
     onChangeClick: (Int, Int) -> Unit
 ) {
@@ -252,7 +257,7 @@ fun ReceiptDetailList(
                             ) {
                                 Circle_Button(
                                     content = "+",
-                                    onClick = { onAddClick(index) }
+                                    onClick = { onAddClick(index, productPrices.size - 1) }
                                 )
                             }
                         }
