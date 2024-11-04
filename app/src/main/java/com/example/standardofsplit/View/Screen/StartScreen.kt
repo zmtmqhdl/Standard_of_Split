@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ fun StartScreen(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center)
-            .offset(y = 200.dp),  // 전체 Column을 위로 약간 이동
+            .offset(y = 250.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -40,26 +41,32 @@ fun StartScreen(
         ) {
             Circle_Button(
                 content = "-",
-                onClick = { start.decrement() }  // 감소 버튼 클릭 시
+                onClick = { start.decrement() }
             )
             Text(
-                text = "$personcount",  // 숫자를 표시
+                text = "$personcount",
                 modifier = Modifier.padding(horizontal = 40.dp),
                 fontSize = 60.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFDCD0FF)
             )
             Circle_Button(
                 content = "+",
-                onClick = { start.increment() }  // 증가 버튼 클릭 시
+                onClick = { start.increment() }
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))  // Row와 BTN_Basic 사이에 간격 추가
+        // 0xFFDCD0FF 연한색
+        // 0xFF9B87CB 진한색
+
+        
+        Text(text = "※ 인원 수를 선택해주세요 ※", fontSize = 20.sp, color = Color(0xFF9B87CB))
+        Spacer(modifier = Modifier.height(50.dp))
 
         Basic_Button(
-            content = "정산하기",
+            content = "시작하기",
             onClick = {
-                intentToReceiptActivity() // ReceiptActivity로 이동
+                intentToReceiptActivity()
             }
         )
     }

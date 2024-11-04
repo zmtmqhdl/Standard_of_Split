@@ -49,8 +49,14 @@ fun Receipt_Add_Dialog(
                 modifier = Modifier.padding(20.dp)
             ) {
                 InputField("상품명", newproductname) { newproductname = it }
-                InputField("단가", newprice) { newprice = it }
-                InputField("수량", newquantity) { newquantity = it }
+                InputField("단가", formatNumberWithCommas(newprice)) { input ->
+                    val numericOnly = input.replace(",", "").filter { it.isDigit() }
+                    newprice = numericOnly
+                }
+                InputField("수량", newquantity) { input ->
+                    val numericOnly = input.filter { it.isDigit() }
+                    newquantity = numericOnly
+                }
 
                 Row(
                     modifier = Modifier
@@ -67,27 +73,15 @@ fun Receipt_Add_Dialog(
     }
 }
 
-@Composable
-fun InputField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Text(text = label, fontWeight = FontWeight.Bold)
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .height(50.dp)
-            .fillMaxHeight(),
-        colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
-        ),
-        textStyle = TextStyle(fontSize = 16.sp)
-    )
-    Spacer(modifier = Modifier.padding(0.5.dp))
+// 천단위 구분자 포맷팅 함수
+private fun formatNumberWithCommas(number: String): String {
+    if (number.isEmpty()) return ""
+    return try {
+        val longNumber = number.toLong()
+        String.format("%,d", longNumber)
+    } catch (e: NumberFormatException) {
+        number
+    }
 }
 
 @Composable
@@ -152,8 +146,14 @@ fun Receipt_Change_Dialog(
                 modifier = Modifier.padding(20.dp)
             ) {
                 InputField("상품명", newproductname) { newproductname = it }
-                InputField("단가", newprice) { newprice = it }
-                InputField("수량", newquantity) { newquantity = it }
+                InputField("단가", formatNumberWithCommas(newprice)) { input ->
+                    val numericOnly = input.replace(",", "").filter { it.isDigit() }
+                    newprice = numericOnly
+                }
+                InputField("수량", newquantity) { input ->
+                    val numericOnly = input.filter { it.isDigit() }
+                    newquantity = numericOnly
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,4 +167,27 @@ fun Receipt_Change_Dialog(
             }
         }
     }
+}
+
+@Composable
+fun InputField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Text(text = label, fontWeight = FontWeight.Bold)
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxHeight(),
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent
+        ),
+        textStyle = TextStyle(fontSize = 16.sp)
+    )
+    Spacer(modifier = Modifier.padding(0.5.dp))
 }

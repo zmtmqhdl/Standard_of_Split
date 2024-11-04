@@ -11,6 +11,7 @@ import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class ReceiptActivity : ComponentActivity() {
+
         private val receipt by viewModels<Receipt>()
 
         override fun onCreate(savedInstanceState: Bundle?) {

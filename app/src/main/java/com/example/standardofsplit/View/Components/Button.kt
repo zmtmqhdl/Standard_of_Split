@@ -19,13 +19,14 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun Basic_Button(
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 26.sp,  // 기본 글자 크기
+    fontSize: TextUnit = 26.sp,
     onClick: () -> Unit
 ) {
     Button(
@@ -33,9 +34,9 @@ fun Basic_Button(
         modifier = modifier
             .height(53.dp)
             .width(353.dp),
-        shape = RoundedCornerShape(10.dp),  // 모서리를 살짝 둥글게 (4dp)
+        shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF1F4EF5),  // 배경색 변경
+            containerColor = Color(0xFFDCD0FF),  // 배경색 변경
         )
     ) {
         Text(
@@ -65,7 +66,7 @@ fun Small_Button(
             .width(73.dp),
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF1F4EF5),
+            containerColor = Color(0xFFDCD0FF),
         )
     ) {
         Text(
@@ -92,7 +93,7 @@ fun Elevated_Button(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF1F4EF5)
+            containerColor = Color(0xFFDCD0FF)
         )
     ) {
         Text(text = if (flag) content1 else content2)
@@ -104,22 +105,30 @@ fun Circle_Button(
     content: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    fontSize: TextUnit = 12.sp,
+    fontSize: TextUnit = 36.sp,
 ) {
     Button(
         onClick = onClick,
         shape = CircleShape,
         modifier = modifier.size(50.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFDCD0FF) // 색상 값 앞에 0xFF를 붙여서 설정
+        ),
+        contentPadding = PaddingValues(0.dp)
     ) {
-        Text(
-            text = content,
-            fontSize = fontSize,
-            textAlign = TextAlign.Center
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = content,
+                fontSize = fontSize,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.wrapContentHeight()
+            )
+        }
     }
 }
-
-// 버튼이 글씨가 커지면 버튼에서 튕겨져 나감
 
 @Preview
 @Composable

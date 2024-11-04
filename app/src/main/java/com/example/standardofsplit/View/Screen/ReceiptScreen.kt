@@ -104,7 +104,7 @@ fun ReceiptScreen(
                     newprice,
                     newquantity
                 )
-                changeDialog.value = true
+                changeDialog.value = false
             },
             productName = receipts.value[selectedReceiptIndex.value].ProductName[selectedReceiptIIndex.value],
             price = receipts.value[selectedReceiptIndex.value].ProductQuantity[selectedReceiptIIndex.value],
@@ -153,6 +153,12 @@ fun ReceiptDetailList(
                 val expanded = expandedStates[index]
                 val productPrices = receipts[index].ProductPrice
                 val productQuantities = receipts[index].ProductQuantity
+
+                val totalReceiptCost = receipts[index].ProductPrice
+                    .zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
+                    .sum()
+
+
                 Card(
                     modifier = Modifier
                         .width(420.dp)
@@ -173,7 +179,7 @@ fun ReceiptDetailList(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = receipt.PlaceName,
+                                text = "${receipt.PlaceName} (${totalReceiptCost}원)",
                                 modifier = Modifier.clickable { onNameClick(index) }
                             )
 
