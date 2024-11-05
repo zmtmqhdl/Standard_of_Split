@@ -80,8 +80,6 @@ fun Small_Button(
     }
 }
 
-
-
 @Composable
 fun Elevated_Button(
     content1: String,
@@ -130,10 +128,37 @@ fun Circle_Button(
     }
 }
 
+@Composable
+fun Square_Button(
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 25.sp,  // 기본 글자 크기
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .height(105.dp)
+            .width(105.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFDCD0FF),
+        )
+    ) {
+        Text(
+            text = content,
+            fontSize = fontSize,
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
 @Preview
 @Composable
 fun ButtonPreview() {
     StandardOfSplitTheme {
-        Circle_Button(content = "+", onClick = {})
+        Square_Button(content = "먕", onClick = {})
     }
 }
