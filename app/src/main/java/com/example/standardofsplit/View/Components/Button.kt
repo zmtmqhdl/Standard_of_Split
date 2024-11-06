@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Components
 
+import android.widget.ToggleButton
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,8 +20,16 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.standardofsplit.ViewModel.Calculator
 
 @Composable
 fun Basic_Button(
@@ -76,7 +85,7 @@ fun Small_Button(
             color = Color.White,
             fontWeight = FontWeight.Bold,
 
-        )
+            )
     }
 }
 
@@ -123,6 +132,38 @@ fun Circle_Button(
                 fontSize = fontSize,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.wrapContentHeight()
+            )
+        }
+    }
+}
+
+@Composable
+fun <T : ViewModel> Toggle_Button(
+    viewModel: T,
+    initialText: String = "이름 변경 OFF",
+    toggledText: String = "이름 변경 ON",
+    modifier: Modifier = Modifier
+) {
+
+    if (viewModel is Calculator) {
+        val isToggled by viewModel.changeMode.observeAsState()
+
+        Button(
+            onClick = {
+                viewModel.toggleChangeMode()
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = modifier
+                .height(53.dp)
+                .width(353.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFDCD0FF)
+            ),
+        ) {
+            Text(
+                text = if (isToggled == true) toggledText else initialText,
+                textAlign = TextAlign.Center,
+                fontSize = 26.sp
             )
         }
     }

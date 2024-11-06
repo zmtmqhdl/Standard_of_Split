@@ -170,6 +170,43 @@ fun Receipt_Change_Dialog(
 }
 
 @Composable
+fun Button_Name_Dialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    name: String
+) {
+    var newName by remember { mutableStateOf(name) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = Color.White,
+            modifier = Modifier
+                .width(500.dp)
+                .height(400.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                InputField("버튼 이름", newName) { newName = it }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 35.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Small_Button("취소", onClick = onDismiss)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Small_Button("확인", onClick = { onConfirm(newName) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun InputField(
     label: String,
     value: String,

@@ -27,7 +27,7 @@ fun StartScreen(
     start: Start,
     intentToReceiptActivity: () -> Unit
 ) {
-    val personcount by start.personCount.observeAsState(2)
+    val personcount by start.personCount.observeAsState()
 
     Column(
         modifier = Modifier
