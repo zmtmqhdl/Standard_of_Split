@@ -1,6 +1,5 @@
 package com.example.standardofsplit.View.Components
 
-import android.widget.ToggleButton
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,13 +21,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.standardofsplit.ViewModel.Calculator
 
 @Composable
@@ -139,10 +134,10 @@ fun Circle_Button(
 
 @Composable
 fun <T : ViewModel> Toggle_Button(
+    modifier: Modifier = Modifier,
     viewModel: T,
     initialText: String = "이름 변경 OFF",
     toggledText: String = "이름 변경 ON",
-    modifier: Modifier = Modifier
 ) {
 
     if (viewModel is Calculator) {

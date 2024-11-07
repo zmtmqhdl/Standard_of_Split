@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,7 +74,7 @@ fun Receipt_Add_Dialog(
     }
 }
 
-// 천단위 구분자 포맷팅 함수
+@SuppressLint("DefaultLocale")
 private fun formatNumberWithCommas(number: String): String {
     if (number.isEmpty()) return ""
     return try {
@@ -172,8 +173,9 @@ fun Receipt_Change_Dialog(
 @Composable
 fun Button_Name_Dialog(
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    name: String
+    onConfirm: (Int, String) -> Unit,
+    name: String,
+    index: Int
 ) {
     var newName by remember { mutableStateOf(name) }
 
@@ -199,7 +201,7 @@ fun Button_Name_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = { onConfirm(newName) })
+                    Small_Button("확인", onClick = { onConfirm(index, newName) })
                 }
             }
         }

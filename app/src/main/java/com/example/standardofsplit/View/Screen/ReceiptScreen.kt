@@ -55,14 +55,14 @@ fun ReceiptScreen(
         receipts = receipts.value,
         receiptViewModel = receipt,
         onAddClick = { index, iindex ->
-            selectedReceiptIndex.value = index;
-            selectedReceiptIIndex.value = iindex;
+            selectedReceiptIndex.value = index
+            selectedReceiptIIndex.value = iindex
             addDialog.value = true
         },
         onNameClick = { index -> selectedReceiptIndex.value = index; nameDialog.value = true },
         onChangeClick = { index, iindex ->
-            selectedReceiptIndex.value = index;
-            selectedReceiptIIndex.value = iindex;
+            selectedReceiptIndex.value = index
+            selectedReceiptIIndex.value = iindex
             changeDialog.value = true
         }
     )
