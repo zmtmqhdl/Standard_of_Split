@@ -30,6 +30,8 @@ fun StartScreen(
 ) {
     val personcount by start.personCount.observeAsState()
 
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()

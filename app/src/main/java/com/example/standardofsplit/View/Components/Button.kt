@@ -28,10 +28,7 @@ import com.example.standardofsplit.ViewModel.Calculator
 
 @Composable
 fun Basic_Button(
-    content: String,
-    modifier: Modifier = Modifier,
-    fontSize: TextUnit = 26.sp,
-    onClick: () -> Unit
+    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 26.sp, onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
@@ -49,8 +46,7 @@ fun Basic_Button(
             textAlign = TextAlign.Center,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
 
         )
     }
@@ -58,9 +54,7 @@ fun Basic_Button(
 
 @Composable
 fun Small_Button(
-    content: String,
-    modifier: Modifier = Modifier,
-    fontSize: TextUnit = 13.sp,  // 기본 글자 크기
+    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 13.sp,  // 기본 글자 크기
     onClick: () -> Unit
 ) {
     Button(
@@ -86,15 +80,10 @@ fun Small_Button(
 
 @Composable
 fun Elevated_Button(
-    content1: String,
-    content2: String,
-    flag: Boolean,
-    onClick: () -> Unit
+    content1: String, content2: String, flag: Boolean, onClick: () -> Unit
 ) {
     ElevatedButton(
-        onClick = onClick,
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(
+        onClick = onClick, shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFFDCD0FF)
         )
     ) {
@@ -119,8 +108,7 @@ fun Circle_Button(
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             Text(
                 text = content,
@@ -166,9 +154,7 @@ fun <T : ViewModel> Toggle_Button(
 
 @Composable
 fun Square_Button(
-    content: String,
-    modifier: Modifier = Modifier,
-    fontSize: TextUnit = 25.sp,  // 기본 글자 크기
+    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 25.sp,  // 기본 글자 크기
     onClick: () -> Unit
 ) {
     Button(

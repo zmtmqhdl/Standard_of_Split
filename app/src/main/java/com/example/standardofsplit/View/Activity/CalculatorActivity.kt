@@ -23,8 +23,7 @@ class CalculatorActivity : ComponentActivity() {
         setContent {
             StandardOfSplitTheme {
                 CalculatorScreen(
-                    calculator = calculator,
-                    start = start
+                    calculator = calculator, start = start
                 )
             }
         }

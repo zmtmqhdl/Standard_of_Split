@@ -13,23 +13,20 @@ import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 class ReceiptActivity : ComponentActivity() {
 
-        private val receipt by viewModels<Receipt>()
+    private val receipt by viewModels<Receipt>()
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            enableEdgeToEdge()
-            WindowCompat.setDecorFitsSystemWindows(window, true)
-            setContent {
-                StandardOfSplitTheme {
-                    ReceiptScreen(
-                        receipt = receipt,
-                        intentToCalculatorActivity = {
-                            val intent = Intent(this, CalculatorActivity::class.java)
-                            startActivity(intent)
-                        }
-                    )
-                }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+        setContent {
+            StandardOfSplitTheme {
+                ReceiptScreen(receipt = receipt, intentToCalculatorActivity = {
+                    val intent = Intent(this, CalculatorActivity::class.java)
+                    startActivity(intent)
+                })
             }
         }
     }
+}
 

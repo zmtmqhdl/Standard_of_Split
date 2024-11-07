@@ -21,13 +21,10 @@ class StartActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             StandardOfSplitTheme {
-                StartScreen(
-                    start = start,
-                    intentToReceiptActivity = {
-                        val intent = Intent(this, ReceiptActivity::class.java)
-                        startActivity(intent)
-                    }
-                )
+                StartScreen(start = start, intentToReceiptActivity = {
+                    val intent = Intent(this, ReceiptActivity::class.java)
+                    startActivity(intent)
+                })
             }
         }
     }

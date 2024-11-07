@@ -41,8 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt,
-    intentToCalculatorActivity: () -> Unit
+    receipt: Receipt, intentToCalculatorActivity: () -> Unit
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
     val addDialog = remember { mutableStateOf(false) }
@@ -51,8 +50,7 @@ fun ReceiptScreen(
     val selectedReceiptIndex = remember { mutableStateOf(-1) }
     val selectedReceiptIIndex = remember { mutableStateOf(-1) }
 
-    ReceiptDetailList(
-        receipts = receipts.value,
+    ReceiptDetailList(receipts = receipts.value,
         receiptViewModel = receipt,
         onAddClick = { index, iindex ->
             selectedReceiptIndex.value = index
@@ -64,18 +62,14 @@ fun ReceiptScreen(
             selectedReceiptIndex.value = index
             selectedReceiptIIndex.value = iindex
             changeDialog.value = true
-        }
-    )
+        })
 
     if (addDialog.value) {
         Receipt_Add_Dialog(
             onDismiss = { addDialog.value = false },
             onConfirm = { newproductname, newprice, newquantity ->
                 receipt.updateAddReceipt(
-                    selectedReceiptIndex.value,
-                    newproductname,
-                    newprice,
-                    newquantity
+                    selectedReceiptIndex.value, newproductname, newprice, newquantity
                 )
                 addDialog.value = false
             },
@@ -83,13 +77,10 @@ fun ReceiptScreen(
     }
 
     if (nameDialog.value) {
-        Receipt_Name_Dialog(
-            onDismiss = { nameDialog.value = false },
-            onConfirm = { newName ->
-                receipt.updateReceiptName(selectedReceiptIndex.value, newName)
-                nameDialog.value = false
-            },
-            name = receipts.value[selectedReceiptIndex.value].PlaceName
+        Receipt_Name_Dialog(onDismiss = { nameDialog.value = false }, onConfirm = { newName ->
+            receipt.updateReceiptName(selectedReceiptIndex.value, newName)
+            nameDialog.value = false
+        }, name = receipts.value[selectedReceiptIndex.value].PlaceName
         )
     }
 
@@ -137,8 +128,7 @@ fun ReceiptDetailList(
     val expandedStates = remember { mutableStateListOf<Boolean>() }
 
     Column(
-        modifier = Modifier
-            .padding(bottom = 16.dp),
+        modifier = Modifier.padding(bottom = 16.dp),
     ) {
         LazyColumn(
             state = receiptlistState,
@@ -154,9 +144,9 @@ fun ReceiptDetailList(
                 val productPrices = receipts[index].ProductPrice
                 val productQuantities = receipts[index].ProductQuantity
 
-                val totalReceiptCost = receipts[index].ProductPrice
-                    .zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
-                    .sum()
+                val totalReceiptCost =
+                    receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
+                        .sum()
 
 
                 Card(
@@ -178,17 +168,13 @@ fun ReceiptDetailList(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = "${receipt.PlaceName} (${totalReceiptCost}원)",
-                                modifier = Modifier.clickable { onNameClick(index) }
-                            )
+                            Text(text = "${receipt.PlaceName} (${totalReceiptCost}원)",
+                                modifier = Modifier.clickable { onNameClick(index) })
 
-                            Elevated_Button(
-                                content1 = "영수증 접기",
+                            Elevated_Button(content1 = "영수증 접기",
                                 content2 = "영수증 펼치기",
                                 flag = expanded,
-                                onClick = { expandedStates[index] = !expanded }
-                            )
+                                onClick = { expandedStates[index] = !expanded })
                         }
                         if (expanded) {
                             Divider(modifier = Modifier.padding(top = 10.dp))
@@ -261,10 +247,8 @@ fun ReceiptDetailList(
                                     .padding(top = 5.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Circle_Button(
-                                    content = "+",
-                                    onClick = { onAddClick(index, productPrices.size - 1) }
-                                )
+                                Circle_Button(content = "+",
+                                    onClick = { onAddClick(index, productPrices.size - 1) })
                             }
                         }
                     }

@@ -46,8 +46,7 @@ fun Receipt_Add_Dialog(
                 .height(400.dp)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(20.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(20.dp)
             ) {
                 InputField("상품명", newproductname) { newproductname = it }
                 InputField("단가", formatNumberWithCommas(newprice)) { input ->
@@ -67,7 +66,9 @@ fun Receipt_Add_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = { onConfirm(newproductname, newprice, newquantity) })
+                    Small_Button(
+                        "확인",
+                        onClick = { onConfirm(newproductname, newprice, newquantity) })
                 }
             }
         }
@@ -87,9 +88,7 @@ private fun formatNumberWithCommas(number: String): String {
 
 @Composable
 fun Receipt_Name_Dialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    name: String
+    onDismiss: () -> Unit, onConfirm: (String) -> Unit, name: String
 ) {
     var newName by remember { mutableStateOf(name) }
 
@@ -102,8 +101,7 @@ fun Receipt_Name_Dialog(
                 .height(400.dp)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(20.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(20.dp)
             ) {
                 InputField("영수증 이름", newName) { newName = it }
 
@@ -143,8 +141,7 @@ fun Receipt_Change_Dialog(
                 .height(400.dp)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(20.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(20.dp)
             ) {
                 InputField("상품명", newproductname) { newproductname = it }
                 InputField("단가", formatNumberWithCommas(newprice)) { input ->
@@ -163,7 +160,9 @@ fun Receipt_Change_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = { onConfirm(newproductname, newprice, newquantity) })
+                    Small_Button(
+                        "확인",
+                        onClick = { onConfirm(newproductname, newprice, newquantity) })
                 }
             }
         }
@@ -172,10 +171,7 @@ fun Receipt_Change_Dialog(
 
 @Composable
 fun Button_Name_Dialog(
-    onDismiss: () -> Unit,
-    onConfirm: (Int, String) -> Unit,
-    name: String,
-    index: Int
+    onDismiss: () -> Unit, onConfirm: (Int, String) -> Unit, name: String, index: Int
 ) {
     var newName by remember { mutableStateOf(name) }
 
@@ -188,8 +184,7 @@ fun Button_Name_Dialog(
                 .height(400.dp)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(20.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(20.dp)
             ) {
                 InputField("버튼 이름", newName) { newName = it }
 
@@ -210,9 +205,7 @@ fun Button_Name_Dialog(
 
 @Composable
 fun InputField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
+    label: String, value: String, onValueChange: (String) -> Unit
 ) {
     Text(text = label, fontWeight = FontWeight.Bold)
     TextField(
@@ -223,8 +216,7 @@ fun InputField(
             .height(50.dp)
             .fillMaxHeight(),
         colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent
         ),
         textStyle = TextStyle(fontSize = 16.sp)
     )

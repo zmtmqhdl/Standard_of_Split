@@ -38,28 +38,25 @@ import com.example.standardofsplit.ViewModel.Start
 
 @Composable
 fun CalculatorScreen(
-    calculator: Calculator,
-    start: Start
+    calculator: Calculator, start: Start
 ) {
 
     val isToggled by calculator.changeMode.observeAsState()
     val nameChangeDialog = remember { mutableStateOf(false) }
 
-
     val ps by start.personCount.observeAsState()
 
     val buttonName = remember { mutableStateMapOf<String, String>() }
-    for (i in 1..8) {
-        buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
-    }
+//    for (i in 1..8) {
+//        buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
+//    }
 
     val selectedIndex = remember { mutableStateOf(-1) }
 
     if (nameChangeDialog.value) {
         val currentName = buttonName[selectedIndex.value.toString()] ?: "기본값"
 
-        Button_Name_Dialog(
-            onDismiss = { nameChangeDialog.value = false },
+        Button_Name_Dialog(onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.value = index
                 buttonName[selectedIndex.value.toString()] = newName // 이 부분 수정

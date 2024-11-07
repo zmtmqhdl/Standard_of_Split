@@ -33,7 +33,9 @@ class Receipt : ViewModel() {
         _receipts.value = currentList
     }
 
-    fun updateReceiptDetail(index: Int, iindex: Int, productName: String, productQuantity: String, productPrice: String) {
+    fun updateReceiptDetail(
+        index: Int, iindex: Int, productName: String, productQuantity: String, productPrice: String
+    ) {
         val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
         currentList[index].ProductName[iindex] = productName
         currentList[index].ProductQuantity[iindex] = productQuantity
@@ -41,7 +43,9 @@ class Receipt : ViewModel() {
         _receipts.value = currentList
     }
 
-    fun updateAddReceipt(index: Int, productName: String, productQuantity: String, productPrice: String) {
+    fun updateAddReceipt(
+        index: Int, productName: String, productQuantity: String, productPrice: String
+    ) {
         val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
         currentList[index].ProductName.add(productName)
         currentList[index].ProductQuantity.add(productQuantity)
