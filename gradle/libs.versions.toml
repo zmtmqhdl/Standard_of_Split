@@ -11,6 +11,7 @@ activityCompose = "1.9.2"
 composeBom = "2024.04.01"
 material = "1.7.4"
 navigationCompose = "2.8.2"
+navigationComposeVersion = "2.5.3"
 runtimeLivedata = "1.7.3"
 ui = "1.7.4"
 uiToolingPreview = "1.7.4"
@@ -20,6 +21,7 @@ androidx-activity-compose-v193 = { module = "androidx.activity:activity-compose"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-compose-v253 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

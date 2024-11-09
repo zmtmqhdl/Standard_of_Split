@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt, intentToCalculatorActivity: () -> Unit
+    receipt: Receipt, onNext: () -> Unit
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
     val addDialog = remember { mutableStateOf(false) }
@@ -110,7 +110,7 @@ fun ReceiptScreen(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
                 .fillMaxWidth(),
-            onClick = intentToCalculatorActivity
+            onClick = onNext
         )
     }
 }

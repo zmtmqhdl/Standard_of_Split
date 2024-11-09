@@ -1,6 +1,5 @@
 package com.example.standardofsplit.View.Screen
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateMapOf
@@ -29,32 +28,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Button_Name_Dialog
 import com.example.standardofsplit.View.Components.Square_Button
 import com.example.standardofsplit.View.Components.Toggle_Button
 import com.example.standardofsplit.ViewModel.Calculator
+import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ViewModel.Start
 
 @Composable
 fun CalculatorScreen(
-    calculator: Calculator, start: Start
+    calculator: Calculator, start: Start, receipt: Receipt
 ) {
 
     val isToggled by calculator.changeMode.observeAsState()
     val nameChangeDialog = remember { mutableStateOf(false) }
 
-    val ps by start.personCount.observeAsState()
+    val ps by start.personCount.observeAsState(2)
 
+    val buttonPermission = remember { mutableStateMapOf<String, Boolean>() }
     val buttonName = remember { mutableStateMapOf<String, String>() }
-//    for (i in 1..8) {
-//        buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
-//    }
+    LaunchedEffect(ps) {
+        for (i in 1..8) {
+            buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
+            buttonPermission[i.toString()] = if (i <= ps) true else false
+        }
+    }
+
+    val personPay by calculator.personPay.observeAsState()
+
+    val receipts by receipt.receipts.observeAsState(emptyList<Receipt>())
 
     val selectedIndex = remember { mutableStateOf(-1) }
 
     if (nameChangeDialog.value) {
-        val currentName = buttonName[selectedIndex.value.toString()] ?: "기본값"
+        val currentName = buttonName[selectedIndex.value.toString()] ?: ""
 
         Button_Name_Dialog(onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
@@ -109,14 +116,14 @@ fun CalculatorScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Square_Button(content = buttonName["1"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["1"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 1
                     }
                 })
 
                 Square_Button(content = buttonName["2"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["2"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 2
                     }
@@ -140,13 +147,13 @@ fun CalculatorScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Square_Button(content = buttonName["3"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["3"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 3
                     }
                 })
                 Square_Button(content = buttonName["4"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["4"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 4
                     }
@@ -167,13 +174,13 @@ fun CalculatorScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Square_Button(content = buttonName["5"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["5"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 5
                     }
                 })
                 Square_Button(content = buttonName["6"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["6"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 6
                     }
@@ -194,13 +201,13 @@ fun CalculatorScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Square_Button(content = buttonName["7"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["7"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 7
                     }
                 })
                 Square_Button(content = buttonName["8"] ?: "X", onClick = {
-                    if (isToggled == true) {
+                    if (isToggled == true && buttonPermission["8"] == true) {
                         nameChangeDialog.value = true
                         selectedIndex.value = 8
                     }

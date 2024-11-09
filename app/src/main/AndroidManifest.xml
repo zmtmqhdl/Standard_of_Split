@@ -23,7 +23,7 @@
             android:label="@string/title_activity_calculator"
             android:theme="@style/Theme.StandardOfSplit" /> <!-- StartActivity가 앱의 첫 화면이 되도록 intent-filter를 추가 -->
         <activity
-            android:name=".View.Activity.StartActivity"
+            android:name=".View.Activity.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_start"
             android:theme="@style/Theme.StandardOfSplit">

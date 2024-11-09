@@ -154,7 +154,7 @@ fun <T : ViewModel> Toggle_Button(
 
 @Composable
 fun Square_Button(
-    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 25.sp,  // 기본 글자 크기
+    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 20.sp,  // 기본 글자 크기
     onClick: () -> Unit
 ) {
     Button(

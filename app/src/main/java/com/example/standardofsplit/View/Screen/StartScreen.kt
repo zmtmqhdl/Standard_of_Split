@@ -1,4 +1,5 @@
-import android.util.Log
+package com.example.standardofsplit.View.Screen
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,18 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
 
 @Composable
 fun StartScreen(
     start: Start,
-    intentToReceiptActivity: () -> Unit
+    onNext: () -> Unit
 ) {
     val personcount by start.personCount.observeAsState()
 
@@ -68,21 +67,7 @@ fun StartScreen(
 
         Basic_Button(
             content = "시작하기",
-            onClick = {
-                intentToReceiptActivity()
-            }
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun StartPreview() {
-    val dummyStart = Start()
-    StandardOfSplitTheme {
-        StartScreen(
-            start = dummyStart,
-            intentToReceiptActivity = {}
+            onClick = onNext
         )
     }
 }
