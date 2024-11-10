@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
@@ -121,7 +124,7 @@ fun Circle_Button(
 }
 
 @Composable
-fun <T : ViewModel> Toggle_Button(
+fun <T : ViewModel> Toggle_Name_Button(
     modifier: Modifier = Modifier,
     viewModel: T,
     initialText: String = "이름 변경 OFF",
@@ -153,6 +156,41 @@ fun <T : ViewModel> Toggle_Button(
 }
 
 @Composable
+fun Toggle_Square_Button(
+    result: Boolean,
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 20.sp,  // 기본 글자 크기
+    onClick: () -> Unit,
+) {
+
+    val buttonColor = if (result) Color(0xFF8A2BE2) else Color(0xFFDCD0FF)
+
+    Button(
+        onClick = {
+            if (content != "X") {
+                onClick()  // 외부에서 전달된 클릭 이벤트도 처리
+            }
+        },
+        modifier = modifier
+            .height(105.dp)
+            .width(105.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor,  // 색상 적용
+            contentColor = Color.White     // 글자 색
+        )
+    ) {
+        Text(
+            text = content,
+            fontSize = fontSize,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
 fun Square_Button(
     content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 20.sp,  // 기본 글자 크기
     onClick: () -> Unit
@@ -161,7 +199,7 @@ fun Square_Button(
         onClick = onClick,
         modifier = modifier
             .height(105.dp)
-            .width(105.dp),
+            .width(216.dp),
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFFDCD0FF),

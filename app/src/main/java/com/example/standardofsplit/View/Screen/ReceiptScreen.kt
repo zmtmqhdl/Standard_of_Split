@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import com.example.standardofsplit.View.Components.formatNumberWithCommas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -145,9 +146,8 @@ fun ReceiptDetailList(
                 val productQuantities = receipts[index].ProductQuantity
 
                 val totalReceiptCost =
-                    receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
-                        .sum()
-
+                    formatNumberWithCommas(receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
+                        .sum().toString())
 
                 Card(
                     modifier = Modifier
@@ -210,6 +210,8 @@ fun ReceiptDetailList(
                                 val price = receipts[index].ProductPrice[i]
                                 val quantity = receipts[index].ProductQuantity[i]
                                 val totalCost = (price.toInt() * quantity.toInt()).toString()
+                                val _price = formatNumberWithCommas(price)
+                                val _totalCost = formatNumberWithCommas(totalCost)
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -228,13 +230,13 @@ fun ReceiptDetailList(
                                             textAlign = TextAlign.Center
                                         )
                                         Text(
-                                            text = "$price ($quantity)",
+                                            text = "$_price ($_totalCost)",
                                             modifier = Modifier.weight(2f),
                                             textAlign = TextAlign.Center
                                         )
 
                                         Text(
-                                            text = totalCost,
+                                            text = _totalCost,
                                             modifier = Modifier.weight(1f),
                                             textAlign = TextAlign.Center
                                         )

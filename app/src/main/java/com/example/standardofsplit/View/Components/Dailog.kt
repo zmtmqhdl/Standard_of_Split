@@ -76,7 +76,7 @@ fun Receipt_Add_Dialog(
 }
 
 @SuppressLint("DefaultLocale")
-private fun formatNumberWithCommas(number: String): String {
+fun formatNumberWithCommas(number: String): String {
     if (number.isEmpty()) return ""
     return try {
         val longNumber = number.toLong()
@@ -113,7 +113,9 @@ fun Receipt_Name_Dialog(
                 ) {
                     Small_Button("취소", onClick = onDismiss)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Small_Button("확인", onClick = { onConfirm(newName) })
+                    Small_Button("확인", onClick = {
+                        onConfirm(newName)
+                    })
                 }
             }
         }
