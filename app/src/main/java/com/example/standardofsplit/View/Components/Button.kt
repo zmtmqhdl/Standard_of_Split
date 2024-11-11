@@ -156,6 +156,31 @@ fun <T : ViewModel> Toggle_Name_Button(
 }
 
 @Composable
+fun Rectangle_Button(
+    modifier: Modifier = Modifier,
+    content: String,
+    onClick: () -> Unit,
+) {
+        Button(
+            onClick = onClick,
+            shape = RoundedCornerShape(10.dp),
+            modifier = modifier
+                .height(53.dp)
+                .width(353.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFDCD0FF)
+            ),
+        ) {
+            Text(
+                text = content,
+                textAlign = TextAlign.Center,
+                fontSize = 26.sp
+            )
+        }
+    }
+
+
+@Composable
 fun Toggle_Square_Button(
     result: Boolean,
     content: String,

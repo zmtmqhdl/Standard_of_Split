@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import com.example.standardofsplit.ViewModel.Receipt
 
 @Composable
 fun Receipt_Add_Dialog(

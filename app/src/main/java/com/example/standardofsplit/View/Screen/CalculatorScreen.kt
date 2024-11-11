@@ -1,6 +1,5 @@
 package com.example.standardofsplit.View.Screen
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.Model.ReceiptClass
 import com.example.standardofsplit.View.Components.Button_Name_Dialog
+import com.example.standardofsplit.View.Components.Rectangle_Button
 import com.example.standardofsplit.View.Components.Square_Button
 import com.example.standardofsplit.View.Components.Toggle_Square_Button
 import com.example.standardofsplit.View.Components.Toggle_Name_Button
@@ -41,6 +41,7 @@ import com.example.standardofsplit.View.Components.formatNumberWithCommas
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ViewModel.Start
+import kotlin.math.absoluteValue
 
 @Composable
 fun CalculatorScreen(
@@ -68,8 +69,8 @@ fun CalculatorScreen(
 
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
-    var Key by remember { mutableIntStateOf(0) }
-    var KeyKey by remember { mutableIntStateOf(0) }
+    val Key by calculator.Key.observeAsState(0)
+    val KeyKey by calculator.KeyKey.observeAsState(0)
     var total by remember {
         mutableStateOf(
             formatNumberWithCommas((receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
@@ -78,18 +79,18 @@ fun CalculatorScreen(
 
     val buttonStates by calculator.buttonStates.observeAsState(emptyList())
 
-
     if (nameChangeDialog.value) {
-        val currentName = buttonName[selectedIndex.value.toString()] ?: ""
+        val currentName = buttonName[selectedIndex.intValue.toString()] ?: ""
 
-        Button_Name_Dialog(onDismiss = { nameChangeDialog.value = false },
+        Button_Name_Dialog(
+            onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
-                selectedIndex.value = index
-                buttonName[selectedIndex.value.toString()] = newName // 이 부분 수정
+                selectedIndex.intValue = index
+                buttonName[selectedIndex.intValue.toString()] = newName // 이 부분 수정
                 nameChangeDialog.value = false
             },
             name = currentName,
-            index = selectedIndex.value
+            index = selectedIndex.intValue
         )
     }
 
@@ -139,35 +140,41 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(content = buttonName["1"] ?: "X", result = buttonStates[1], onClick = {
-                    if (isToggled == true && buttonPermission["1"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 1
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(1)
-                        if (1 !in payList) {
-                            payList.add(1)
-                        } else {
-                            payList.remove(1)
+                Toggle_Square_Button(
+                    content = buttonName["1"] ?: "X",
+                    result = buttonStates[1],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["1"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 1
                         }
-                    }
-                })
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(1)
+                            if (1 !in payList) {
+                                payList.add(1)
+                            } else {
+                                payList.remove(1)
+                            }
+                        }
+                    })
 
-                Toggle_Square_Button(content = buttonName["2"] ?: "X", result = buttonStates[2], onClick = {
-                    if (isToggled == true && buttonPermission["2"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 2
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(2)
-                        if (2 !in payList) {
-                            payList.add(2)
-                        } else {
-                            payList.remove(2)
+                Toggle_Square_Button(
+                    content = buttonName["2"] ?: "X",
+                    result = buttonStates[2],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["2"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 2
                         }
-                    }
-                })
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(2)
+                            if (2 !in payList) {
+                                payList.add(2)
+                            } else {
+                                payList.remove(2)
+                            }
+                        }
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -186,39 +193,50 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(content = buttonName["3"] ?: "X", result = buttonStates[3], onClick = {
-                    if (isToggled == true && buttonPermission["3"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 3
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(3)
-                        if (3 !in payList) {
-                            payList.add(3)
-                        } else {
-                            payList.remove(3)
+                Toggle_Square_Button(
+                    content = buttonName["3"] ?: "X",
+                    result = buttonStates[3],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["3"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 3
                         }
-                    }
-                })
-                Toggle_Square_Button(content = buttonName["4"] ?: "X", result = buttonStates[4], onClick = {
-                    if (isToggled == true && buttonPermission["4"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 4
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(4)
-                        if (4 !in payList) {
-                            payList.add(4)
-                        } else {
-                            payList.remove(4)
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(3)
+                            if (3 !in payList) {
+                                payList.add(3)
+                            } else {
+                                payList.remove(3)
+                            }
                         }
-                    }
-                })
+                    })
+                Toggle_Square_Button(
+                    content = buttonName["4"] ?: "X",
+                    result = buttonStates[4],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["4"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 4
+                        }
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(4)
+                            if (4 !in payList) {
+                                payList.add(4)
+                            } else {
+                                payList.remove(4)
+                            }
+                        }
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
-                        .height(105.dp)
-                ) {}
+                        .height(105.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Rectangle_Button(content = "되돌리기", onClick = {
+
+                    })
+                }
             }
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -229,39 +247,57 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(content = buttonName["5"] ?: "X", result = buttonStates[5], onClick = {
-                    if (isToggled == true && buttonPermission["5"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 5
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(5)
-                        if (5 !in payList) {
-                            payList.add(5)
-                        } else {
-                            payList.remove(5)
+                Toggle_Square_Button(
+                    content = buttonName["5"] ?: "X",
+                    result = buttonStates[5],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["5"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 5
                         }
-                    }
-                })
-                Toggle_Square_Button(content = buttonName["6"] ?: "X", result = buttonStates[6], onClick = {
-                    if (isToggled == true && buttonPermission["6"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 6
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(6)
-                        if (6 !in payList) {
-                            payList.add(6)
-                        } else {
-                            payList.remove(6)
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(5)
+                            if (5 !in payList) {
+                                payList.add(5)
+                            } else {
+                                payList.remove(5)
+                            }
                         }
-                    }
-                })
+                    })
+                Toggle_Square_Button(
+                    content = buttonName["6"] ?: "X",
+                    result = buttonStates[6],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["6"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 6
+                        }
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(6)
+                            if (6 !in payList) {
+                                payList.add(6)
+                            } else {
+                                payList.remove(6)
+                            }
+                        }
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
-                        .height(105.dp)
-                ) {}
+                        .height(105.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Rectangle_Button(content = "전체 선택", onClick = {
+                        for (i in 1..8) {
+                            if (i <= ps) {
+                                payList.add(i)
+                                if (!buttonStates[i]) {
+                                    calculator.toggleButtonState(i)
+                                }
+                            }
+                        }
+                    })
+                }
             }
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -272,34 +308,40 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(content = buttonName["7"] ?: "X", result = buttonStates[7], onClick = {
-                    if (isToggled == true && buttonPermission["7"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 7
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(7)
-                        if (7 !in payList) {
-                            payList.add(7)
-                        } else {
-                            payList.remove(7)
+                Toggle_Square_Button(
+                    content = buttonName["7"] ?: "X",
+                    result = buttonStates[7],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["7"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 7
                         }
-                    }
-                })
-                Toggle_Square_Button(content = buttonName["8"] ?: "X", result = buttonStates[8], onClick = {
-                    if (isToggled == true && buttonPermission["8"] == true) {
-                        nameChangeDialog.value = true
-                        selectedIndex.value = 8
-                    }
-                    if (isToggled == false) {
-                        calculator.toggleButtonState(8)
-                        if (8 !in payList) {
-                            payList.add(8)
-                        } else {
-                            payList.remove(8)
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(7)
+                            if (7 !in payList) {
+                                payList.add(7)
+                            } else {
+                                payList.remove(7)
+                            }
                         }
-                    }
-                })
+                    })
+                Toggle_Square_Button(
+                    content = buttonName["8"] ?: "X",
+                    result = buttonStates[8],
+                    onClick = {
+                        if (isToggled == true && buttonPermission["8"] == true) {
+                            nameChangeDialog.value = true
+                            selectedIndex.intValue = 8
+                        }
+                        if (isToggled == false) {
+                            calculator.toggleButtonState(8)
+                            if (8 !in payList) {
+                                payList.add(8)
+                            } else {
+                                payList.remove(8)
+                            }
+                        }
+                    })
 
                 Square_Button(content = "적용", onClick = {
                     if (payList.isNotEmpty()) {
@@ -314,7 +356,7 @@ fun CalculatorScreen(
                         if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
                             onNext()
                         } else {
-                            KeyKey++
+                            KeyKey.
                             if (receipts[Key].ProductPrice.size == KeyKey) {
                                 KeyKey = 0
                                 Key++

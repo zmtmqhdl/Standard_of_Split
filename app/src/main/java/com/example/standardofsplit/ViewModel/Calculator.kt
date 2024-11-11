@@ -59,4 +59,12 @@ class Calculator : ViewModel() {
         }
         Log.d("test", _personPay.value.toString() )
     }
+
+    private val _Key = MutableLiveData<Int>()
+    val Key: LiveData<Int> = _Key
+
+    private val _KeyKey = MutableLiveData<Int>()
+    val KeyKey: LiveData<Int> = _KeyKey
+
+
 }
