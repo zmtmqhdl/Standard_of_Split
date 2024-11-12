@@ -77,6 +77,8 @@ fun CalculatorScreen(
         )
     }
 
+    val stack by calculator.stack.observeAsState(emptyList())
+
     val buttonStates by calculator.buttonStates.observeAsState(emptyList())
 
     if (nameChangeDialog.value) {
@@ -234,7 +236,15 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Rectangle_Button(content = "되돌리기", onClick = {
-
+                        calculator.decrementKeyKey()
+                        if (Key != 0 && KeyKey != 0) {
+                            calculator.decrementKeyKey()
+                            if (KeyKey == -1) {
+                                calculator.decrementKey()
+                            }
+                        } else {
+                            // 0 0 이니까 더 없어요~
+                        }
                     })
                 }
             }
@@ -356,10 +366,10 @@ fun CalculatorScreen(
                         if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
                             onNext()
                         } else {
-                            KeyKey.
+                            calculator.incrementKeyKey()
                             if (receipts[Key].ProductPrice.size == KeyKey) {
-                                KeyKey = 0
-                                Key++
+                                calculator.resetKeyKey()
+                                calculator.incrementKey()
                             }
                             total =
                                 formatNumberWithCommas((receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
