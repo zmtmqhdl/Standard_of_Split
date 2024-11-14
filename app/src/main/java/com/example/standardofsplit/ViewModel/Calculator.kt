@@ -1,10 +1,5 @@
 package com.example.standardofsplit.ViewModel
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,24 +36,28 @@ class Calculator : ViewModel() {
         _personPay
 
     fun updatePersonPay(lst: List<Int>, placeName: String, productName: String, productPrice: Int) {
+        try {
+            val dividedPrice = (ceil((productPrice.toDouble() / lst.size) / 10) * 10).toInt()
 
-        val dividedPrice = (ceil((productPrice.toDouble() / lst.size) / 10) * 10).toInt()
+            val updatedPersonPay = _personPay.value?.toMutableMap() ?: return
 
-        for (i in lst) {
-            // personPay[i]가 없으면 새로 초기화
-            val current = personPay.value?.get(i) ?: mutableMapOf()
-
-            // placeName이 존재하면 상품 추가, 없으면 새로 추가
-            val updatedProducts = current[placeName]?.toMutableMap() ?: mutableMapOf()
-            updatedProducts[productName] = dividedPrice
-
-            // current를 personPay[i]에 반영
-            _personPay.value = _personPay.value?.toMutableMap()?.apply {
-                put(i, current.apply { put(placeName, updatedProducts) })
+            for (i in lst) {
+                val current = updatedPersonPay[i] ?: mutableMapOf()
+                val updatedProducts = current[placeName]?.toMutableMap() ?: mutableMapOf()
+                updatedProducts[productName] = dividedPrice
+                current[placeName] = updatedProducts
+                updatedPersonPay[i] = current
             }
-        }
-        _stack.value = (_stack.value ?: mutableListOf()).apply {
-            add(_personPay)
+
+            _personPay.value = updatedPersonPay
+
+            // 스택 업데이트
+            _stack.value = (_stack.value ?: mutableListOf()).apply {
+                add(updatedPersonPay.toMutableMap())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _showToastEvent.value = true
         }
     }
 
@@ -91,19 +90,28 @@ class Calculator : ViewModel() {
         _KeyKey.value = 0
     }
 
+    val _showToastEvent = MutableLiveData<Boolean>()
+    val showToastEvent: LiveData<Boolean> = _showToastEvent
+
     fun reDo() {
-        if (_Key.value != 0 && _KeyKey.value != 0) {
+        val currentStack = _stack.value ?: mutableListOf()
+        if (currentStack.isNotEmpty()) {
             decrementKeyKey()
             if (_KeyKey.value == -1) {
-                decrementKey() }
-            val currentStack = _stack.value ?: mutableListOf()
-            val lastElement = currentStack.removeAt(currentStack.size - 1) // 마지막 원소를 꺼냄
-            _personPay.value = lastElement // payList에 할당
+                decrementKey()
+                _KeyKey.value = 0
+            }
+            val lastElement = currentStack.removeAt(currentStack.size - 1)
+            _personPay.value =
+                lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
             _stack.value = currentStack
-
         } else {
-            // 0 0 이니까 더 없어요~
+            _showToastEvent.value = true
         }
     }
+
+    // 새로운 LiveData 추가
+    private val _updateTotalEvent = MutableLiveData<Boolean>()
+    val updateTotalEvent: LiveData<Boolean> = _updateTotalEvent
 
 }

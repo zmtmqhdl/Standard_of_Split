@@ -14,23 +14,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.ViewModel.Start
+import com.example.standardofsplit.ui.theme.LightPurple
+import com.example.standardofsplit.ui.theme.DarkPurple
 
 @Composable
 fun StartScreen(
     start: Start,
     onNext: () -> Unit
 ) {
-    val personcount by start.personCount.observeAsState()
+    val personCount by start.personCount.observeAsState()
 
+    StartScreenContent(
+        personCount = personCount ?: 2,
+        onIncrement = { start.increment() },
+        onDecrement = { start.decrement() },
+        onStart = onNext
+    )
+}
 
-
+@Composable
+private fun StartScreenContent(
+    personCount: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+    onStart: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,36 +52,65 @@ fun StartScreen(
             .offset(y = 250.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Circle_Button(
-                content = "-",
-                onClick = { start.decrement() }
-            )
-            Text(
-                text = "$personcount",
-                modifier = Modifier.padding(horizontal = 40.dp),
-                fontSize = 60.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFDCD0FF)
-            )
-            Circle_Button(
-                content = "+",
-                onClick = { start.increment() }
-            )
-        }
+        PersonCountSelector(
+            count = personCount,
+            onIncrement = onIncrement,
+            onDecrement = onDecrement
+        )
 
-        // 0xFFDCD0FF 연한색
-        // 0xFF9B87CB 진한색
+        InstructionText()
 
-        
-        Text(text = "※ 인원 수를 선택해주세요 ※", fontSize = 20.sp, color = Color(0xFF9B87CB))
         Spacer(modifier = Modifier.height(50.dp))
 
-        Basic_Button(
-            content = "시작하기",
-            onClick = onNext
+        StartButton(onClick = onStart)
+    }
+}
+
+@Composable
+private fun PersonCountSelector(
+    count: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Circle_Button(
+            content = "-",
+            onClick = onDecrement
+        )
+
+        CountText(count = count)
+
+        Circle_Button(
+            content = "+",
+            onClick = onIncrement
         )
     }
+}
+
+@Composable
+private fun CountText(count: Int) {
+    Text(
+        text = "$count",
+        modifier = Modifier.padding(horizontal = 40.dp),
+        fontSize = 60.sp,
+        fontWeight = FontWeight.Bold,
+        color = LightPurple
+    )
+}
+
+@Composable
+private fun InstructionText() {
+    Text(
+        text = "※ 인원 수를 선택해주세요 ※",
+        fontSize = 20.sp,
+        color = DarkPurple
+    )
+}
+
+@Composable
+private fun StartButton(onClick: () -> Unit) {
+    Basic_Button(
+        content = "시작하기",
+        onClick = onClick
+    )
 }

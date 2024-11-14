@@ -6,49 +6,63 @@ import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.Model.ReceiptClass
 
 class Receipt : ViewModel() {
-
     private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())
     val receipts: LiveData<MutableList<ReceiptClass>> = _receipts
 
-    init {
-        val defaultReceipt = ReceiptClass(
+    companion object {
+        private val DEFAULT_RECEIPT = ReceiptClass(
             ReceiptNumber = 0,
             PlaceName = "영수증",
             ProductName = mutableListOf("상품"),
-            ProductQuantity = mutableListOf("0"),
-            ProductPrice = mutableListOf("0")
+            ProductPrice = mutableListOf("0"),
+            ProductQuantity = mutableListOf("0")
         )
-        _receipts.value?.add(defaultReceipt)
+    }
+
+    init {
+        _receipts.value?.add(DEFAULT_RECEIPT)
     }
 
     fun addReceipt(receipt: ReceiptClass) {
-        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
-        currentList.add(receipt)
-        _receipts.value = currentList
+        _receipts.value = (_receipts.value?.toMutableList() ?: mutableListOf()).apply {
+            add(receipt)
+        }
     }
 
     fun updateReceiptName(index: Int, newName: String) {
-        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
-        currentList[index].PlaceName = newName
-        _receipts.value = currentList
+        _receipts.value = _receipts.value?.toMutableList()?.apply {
+            this[index].PlaceName = newName
+        }
     }
 
     fun updateReceiptDetail(
-        index: Int, iindex: Int, productName: String, productQuantity: String, productPrice: String
+        index: Int,
+        iindex: Int,
+        productName: String,
+        productQuantity: String,
+        productPrice: String
     ) {
-        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
-        currentList[index].ProductName[iindex] = productName
-        currentList[index].ProductQuantity[iindex] = productQuantity
-        currentList[index].ProductPrice[iindex] = productPrice
-        _receipts.value = currentList
+        _receipts.value = _receipts.value?.toMutableList()?.apply {
+            this[index].apply {
+                ProductName[iindex] = productName
+                ProductQuantity[iindex] = productQuantity
+                ProductPrice[iindex] = productPrice
+            }
+        }
     }
 
     fun updateAddReceipt(
-        index: Int, productName: String, productQuantity: String, productPrice: String
+        index: Int,
+        productName: String,
+        productQuantity: String,
+        productPrice: String
     ) {
-        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
-        currentList[index].ProductName.add(productName)
-        currentList[index].ProductQuantity.add(productQuantity)
-        currentList[index].ProductPrice.add(productPrice)
+        _receipts.value = _receipts.value?.toMutableList()?.apply {
+            this[index].apply {
+                ProductName.add(productName)
+                ProductQuantity.add(productQuantity)
+                ProductPrice.add(productPrice)
+            }
+        }
     }
 }

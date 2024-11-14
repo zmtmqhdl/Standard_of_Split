@@ -2,273 +2,383 @@ package com.example.standardofsplit.View.Screen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import com.example.standardofsplit.View.Components.formatNumberWithCommas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.standardofsplit.Model.ReceiptClass
-import com.example.standardofsplit.View.Components.Basic_Button
-import com.example.standardofsplit.View.Components.Circle_Button
-import com.example.standardofsplit.View.Components.Elevated_Button
-import com.example.standardofsplit.View.Components.Receipt_Add_Dialog
-import com.example.standardofsplit.View.Components.Receipt_Change_Dialog
-import com.example.standardofsplit.View.Components.Receipt_Name_Dialog
+import com.example.standardofsplit.View.Components.*
 import com.example.standardofsplit.ViewModel.Receipt
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt, onNext: () -> Unit
+    receipt: Receipt,
+    onNext: () -> Unit
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
-    val addDialog = remember { mutableStateOf(false) }
-    val nameDialog = remember { mutableStateOf(false) }
-    val changeDialog = remember { mutableStateOf(false) }
-    val selectedReceiptIndex = remember { mutableStateOf(-1) }
-    val selectedReceiptIIndex = remember { mutableStateOf(-1) }
+    val dialogStates = remember { DialogStates() }
+    val selectedIndices = remember { SelectedIndices() }
 
-    ReceiptDetailList(receipts = receipts.value,
-        receiptViewModel = receipt,
-        onAddClick = { index, iindex ->
-            selectedReceiptIndex.value = index
-            selectedReceiptIIndex.value = iindex
-            addDialog.value = true
-        },
-        onNameClick = { index -> selectedReceiptIndex.value = index; nameDialog.value = true },
-        onChangeClick = { index, iindex ->
-            selectedReceiptIndex.value = index
-            selectedReceiptIIndex.value = iindex
-            changeDialog.value = true
-        })
+    ReceiptContent(
+        receipts = receipts.value,
+        dialogStates = dialogStates,
+        selectedIndices = selectedIndices,
+        receipt = receipt,
+        onNext = onNext
+    )
 
-    if (addDialog.value) {
+    HandleDialogs(
+        receipts = receipts.value,
+        dialogStates = dialogStates,
+        selectedIndices = selectedIndices,
+        receipt = receipt
+    )
+}
+
+private class DialogStates {
+    var addDialog by mutableStateOf(false)
+    var nameDialog by mutableStateOf(false)
+    var changeDialog by mutableStateOf(false)
+}
+
+private class SelectedIndices {
+    var receiptIndex by mutableStateOf(-1)
+    var receiptIIndex by mutableStateOf(-1)
+}
+
+@Composable
+private fun ReceiptContent(
+    receipts: List<ReceiptClass>,
+    dialogStates: DialogStates,
+    selectedIndices: SelectedIndices,
+    receipt: Receipt,
+    onNext: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        ReceiptList(
+            receipts = receipts,
+            dialogStates = dialogStates,
+            selectedIndices = selectedIndices,
+            receipt = receipt
+        )
+
+        NextButton(onClick = onNext)
+    }
+}
+
+@Composable
+private fun HandleDialogs(
+    receipts: List<ReceiptClass>,
+    dialogStates: DialogStates,
+    selectedIndices: SelectedIndices,
+    receipt: Receipt
+) {
+    if (dialogStates.addDialog) {
         Receipt_Add_Dialog(
-            onDismiss = { addDialog.value = false },
+            onDismiss = { dialogStates.addDialog = false },
             onConfirm = { newproductname, newprice, newquantity ->
                 receipt.updateAddReceipt(
-                    selectedReceiptIndex.value, newproductname, newprice, newquantity
+                    selectedIndices.receiptIndex,
+                    newproductname,
+                    newquantity,
+                    newprice
                 )
-                addDialog.value = false
+                dialogStates.addDialog = false
+            }
+        )
+    }
+
+    if (dialogStates.nameDialog) {
+        Receipt_Name_Dialog(
+            onDismiss = { dialogStates.nameDialog = false },
+            onConfirm = { newName ->
+                receipt.updateReceiptName(selectedIndices.receiptIndex, newName)
+                dialogStates.nameDialog = false
             },
+            name = receipts[selectedIndices.receiptIndex].PlaceName
         )
     }
 
-    if (nameDialog.value) {
-        Receipt_Name_Dialog(onDismiss = { nameDialog.value = false }, onConfirm = { newName ->
-            receipt.updateReceiptName(selectedReceiptIndex.value, newName)
-            nameDialog.value = false
-        }, name = receipts.value[selectedReceiptIndex.value].PlaceName
-        )
-    }
-
-    if (changeDialog.value) {
+    if (dialogStates.changeDialog) {
         Receipt_Change_Dialog(
-            onDismiss = { changeDialog.value = false },
+            onDismiss = { dialogStates.changeDialog = false },
             onConfirm = { newproductname, newprice, newquantity ->
                 receipt.updateReceiptDetail(
-                    selectedReceiptIndex.value,
-                    selectedReceiptIIndex.value,
+                    selectedIndices.receiptIndex,
+                    selectedIndices.receiptIIndex,
                     newproductname,
-                    newprice,
-                    newquantity
+                    newquantity,
+                    newprice
                 )
-                changeDialog.value = false
+                dialogStates.changeDialog = false
             },
-            productName = receipts.value[selectedReceiptIndex.value].ProductName[selectedReceiptIIndex.value],
-            price = receipts.value[selectedReceiptIndex.value].ProductQuantity[selectedReceiptIIndex.value],
-            quantity = receipts.value[selectedReceiptIndex.value].ProductPrice[selectedReceiptIIndex.value]
-        )
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Basic_Button(
-            content = "정산시작쓰",
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-                .fillMaxWidth(),
-            onClick = onNext
+            productName = receipts[selectedIndices.receiptIndex].ProductName[selectedIndices.receiptIIndex],
+            price = receipts[selectedIndices.receiptIndex].ProductQuantity[selectedIndices.receiptIIndex],
+            quantity = receipts[selectedIndices.receiptIndex].ProductPrice[selectedIndices.receiptIIndex]
         )
     }
 }
 
 @Composable
-fun ReceiptDetailList(
+private fun ReceiptList(
     receipts: List<ReceiptClass>,
-    receiptViewModel: Receipt,
-    onAddClick: (Int, Int) -> Unit,
-    onNameClick: (Int) -> Unit,
-    onChangeClick: (Int, Int) -> Unit
+    dialogStates: DialogStates,
+    selectedIndices: SelectedIndices,
+    receipt: Receipt
 ) {
     val receiptlistState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
     val expandedStates = remember { mutableStateListOf<Boolean>() }
+    val coroutineScope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier.padding(bottom = 16.dp),
+    LazyColumn(
+        state = receiptlistState,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(900.dp)
+            .padding(top = 50.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyColumn(
-            state = receiptlistState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(900.dp)
-                .padding(top = 50.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            itemsIndexed(receipts) { index, receipt ->
-                expandedStates.add(false)
-                val expanded = expandedStates[index]
-                val productPrices = receipts[index].ProductPrice
-                val productQuantities = receipts[index].ProductQuantity
+        itemsIndexed(receipts) { index, receipt ->
+            expandedStates.add(false)
+            val expanded = expandedStates[index]
+            val totalReceiptCost = formatNumberWithCommas(
+                receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity ->
+                    price.toInt() * quantity.toInt()
+                }.sum().toString()
+            )
 
-                val totalReceiptCost =
-                    formatNumberWithCommas(receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity -> price.toInt() * quantity.toInt() }
-                        .sum().toString())
-
-                Card(
-                    modifier = Modifier
-                        .width(420.dp)
-                        .wrapContentHeight()
-                        .padding(8.dp)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .animateContentSize()
-                            .padding(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "${receipt.PlaceName} (${totalReceiptCost}원)",
-                                modifier = Modifier.clickable { onNameClick(index) })
-
-                            Elevated_Button(content1 = "영수증 접기",
-                                content2 = "영수증 펼치기",
-                                flag = expanded,
-                                onClick = { expandedStates[index] = !expanded })
-                        }
-                        if (expanded) {
-                            Divider(modifier = Modifier.padding(top = 10.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 20.dp, vertical = 8.dp),
-                            ) {
-
-                                Text(
-                                    text = "상품명",
-                                    modifier = Modifier.weight(1f),
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                Text(
-                                    text = "단가 (수량)",
-                                    modifier = Modifier.weight(2f),
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                Text(
-                                    text = "금액",
-                                    modifier = Modifier.weight(1f),
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                            Divider()
-
-                            for (i in productPrices.indices) {
-                                val productName = receipts[index].ProductName[i]
-                                val price = receipts[index].ProductPrice[i]
-                                val quantity = receipts[index].ProductQuantity[i]
-                                val totalCost = (price.toInt() * quantity.toInt()).toString()
-                                val _price = formatNumberWithCommas(price)
-                                val _totalCost = formatNumberWithCommas(totalCost)
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { onChangeClick(index, i) },
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 20.dp, vertical = 8.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-
-                                        Text(
-                                            text = productName,
-                                            modifier = Modifier.weight(1f),
-                                            textAlign = TextAlign.Center
-                                        )
-                                        Text(
-                                            text = "$_price ($_totalCost)",
-                                            modifier = Modifier.weight(2f),
-                                            textAlign = TextAlign.Center
-                                        )
-
-                                        Text(
-                                            text = _totalCost,
-                                            modifier = Modifier.weight(1f),
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
-                                }
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(top = 5.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Circle_Button(content = "+",
-                                    onClick = { onAddClick(index, productPrices.size - 1) })
-                            }
-                        }
-                    }
+            ReceiptCard(
+                receipt = receipt,
+                expanded = expanded,
+                totalReceiptCost = totalReceiptCost,
+                onNameClick = {
+                    selectedIndices.receiptIndex = index
+                    dialogStates.nameDialog = true
+                },
+                onExpandClick = { expandedStates[index] = !expanded },
+                onItemClick = { iindex ->
+                    selectedIndices.receiptIndex = index
+                    selectedIndices.receiptIIndex = iindex
+                    dialogStates.changeDialog = true
+                },
+                onAddClick = {
+                    selectedIndices.receiptIndex = index
+                    selectedIndices.receiptIIndex = receipts[index].ProductPrice.size - 1
+                    dialogStates.addDialog = true
                 }
-            }
+            )
+        }
 
-            item {
-                Basic_Button(content = "영수증 추가", onClick = {
-                    val newReceipt = ReceiptClass(
-                        ReceiptNumber = receipts.size,
-                    )
-                    receiptViewModel.addReceipt(newReceipt)
-
+        item {
+            Basic_Button(
+                content = "영수증 추가",
+                onClick = {
+                    val newReceipt = ReceiptClass(ReceiptNumber = receipts.size)
+                    receipt.addReceipt(newReceipt)
                     coroutineScope.launch {
                         receiptlistState.animateScrollToItem(receipts.size)
                     }
-                })
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReceiptCard(
+    receipt: ReceiptClass,
+    expanded: Boolean,
+    totalReceiptCost: String,
+    onNameClick: () -> Unit,
+    onExpandClick: () -> Unit,
+    onItemClick: (Int) -> Unit,
+    onAddClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .width(420.dp)
+            .wrapContentHeight()
+            .padding(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .animateContentSize()
+                .padding(16.dp)
+        ) {
+            ReceiptHeader(
+                placeName = receipt.PlaceName,
+                totalCost = totalReceiptCost,
+                expanded = expanded,
+                onNameClick = onNameClick,
+                onExpandClick = onExpandClick
+            )
+
+            if (expanded) {
+                ReceiptDetails(
+                    receipt = receipt,
+                    onItemClick = onItemClick,
+                    onAddClick = onAddClick
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun ReceiptHeader(
+    placeName: String,
+    totalCost: String,
+    expanded: Boolean,
+    onNameClick: () -> Unit,
+    onExpandClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "$placeName (${totalCost}원)",
+            modifier = Modifier.clickable(onClick = onNameClick)
+        )
+
+        Elevated_Button(
+            content1 = "영수증 접기",
+            content2 = "영수증 펼치기",
+            flag = expanded,
+            onClick = onExpandClick
+        )
+    }
+}
+
+@Composable
+private fun ReceiptDetails(
+    receipt: ReceiptClass,
+    onItemClick: (Int) -> Unit,
+    onAddClick: () -> Unit
+) {
+    Column {
+        Divider(modifier = Modifier.padding(top = 10.dp))
+        ReceiptColumnHeaders()
+        Divider()
+
+        receipt.ProductPrice.indices.forEach { i ->
+            ReceiptItem(
+                productName = receipt.ProductName[i],
+                price = receipt.ProductPrice[i],
+                quantity = receipt.ProductQuantity[i],
+                onClick = { onItemClick(i) }
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 5.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Circle_Button(
+                content = "+",
+                onClick = onAddClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReceiptColumnHeaders() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+    ) {
+        Text(
+            text = "상품명",
+            modifier = Modifier.weight(1f),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = "단가 (수량)",
+            modifier = Modifier.weight(2f),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = "금액",
+            modifier = Modifier.weight(1f),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun ReceiptItem(
+    productName: String,
+    price: String,
+    quantity: String,
+    onClick: () -> Unit
+) {
+    val totalCost = (price.toInt() * quantity.toInt()).toString()
+    val formattedPrice = formatNumberWithCommas(price)
+    val formattedTotalCost = formatNumberWithCommas(totalCost)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = productName,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "$formattedPrice ($quantity)",
+                modifier = Modifier.weight(2f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = formattedTotalCost,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun NextButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Basic_Button(
+            content = "정산시작쓰",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            onClick = onClick
+        )
     }
 }

@@ -5,18 +5,28 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class Start : ViewModel() {
-    private val _personCount = MutableLiveData(2)
+    private val _personCount = MutableLiveData(DEFAULT_PERSON_COUNT)
     val personCount: LiveData<Int> = _personCount
 
     fun increment() {
-        if ((_personCount.value ?: 2) < 8) {
-            _personCount.value = (_personCount.value ?: 2) + 1
+        _personCount.value?.let { currentCount ->
+            if (currentCount < MAX_PERSON_COUNT) {
+                _personCount.value = currentCount + 1
+            }
         }
     }
 
     fun decrement() {
-        if ((_personCount.value ?: 2) > 2) {
-            _personCount.value = (_personCount.value ?: 2) - 1
+        _personCount.value?.let { currentCount ->
+            if (currentCount > MIN_PERSON_COUNT) {
+                _personCount.value = currentCount - 1
+            }
         }
+    }
+
+    companion object {
+        const val DEFAULT_PERSON_COUNT = 2
+        const val MIN_PERSON_COUNT = 2
+        const val MAX_PERSON_COUNT = 8
     }
 }

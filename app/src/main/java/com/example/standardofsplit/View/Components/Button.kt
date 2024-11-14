@@ -1,63 +1,87 @@
 package com.example.standardofsplit.View.Components
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.ViewModel.Calculator
+import com.example.standardofsplit.ui.theme.LightPurple
+import com.example.standardofsplit.ui.theme.DarkPurple
+
+private object CustomButtonDefaults {
+    val defaultShape = RoundedCornerShape(10.dp)
+    val defaultColor = LightPurple
+    val selectedColor = DarkPurple
+    val defaultModifier = Modifier.height(53.dp)
+    val defaultFontSize = 26.sp
+    val defaultFontWeight = FontWeight.Bold
+}
+
+@Composable
+private fun getDefaultButtonColors() = ButtonDefaults.buttonColors(
+    containerColor = CustomButtonDefaults.defaultColor,
+    contentColor = Color.White
+)
+
+@Composable
+private fun ButtonText(
+    text: String,
+    fontSize: TextUnit = CustomButtonDefaults.defaultFontSize,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Center,
+    fontWeight: FontWeight = CustomButtonDefaults.defaultFontWeight
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        textAlign = textAlign,
+        color = Color.White,
+        fontWeight = fontWeight,
+        modifier = modifier
+    )
+}
 
 @Composable
 fun Basic_Button(
-    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 26.sp, onClick: () -> Unit
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = CustomButtonDefaults.defaultFontSize,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(53.dp)
+            .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFDCD0FF),  // 배경색 변경
-        )
+        shape = CustomButtonDefaults.defaultShape,
+        colors = getDefaultButtonColors()
     ) {
-        Text(
+        ButtonText(
             text = content,
             fontSize = fontSize,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
-
         )
     }
 }
 
 @Composable
 fun Small_Button(
-    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 13.sp,  // 기본 글자 크기
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 13.sp,
     onClick: () -> Unit
 ) {
     Button(
@@ -65,32 +89,26 @@ fun Small_Button(
         modifier = modifier
             .height(33.dp)
             .width(73.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFDCD0FF),
-        )
+        shape = CustomButtonDefaults.defaultShape,
+        colors = getDefaultButtonColors()
     ) {
-        Text(
-            text = content,
-            fontSize = fontSize,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-
-            )
+        ButtonText(text = content, fontSize = fontSize)
     }
 }
 
 @Composable
 fun Elevated_Button(
-    content1: String, content2: String, flag: Boolean, onClick: () -> Unit
+    content1: String,
+    content2: String,
+    flag: Boolean,
+    onClick: () -> Unit
 ) {
     ElevatedButton(
-        onClick = onClick, shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFDCD0FF)
-        )
+        onClick = onClick,
+        shape = CustomButtonDefaults.defaultShape,
+        colors = getDefaultButtonColors()
     ) {
-        Text(text = if (flag) content1 else content2)
+        ButtonText(text = if (flag) content1 else content2)
     }
 }
 
@@ -105,18 +123,16 @@ fun Circle_Button(
         onClick = onClick,
         shape = CircleShape,
         modifier = modifier.size(50.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFDCD0FF) // 색상 값 앞에 0xFF를 붙여서 설정
-        ),
+        colors = getDefaultButtonColors(),
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
+            ButtonText(
                 text = content,
                 fontSize = fontSize,
-                textAlign = TextAlign.Center,
                 modifier = Modifier.wrapContentHeight()
             )
         }
@@ -124,100 +140,72 @@ fun Circle_Button(
 }
 
 @Composable
-fun <T : ViewModel> Toggle_Name_Button(
+fun Toggle_Name_Button(
+    viewModel: Calculator,
     modifier: Modifier = Modifier,
-    viewModel: T,
     initialText: String = "이름 변경 OFF",
     toggledText: String = "이름 변경 ON",
 ) {
+    val isToggled by viewModel.changeMode.observeAsState()
 
-    if (viewModel is Calculator) {
-        val isToggled by viewModel.changeMode.observeAsState()
-
-        Button(
-            onClick = {
-                viewModel.toggleChangeMode()
-            },
-            shape = RoundedCornerShape(10.dp),
-            modifier = modifier
-                .height(53.dp)
-                .width(353.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFDCD0FF)
-            ),
-        ) {
-            Text(
-                text = if (isToggled == true) toggledText else initialText,
-                textAlign = TextAlign.Center,
-                fontSize = 26.sp
-            )
-        }
+    Button(
+        onClick = { viewModel.toggleChangeMode() },
+        shape = CustomButtonDefaults.defaultShape,
+        modifier = modifier
+            .then(CustomButtonDefaults.defaultModifier)
+            .width(353.dp),
+        colors = getDefaultButtonColors()
+    ) {
+        ButtonText(text = if (isToggled == true) toggledText else initialText)
     }
 }
 
 @Composable
 fun Rectangle_Button(
-    modifier: Modifier = Modifier,
     content: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-        Button(
-            onClick = onClick,
-            shape = RoundedCornerShape(10.dp),
-            modifier = modifier
-                .height(53.dp)
-                .width(353.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFDCD0FF)
-            ),
-        ) {
-            Text(
-                text = content,
-                textAlign = TextAlign.Center,
-                fontSize = 26.sp
-            )
-        }
+    Button(
+        onClick = onClick,
+        shape = CustomButtonDefaults.defaultShape,
+        modifier = modifier
+            .then(CustomButtonDefaults.defaultModifier)
+            .width(353.dp),
+        colors = getDefaultButtonColors()
+    ) {
+        ButtonText(text = content)
     }
-
+}
 
 @Composable
 fun Toggle_Square_Button(
     result: Boolean,
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 20.sp,  // 기본 글자 크기
+    fontSize: TextUnit = 20.sp,
     onClick: () -> Unit,
 ) {
-
-    val buttonColor = if (result) Color(0xFF8A2BE2) else Color(0xFFDCD0FF)
-
     Button(
-        onClick = {
-            if (content != "X") {
-                onClick()  // 외부에서 전달된 클릭 이벤트도 처리
-            }
-        },
+        onClick = { if (content != "X") onClick() },
         modifier = modifier
             .height(105.dp)
             .width(105.dp),
-        shape = RoundedCornerShape(10.dp),
+        shape = CustomButtonDefaults.defaultShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor,  // 색상 적용
-            contentColor = Color.White     // 글자 색
+            containerColor = if (result) CustomButtonDefaults.selectedColor else CustomButtonDefaults.defaultColor,
+            contentColor = Color.White
         )
     ) {
-        Text(
-            text = content,
-            fontSize = fontSize,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
-        )
+        ButtonText(text = content, fontSize = fontSize)
     }
 }
 
 @Composable
 fun Square_Button(
-    content: String, modifier: Modifier = Modifier, fontSize: TextUnit = 20.sp,  // 기본 글자 크기
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 20.sp,
     onClick: () -> Unit
 ) {
     Button(
@@ -225,25 +213,9 @@ fun Square_Button(
         modifier = modifier
             .height(105.dp)
             .width(216.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFDCD0FF),
-        )
+        shape = CustomButtonDefaults.defaultShape,
+        colors = getDefaultButtonColors()
     ) {
-        Text(
-            text = content,
-            fontSize = fontSize,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ButtonPreview() {
-    StandardOfSplitTheme {
-        Square_Button(content = "먕", onClick = {})
+        ButtonText(text = content, fontSize = fontSize)
     }
 }

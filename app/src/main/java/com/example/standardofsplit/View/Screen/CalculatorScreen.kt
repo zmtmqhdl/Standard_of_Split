@@ -1,5 +1,7 @@
 package com.example.standardofsplit.View.Screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +44,7 @@ import com.example.standardofsplit.View.Components.formatNumberWithCommas
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ViewModel.Start
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @Composable
@@ -58,17 +62,6 @@ fun CalculatorScreen(
 
     val receipts by receipt.receipts.observeAsState(emptyList<ReceiptClass>())
 
-    LaunchedEffect(ps) {
-        for (i in 1..8) {
-            buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
-            buttonPermission[i.toString()] = if (i <= ps) true else false
-        }
-    }
-
-    val payList = remember { mutableStateListOf<Int>() }
-
-    val selectedIndex = remember { mutableIntStateOf(-1) }
-
     val Key by calculator.Key.observeAsState(0)
     val KeyKey by calculator.KeyKey.observeAsState(0)
     var total by remember {
@@ -77,7 +70,34 @@ fun CalculatorScreen(
         )
     }
 
-    val stack by calculator.stack.observeAsState(emptyList())
+    val context = LocalContext.current
+    val showToast by calculator.showToastEvent.observeAsState()
+    var isToastShowing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(ps, Key, KeyKey, showToast) {
+        // 버튼 이름과 권한 설정
+        for (i in 1..8) {
+            buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
+            buttonPermission[i.toString()] = if (i <= ps) true else false
+        }
+
+        if (receipts.isNotEmpty() && Key < receipts.size && KeyKey < receipts[Key].ProductPrice.size) {
+            total = formatNumberWithCommas(
+                (receipts[Key].ProductQuantity[KeyKey].toInt() *
+                        receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+            )
+        }
+
+        if (showToast == true && !isToastShowing) {
+            isToastShowing = true
+            Toast.makeText(context, "되돌릴 항목이 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+            calculator._showToastEvent.value = false
+        }
+    }
+
+    val payList = remember { mutableStateListOf<Int>() }
+
+    val selectedIndex = remember { mutableIntStateOf(-1) }
 
     val buttonStates by calculator.buttonStates.observeAsState(emptyList())
 
@@ -236,15 +256,7 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Rectangle_Button(content = "되돌리기", onClick = {
-                        calculator.decrementKeyKey()
-                        if (Key != 0 && KeyKey != 0) {
-                            calculator.decrementKeyKey()
-                            if (KeyKey == -1) {
-                                calculator.decrementKey()
-                            }
-                        } else {
-                            // 0 0 이니까 더 없어요~
-                        }
+                        calculator.reDo()
                     })
                 }
             }
@@ -367,14 +379,13 @@ fun CalculatorScreen(
                             onNext()
                         } else {
                             calculator.incrementKeyKey()
-                            if (receipts[Key].ProductPrice.size == KeyKey) {
+                            if (KeyKey >= receipts[Key].ProductPrice.size - 1) {
                                 calculator.resetKeyKey()
                                 calculator.incrementKey()
                             }
                             total =
                                 formatNumberWithCommas((receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
                         }
-
                     } else {
                         // 토스트메세ㅣ지
                     }
