@@ -18,21 +18,31 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ViewModel.Calculator
-import com.example.standardofsplit.ui.theme.LightPurple
-import com.example.standardofsplit.ui.theme.DarkPurple
+import com.example.standardofsplit.ui.theme.Black
+import com.example.standardofsplit.ui.theme.Gray
+import com.example.standardofsplit.ui.theme.Yellow
 
 private object CustomButtonDefaults {
     val defaultShape = RoundedCornerShape(10.dp)
-    val defaultColor = LightPurple
-    val selectedColor = DarkPurple
+    val defaultColor = Black
+    val yellowColor = Yellow
+    val grayColor = Gray
     val defaultModifier = Modifier.height(53.dp)
+    val smallModifier = Modifier.height(33.dp)
     val defaultFontSize = 26.sp
+    val smallFontSize = 13.sp
     val defaultFontWeight = FontWeight.Bold
 }
 
 @Composable
-private fun getDefaultButtonColors() = ButtonDefaults.buttonColors(
-    containerColor = CustomButtonDefaults.defaultColor,
+private fun basicButtonColor() = ButtonDefaults.buttonColors(
+    containerColor = CustomButtonDefaults.yellowColor,
+    contentColor = Color.White
+)
+
+@Composable
+private fun circleButtonColors() = ButtonDefaults.buttonColors(
+    containerColor = CustomButtonDefaults.grayColor,
     contentColor = Color.White
 )
 
@@ -65,9 +75,32 @@ fun Basic_Button(
         onClick = onClick,
         modifier = modifier
             .then(CustomButtonDefaults.defaultModifier)
-            .width(353.dp),
+            .width(263.dp),
         shape = CustomButtonDefaults.defaultShape,
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor()
+    ) {
+        ButtonText(
+            text = content,
+            fontSize = fontSize,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+    }
+}
+
+@Composable
+fun Basic_Button2(
+    content: String,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = CustomButtonDefaults.smallFontSize,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .then(CustomButtonDefaults.smallModifier)
+            .width(83.dp),
+        shape = CustomButtonDefaults.defaultShape,
+        colors = basicButtonColor()
     ) {
         ButtonText(
             text = content,
@@ -90,7 +123,7 @@ fun Small_Button(
             .height(33.dp)
             .width(73.dp),
         shape = CustomButtonDefaults.defaultShape,
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor()
     ) {
         ButtonText(text = content, fontSize = fontSize)
     }
@@ -106,7 +139,7 @@ fun Elevated_Button(
     ElevatedButton(
         onClick = onClick,
         shape = CustomButtonDefaults.defaultShape,
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor(),
     ) {
         ButtonText(text = if (flag) content1 else content2)
     }
@@ -123,7 +156,7 @@ fun Circle_Button(
         onClick = onClick,
         shape = CircleShape,
         modifier = modifier.size(50.dp),
-        colors = getDefaultButtonColors(),
+        colors = circleButtonColors(),
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(
@@ -154,7 +187,7 @@ fun Toggle_Name_Button(
         modifier = modifier
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor()
     ) {
         ButtonText(text = if (isToggled == true) toggledText else initialText)
     }
@@ -172,7 +205,7 @@ fun Rectangle_Button(
         modifier = modifier
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor()
     ) {
         ButtonText(text = content)
     }
@@ -183,17 +216,17 @@ fun Toggle_Square_Button(
     result: Boolean,
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 20.sp,
+    fontSize: TextUnit = 12.sp,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = { if (content != "X") onClick() },
         modifier = modifier
-            .height(105.dp)
-            .width(105.dp),
+            .height(55.dp)
+            .width(55.dp),
         shape = CustomButtonDefaults.defaultShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (result) CustomButtonDefaults.selectedColor else CustomButtonDefaults.defaultColor,
+            containerColor = if (result) CustomButtonDefaults.grayColor else CustomButtonDefaults.defaultColor,
             contentColor = Color.White
         )
     ) {
@@ -214,7 +247,7 @@ fun Square_Button(
             .height(105.dp)
             .width(216.dp),
         shape = CustomButtonDefaults.defaultShape,
-        colors = getDefaultButtonColors()
+        colors = basicButtonColor()
     ) {
         ButtonText(text = content, fontSize = fontSize)
     }

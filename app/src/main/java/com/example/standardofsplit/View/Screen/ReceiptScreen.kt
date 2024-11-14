@@ -7,18 +7,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.Model.ReceiptClass
 import com.example.standardofsplit.View.Components.*
 import com.example.standardofsplit.ViewModel.Receipt
+import com.example.standardofsplit.ui.theme.DarkGray
 import kotlinx.coroutines.launch
 
 @Composable
@@ -137,16 +141,15 @@ private fun ReceiptList(
     selectedIndices: SelectedIndices,
     receipt: Receipt
 ) {
-    val receiptlistState = rememberLazyListState()
+    val receiptListState = rememberLazyListState()
     val expandedStates = remember { mutableStateListOf<Boolean>() }
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        state = receiptlistState,
+        state = receiptListState,
         modifier = Modifier
             .fillMaxWidth()
-            .height(900.dp)
-            .padding(top = 50.dp),
+            .height(800.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(receipts) { index, receipt ->
@@ -187,7 +190,7 @@ private fun ReceiptList(
                     val newReceipt = ReceiptClass(ReceiptNumber = receipts.size)
                     receipt.addReceipt(newReceipt)
                     coroutineScope.launch {
-                        receiptlistState.animateScrollToItem(receipts.size)
+                        receiptListState.animateScrollToItem(receipts.size)
                     }
                 }
             )
@@ -209,7 +212,10 @@ private fun ReceiptCard(
         modifier = Modifier
             .width(420.dp)
             .wrapContentHeight()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkGray
+        )
     ) {
         Column(
             modifier = Modifier
@@ -252,7 +258,9 @@ private fun ReceiptHeader(
     ) {
         Text(
             text = "$placeName (${totalCost}원)",
-            modifier = Modifier.clickable(onClick = onNameClick)
+            modifier = Modifier.clickable(onClick = onNameClick),
+            color = Color.White,
+            fontSize = 18.sp
         )
 
         Elevated_Button(
@@ -271,7 +279,7 @@ private fun ReceiptDetails(
     onAddClick: () -> Unit
 ) {
     Column {
-        Divider(modifier = Modifier.padding(top = 10.dp))
+        Divider(modifier = Modifier.padding(top = 15.dp))
         ReceiptColumnHeaders()
         Divider()
 
@@ -287,11 +295,11 @@ private fun ReceiptDetails(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 5.dp),
+                .padding(top = 10.dp),
             contentAlignment = Alignment.Center
         ) {
-            Circle_Button(
-                content = "+",
+            Basic_Button2 (
+                content = "상품 추가",
                 onClick = onAddClick
             )
         }
@@ -309,19 +317,25 @@ private fun ReceiptColumnHeaders() {
             text = "상품명",
             modifier = Modifier.weight(1f),
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            fontSize = 18.sp
         )
         Text(
             text = "단가 (수량)",
             modifier = Modifier.weight(2f),
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            fontSize = 18.sp
         )
         Text(
             text = "금액",
             modifier = Modifier.weight(1f),
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            fontSize = 18.sp
         )
     }
 }
@@ -351,17 +365,23 @@ private fun ReceiptItem(
             Text(
                 text = productName,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = 18.sp
             )
             Text(
                 text = "$formattedPrice ($quantity)",
                 modifier = Modifier.weight(2f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = 18.sp
             )
             Text(
                 text = formattedTotalCost,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = 18.sp
             )
         }
     }

@@ -20,8 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.ui.theme.LightPurple
-import com.example.standardofsplit.ui.theme.DarkPurple
+import com.example.standardofsplit.ui.theme.White
 
 @Composable
 fun StartScreen(
@@ -49,7 +48,7 @@ private fun StartScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center)
-            .offset(y = 250.dp),
+            .offset(y = 280.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PersonCountSelector(
@@ -58,9 +57,11 @@ private fun StartScreenContent(
             onDecrement = onDecrement
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         InstructionText()
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(70.dp))
 
         StartButton(onClick = onStart)
     }
@@ -94,7 +95,7 @@ private fun CountText(count: Int) {
         modifier = Modifier.padding(horizontal = 40.dp),
         fontSize = 60.sp,
         fontWeight = FontWeight.Bold,
-        color = LightPurple
+        color = White
     )
 }
 
@@ -103,7 +104,7 @@ private fun InstructionText() {
     Text(
         text = "※ 인원 수를 선택해주세요 ※",
         fontSize = 20.sp,
-        color = DarkPurple
+        color = White
     )
 }
 
