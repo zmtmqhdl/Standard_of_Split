@@ -1,6 +1,5 @@
 package com.example.standardofsplit.View.Screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
+import com.example.standardofsplit.View.Components.showCustomToast
 import com.example.standardofsplit.ViewModel.Start
 import com.example.standardofsplit.ui.theme.White
 
@@ -36,11 +36,7 @@ fun StartScreen(
 
     LaunchedEffect(showToast) {
         if (showToast == true) {
-            Toast.makeText(
-                context,
-                "정산 인원은 최소 2명 이상, 최대 8명까지 설정 가능합니다.",
-                Toast.LENGTH_SHORT
-            ).show()
+            showCustomToast(context, "인원은 2명 이상 8명 이하로 설정 가능합니다.")
             start.resetToast()
         }
     }
@@ -64,7 +60,7 @@ private fun StartScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center)
-            .offset(y = 280.dp),
+            .offset(y = 220.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PersonCountSelector(

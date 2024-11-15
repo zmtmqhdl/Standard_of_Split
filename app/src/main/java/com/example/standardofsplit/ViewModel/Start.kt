@@ -18,18 +18,20 @@ class Start : ViewModel() {
 
     fun increment() {
         val currentCount = _personCount.value ?: 2
-        if (currentCount == MAX_PERSON_COUNT && !isToastShowing) {
+        if (currentCount >= MAX_PERSON_COUNT && !isToastShowing) {
+            isToastShowing = true
             _showToast.value = true
-        } else {
+        } else if (currentCount < MAX_PERSON_COUNT) {
             _personCount.value = currentCount + 1
         }
     }
 
     fun decrement() {
         val currentCount = _personCount.value ?: 2
-        if (currentCount == MIN_PERSON_COUNT && !isToastShowing) {
+        if (currentCount <= MIN_PERSON_COUNT && !isToastShowing) {
+            isToastShowing = true
             _showToast.value = true
-        } else {
+        } else if (currentCount > MIN_PERSON_COUNT) {
             _personCount.value = currentCount - 1
         }
     }
