@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,10 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +30,20 @@ fun StartScreen(
     start: Start,
     onNext: () -> Unit
 ) {
+    val context = LocalContext.current
     val personCount by start.personCount.observeAsState()
+    val showToast by start.showToast.observeAsState()
+
+    LaunchedEffect(showToast) {
+        if (showToast == true) {
+            Toast.makeText(
+                context,
+                "정산 인원은 최소 2명 이상, 최대 8명까지 설정 가능합니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+            start.resetToast()
+        }
+    }
 
     StartScreenContent(
         personCount = personCount ?: 2,
