@@ -17,10 +17,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.View.Components.CustomButtonDefaults.smallFontSize
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ui.theme.Black
+import com.example.standardofsplit.ui.theme.DarkGray
+import com.example.standardofsplit.ui.theme.DarkerGray
 import com.example.standardofsplit.ui.theme.Gray
+import com.example.standardofsplit.ui.theme.Green
+import com.example.standardofsplit.ui.theme.Red
 import com.example.standardofsplit.ui.theme.Yellow
 
 private object CustomButtonDefaults {
@@ -28,6 +31,10 @@ private object CustomButtonDefaults {
     val defaultColor = Black
     val yellowColor = Yellow
     val grayColor = Gray
+    val darkGrayColor = DarkGray
+    val darkerGrayColor = DarkerGray
+    val redColor = Red
+    val greenColor = Green
     val defaultModifier = Modifier.height(53.dp)
     val smallModifier = Modifier.height(33.dp)
     val defaultFontSize = 26.sp
@@ -205,7 +212,10 @@ fun Toggle_Name_Button(
         modifier = modifier
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
-        colors = basicButtonColor()
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isToggled == true) Green else Red,  // ON일 때 초록색, OFF일 때 빨간색
+            contentColor = Color.White
+        )
     ) {
         ButtonText(text = if (isToggled == true) toggledText else initialText)
     }
@@ -223,7 +233,10 @@ fun Rectangle_Button(
         modifier = modifier
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
-        colors = basicButtonColor()
+        colors = ButtonDefaults.buttonColors(
+            containerColor = CustomButtonDefaults.darkGrayColor,
+            contentColor = Color.White
+        )
     ) {
         ButtonText(text = content)
     }
@@ -234,21 +247,32 @@ fun Toggle_Square_Button(
     result: Boolean,
     content: String,
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = 12.sp,
+    fontSize: TextUnit = 18.sp,
     onClick: () -> Unit,
 ) {
+    val isDisabled = content == "X"
+
     Button(
-        onClick = { if (content != "X") onClick() },
-        modifier = modifier
-            .height(55.dp)
-            .width(55.dp),
+        onClick = onClick,
+        modifier = modifier.size(105.dp),
         shape = CustomButtonDefaults.defaultShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (result) CustomButtonDefaults.grayColor else CustomButtonDefaults.defaultColor,
-            contentColor = Color.White
-        )
+        enabled = !isDisabled,
+        colors = ButtonDefaults.run {
+            buttonColors(
+                containerColor = when {
+                    isDisabled -> Color.Black
+                    result -> CustomButtonDefaults.darkerGrayColor
+                    else -> CustomButtonDefaults.grayColor
+                },
+                contentColor = if (isDisabled) Color.Black else Color.White,
+                disabledContainerColor = Color.Black,
+                disabledContentColor = Color.Black
+            )
+        }
     ) {
-        ButtonText(text = content, fontSize = fontSize)
+        if (!isDisabled) {
+            ButtonText(text = content, fontSize = fontSize)
+        }
     }
 }
 

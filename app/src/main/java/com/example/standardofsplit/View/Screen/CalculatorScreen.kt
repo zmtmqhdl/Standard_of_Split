@@ -40,10 +40,13 @@ import com.example.standardofsplit.View.Components.Square_Button
 import com.example.standardofsplit.View.Components.Toggle_Square_Button
 import com.example.standardofsplit.View.Components.Toggle_Name_Button
 import com.example.standardofsplit.View.Components.formatNumberWithCommas
+import com.example.standardofsplit.View.Components.showCustomToast
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ViewModel.Start
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @Composable
@@ -70,8 +73,19 @@ fun CalculatorScreen(
     }
 
     val context = LocalContext.current
-    val showToast by calculator.showToastEvent.observeAsState()
     var isToastShowing by remember { mutableStateOf(false) }
+    val showToast by calculator.showToastEvent.observeAsState()
+
+    fun showToastIfNotShowing(message: String) {
+        if (!isToastShowing) {
+            isToastShowing = true
+            showCustomToast(context, message)
+            MainScope().launch {
+                delay(2000)
+                isToastShowing = false
+            }
+        }
+    }
 
     LaunchedEffect(ps, Key, KeyKey, showToast) {
         for (i in 1..8) {
@@ -86,9 +100,8 @@ fun CalculatorScreen(
             )
         }
 
-        if (showToast == true && !isToastShowing) {
-            isToastShowing = true
-            Toast.makeText(context, "되돌릴 항목이 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+        if (showToast == true) {
+            showToastIfNotShowing("되돌릴 항목이 존재하지 않습니다.")
             calculator._showToastEvent.value = false
         }
     }
@@ -124,7 +137,8 @@ fun CalculatorScreen(
             Text(
                 text = "${receipts[Key].PlaceName} - ${receipts[Key].ProductName[KeyKey]}",
                 modifier = Modifier.fillMaxWidth(),
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = Color.White
             )
             Box(
                 modifier = Modifier
@@ -141,7 +155,8 @@ fun CalculatorScreen(
                     text = "${total}원",
                     textAlign = TextAlign.Right,
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 40.sp
+                    fontSize = 40.sp,
+                    color = Color.White
                 )
             }
         }
@@ -381,15 +396,16 @@ fun CalculatorScreen(
                                 calculator.resetKeyKey()
                                 calculator.incrementKey()
                             }
-                            total =
-                                formatNumberWithCommas((receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
+                            total = formatNumberWithCommas(
+                                (receipts[Key].ProductQuantity[KeyKey].toInt() *
+                                        receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                            )
                         }
                     } else {
-                        // 토스트메세ㅣ지
+                        showToastIfNotShowing("최소 1명 이상을 선택해주세요.")
                     }
                 })
             }
-
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
