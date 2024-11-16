@@ -1,5 +1,7 @@
 package com.example.standardofsplit.View.Screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,15 +18,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.standardofsplit.R
 import com.example.standardofsplit.View.Components.Basic_Button
 import com.example.standardofsplit.View.Components.Circle_Button
 import com.example.standardofsplit.View.Components.showCustomToast
 import com.example.standardofsplit.ViewModel.Start
 import com.example.standardofsplit.ui.theme.White
+import com.example.standardofsplit.ui.theme.Yellow
 
 @Composable
 fun StartScreen(
@@ -36,8 +44,41 @@ fun StartScreen(
 
     LaunchedEffect(showToast) {
         if (showToast == true) {
-            showCustomToast(context, "인원은 2명 이상 8명 이하로 설정 가능합니다.")
+            showCustomToast(context, "인원은 2 ~ 8명으로 설정 가능합니다.")
             start.resetToast()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = -70.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "영수증 아이콘",
+            modifier = Modifier
+                .size(380.dp)
+                .offset(y = -25.dp),
+            colorFilter = ColorFilter.tint(Color.DarkGray),
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "N빵",
+                fontSize = 70.sp,
+                fontWeight = FontWeight.Bold,
+                color = Yellow
+            )
+            Text(
+                text = "의 정석",
+                fontSize = 46.sp,
+                fontWeight = FontWeight.Bold,
+                color = White,
+                modifier = Modifier.padding(top = 24.dp)
+            )
         }
     }
 
