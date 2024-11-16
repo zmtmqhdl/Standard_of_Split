@@ -1,11 +1,13 @@
 package com.example.standardofsplit.View.Screen
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -27,8 +29,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt,
-    onNext: () -> Unit
+    receipt: Receipt, onNext: () -> Unit
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
     val dialogStates = remember { DialogStates() }
@@ -54,6 +55,7 @@ private class DialogStates {
     var addDialog by mutableStateOf(false)
     var nameDialog by mutableStateOf(false)
     var changeDialog by mutableStateOf(false)
+    var newDialog by mutableStateOf(false)
 }
 
 private class SelectedIndices {
@@ -69,15 +71,34 @@ private fun ReceiptContent(
     receipt: Receipt,
     onNext: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        ReceiptList(
-            receipts = receipts,
-            dialogStates = dialogStates,
-            selectedIndices = selectedIndices,
-            receipt = receipt
-        )
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(760.dp)
+            ) {
+                ReceiptList(
+                    receipts = receipts,
+                    dialogStates = dialogStates,
+                    selectedIndices = selectedIndices,
+                    receipt = receipt
+                )
+            }
+        }
 
-        NextButton(onClick = onNext)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 50.dp), contentAlignment = Alignment.Center
+        ) {
+            NextButton(onClick = onNext)
+        }
     }
 }
 
@@ -89,25 +110,23 @@ private fun HandleDialogs(
     receipt: Receipt
 ) {
     if (dialogStates.addDialog) {
-        Receipt_Add_Dialog(
-            onDismiss = { dialogStates.addDialog = false },
+        Receipt_Add_Dialog(onDismiss = { dialogStates.addDialog = false },
             onConfirm = { newproductname, newprice, newquantity ->
                 receipt.updateAddReceipt(
-                    selectedIndices.receiptIndex,
-                    newproductname,
-                    newquantity,
-                    newprice
+                    selectedIndices.receiptIndex, newproductname, newquantity, newprice
                 )
                 dialogStates.addDialog = false
-            }
-        )
+            })
     }
 
     if (dialogStates.nameDialog) {
-        Receipt_Name_Dialog(
-            onDismiss = { dialogStates.nameDialog = false },
+        Receipt_Name_Dialog(onDismiss = { dialogStates.nameDialog = false },
             onConfirm = { newName ->
                 receipt.updateReceiptName(selectedIndices.receiptIndex, newName)
+                dialogStates.nameDialog = false
+            },
+            onDelete = {
+                receipt.deleteReceipt(selectedIndices.receiptIndex)
                 dialogStates.nameDialog = false
             },
             name = receipts[selectedIndices.receiptIndex].PlaceName
@@ -115,8 +134,7 @@ private fun HandleDialogs(
     }
 
     if (dialogStates.changeDialog) {
-        Receipt_Change_Dialog(
-            onDismiss = { dialogStates.changeDialog = false },
+        Receipt_Change_Dialog(onDismiss = { dialogStates.changeDialog = false },
             onConfirm = { newproductname, newprice, newquantity ->
                 receipt.updateReceiptDetail(
                     selectedIndices.receiptIndex,
@@ -127,9 +145,27 @@ private fun HandleDialogs(
                 )
                 dialogStates.changeDialog = false
             },
+            onDelete = {
+                receipt.deleteReceiptItem(
+                    selectedIndices.receiptIndex, selectedIndices.receiptIIndex
+                )
+                dialogStates.changeDialog = false
+            },
             productName = receipts[selectedIndices.receiptIndex].ProductName[selectedIndices.receiptIIndex],
             price = receipts[selectedIndices.receiptIndex].ProductQuantity[selectedIndices.receiptIIndex],
             quantity = receipts[selectedIndices.receiptIndex].ProductPrice[selectedIndices.receiptIIndex]
+        )
+    }
+
+    if (dialogStates.newDialog) {
+        Receipt_New_Dialog(
+            onDismiss = { dialogStates.newDialog = false },
+            onConfirm = { newName ->
+                val newReceipt = ReceiptClass(ReceiptNumber = receipts.size)
+                newReceipt.PlaceName = newName
+                receipt.addReceipt(newReceipt)
+                dialogStates.newDialog = false
+            }
         )
     }
 }
@@ -141,15 +177,12 @@ private fun ReceiptList(
     selectedIndices: SelectedIndices,
     receipt: Receipt
 ) {
-    val receiptListState = rememberLazyListState()
     val expandedStates = remember { mutableStateListOf<Boolean>() }
-    val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        state = receiptListState,
         modifier = Modifier
-            .fillMaxWidth()
-            .height(800.dp),
+            .fillMaxSize()
+            .padding(top = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(receipts) { index, receipt ->
@@ -161,8 +194,7 @@ private fun ReceiptList(
                 }.sum().toString()
             )
 
-            ReceiptCard(
-                receipt = receipt,
+            ReceiptCard(receipt = receipt,
                 expanded = expanded,
                 totalReceiptCost = totalReceiptCost,
                 onNameClick = {
@@ -179,21 +211,21 @@ private fun ReceiptList(
                     selectedIndices.receiptIndex = index
                     selectedIndices.receiptIIndex = receipts[index].ProductPrice.size - 1
                     dialogStates.addDialog = true
-                }
-            )
+                })
         }
 
         item {
-            Basic_Button(
-                content = "영수증 추가",
-                onClick = {
-                    val newReceipt = ReceiptClass(ReceiptNumber = receipts.size)
-                    receipt.addReceipt(newReceipt)
-                    coroutineScope.launch {
-                        receiptListState.animateScrollToItem(receipts.size)
-                    }
-                }
-            )
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                add_Button(
+                    content = "영수증 추가",
+                    onClick = { dialogStates.newDialog = true }
+                )
+            }
         }
     }
 }
@@ -212,7 +244,7 @@ private fun ReceiptCard(
         modifier = Modifier
             .width(420.dp)
             .wrapContentHeight()
-            .padding(8.dp),
+            .padding(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         )
@@ -232,9 +264,7 @@ private fun ReceiptCard(
 
             if (expanded) {
                 ReceiptDetails(
-                    receipt = receipt,
-                    onItemClick = onItemClick,
-                    onAddClick = onAddClick
+                    receipt = receipt, onItemClick = onItemClick, onAddClick = onAddClick
                 )
             }
         }
@@ -264,19 +294,14 @@ private fun ReceiptHeader(
         )
 
         Elevated_Button(
-            content1 = "영수증 접기",
-            content2 = "영수증 펼치기",
-            flag = expanded,
-            onClick = onExpandClick
+            content1 = "영수증 접기", content2 = "영수증 펼치기", flag = expanded, onClick = onExpandClick
         )
     }
 }
 
 @Composable
 private fun ReceiptDetails(
-    receipt: ReceiptClass,
-    onItemClick: (Int) -> Unit,
-    onAddClick: () -> Unit
+    receipt: ReceiptClass, onItemClick: (Int) -> Unit, onAddClick: () -> Unit
 ) {
     Column {
         Divider(modifier = Modifier.padding(top = 15.dp))
@@ -284,12 +309,10 @@ private fun ReceiptDetails(
         Divider()
 
         receipt.ProductPrice.indices.forEach { i ->
-            ReceiptItem(
-                productName = receipt.ProductName[i],
+            ReceiptItem(productName = receipt.ProductName[i],
                 price = receipt.ProductPrice[i],
                 quantity = receipt.ProductQuantity[i],
-                onClick = { onItemClick(i) }
-            )
+                onClick = { onItemClick(i) })
         }
 
         Box(
@@ -298,9 +321,8 @@ private fun ReceiptDetails(
                 .padding(top = 10.dp),
             contentAlignment = Alignment.Center
         ) {
-            Basic_Button2 (
-                content = "상품 추가",
-                onClick = onAddClick
+            Basic_Button2(
+                content = "상품 추가", onClick = onAddClick
             )
         }
     }
@@ -342,10 +364,7 @@ private fun ReceiptColumnHeaders() {
 
 @Composable
 private fun ReceiptItem(
-    productName: String,
-    price: String,
-    quantity: String,
-    onClick: () -> Unit
+    productName: String, price: String, quantity: String, onClick: () -> Unit
 ) {
     val totalCost = (price.toInt() * quantity.toInt()).toString()
     val formattedPrice = formatNumberWithCommas(price)
@@ -389,16 +408,8 @@ private fun ReceiptItem(
 
 @Composable
 private fun NextButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Basic_Button(
-            content = "정산시작쓰",
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            onClick = onClick
-        )
-    }
+    Basic_Button(
+        content = "정산 시작",
+        onClick = onClick,
+    )
 }

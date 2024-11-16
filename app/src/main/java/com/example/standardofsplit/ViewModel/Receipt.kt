@@ -13,9 +13,9 @@ class Receipt : ViewModel() {
         private val DEFAULT_RECEIPT = ReceiptClass(
             ReceiptNumber = 0,
             PlaceName = "영수증",
-            ProductName = mutableListOf("상품"),
-            ProductPrice = mutableListOf("0"),
-            ProductQuantity = mutableListOf("0")
+            ProductName = mutableListOf(),
+            ProductPrice = mutableListOf(),
+            ProductQuantity = mutableListOf()
         )
     }
 
@@ -63,6 +63,25 @@ class Receipt : ViewModel() {
                 ProductQuantity.add(productQuantity)
                 ProductPrice.add(productPrice)
             }
+        }
+    }
+
+    fun deleteReceipt(index: Int) {
+        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
+        if (index in currentList.indices) {
+            currentList.removeAt(index)
+            _receipts.value = currentList
+        }
+    }
+
+    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
+        val currentList = _receipts.value?.toMutableList() ?: mutableListOf()
+        if (receiptIndex in currentList.indices) {
+            val receipt = currentList[receiptIndex]
+            receipt.ProductName.removeAt(itemIndex)
+            receipt.ProductPrice.removeAt(itemIndex)
+            receipt.ProductQuantity.removeAt(itemIndex)
+            _receipts.value = currentList
         }
     }
 }

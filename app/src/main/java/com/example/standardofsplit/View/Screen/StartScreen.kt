@@ -1,20 +1,9 @@
 package com.example.standardofsplit.View.Screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.R
-import com.example.standardofsplit.View.Components.Basic_Button
-import com.example.standardofsplit.View.Components.Circle_Button
-import com.example.standardofsplit.View.Components.showCustomToast
+import com.example.standardofsplit.View.Components.*
 import com.example.standardofsplit.ViewModel.Start
 import com.example.standardofsplit.ui.theme.White
 import com.example.standardofsplit.ui.theme.Yellow
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun StartScreen(
@@ -40,12 +30,16 @@ fun StartScreen(
 ) {
     val context = LocalContext.current
     val personCount by start.personCount.observeAsState()
-    val showToast by start.showToast.observeAsState()
+    var isToastShowing by remember { mutableStateOf(false) }
 
-    LaunchedEffect(showToast) {
-        if (showToast == true) {
+    fun showToastIfNotShowing() {
+        if (!isToastShowing) {
+            isToastShowing = true
             showCustomToast(context, "인원은 2 ~ 8명으로 설정 가능합니다.")
-            start.resetToast()
+            MainScope().launch {
+                delay(2000)
+                isToastShowing = false
+            }
         }
     }
 
@@ -60,7 +54,7 @@ fun StartScreen(
             contentDescription = "영수증 아이콘",
             modifier = Modifier
                 .size(380.dp)
-                .offset(y = -25.dp),
+                .offset(y = -20.dp),
             colorFilter = ColorFilter.tint(Color.DarkGray),
         )
         Row(
@@ -84,8 +78,20 @@ fun StartScreen(
 
     StartScreenContent(
         personCount = personCount ?: 2,
-        onIncrement = { start.increment() },
-        onDecrement = { start.decrement() },
+        onIncrement = { 
+            if (personCount == Start.MAX_PERSON_COUNT) {
+                showToastIfNotShowing()
+            } else {
+                start.increment()
+            }
+        },
+        onDecrement = { 
+            if (personCount == Start.MIN_PERSON_COUNT) {
+                showToastIfNotShowing()
+            } else {
+                start.decrement()
+            }
+        },
         onStart = onNext
     )
 }
@@ -104,17 +110,20 @@ private fun StartScreenContent(
             .offset(y = 220.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PersonCountSelector(
-            count = personCount,
-            onIncrement = onIncrement,
-            onDecrement = onDecrement
-        )
+        Column(
+            modifier = Modifier.offset(y = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PersonCountSelector(
+                count = personCount,
+                onIncrement = onIncrement,
+                onDecrement = onDecrement
+            )
 
-        Spacer(modifier = Modifier.height(10.dp))
+            InstructionText()
 
-        InstructionText()
-
-        Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(70.dp))
+        }
 
         StartButton(onClick = onStart)
     }

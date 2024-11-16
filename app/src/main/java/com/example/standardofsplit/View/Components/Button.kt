@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.standardofsplit.View.Components.CustomButtonDefaults.smallFontSize
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ui.theme.Black
 import com.example.standardofsplit.ui.theme.Gray
@@ -60,7 +61,7 @@ private fun ButtonText(
         textAlign = textAlign,
         color = Color.White,
         fontWeight = fontWeight,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -98,14 +99,13 @@ fun Basic_Button2(
         onClick = onClick,
         modifier = modifier
             .then(CustomButtonDefaults.smallModifier)
-            .width(83.dp),
+            .wrapContentSize(),
         shape = CustomButtonDefaults.defaultShape,
-        colors = basicButtonColor()
+        colors = circleButtonColors(),
     ) {
         ButtonText(
             text = content,
             fontSize = fontSize,
-            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
@@ -115,17 +115,21 @@ fun Small_Button(
     content: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 13.sp,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    color: Color = CustomButtonDefaults.yellowColor  // 기본값으로 Yellow 설정
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(33.dp)
+            .height(38.dp)
             .width(73.dp),
         shape = CustomButtonDefaults.defaultShape,
-        colors = basicButtonColor()
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color,  // 전달받은 color 사용
+            contentColor = Color.White,
+        )
     ) {
-        ButtonText(text = content, fontSize = fontSize)
+        ButtonText(text = content, fontSize = fontSize, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -139,9 +143,23 @@ fun Elevated_Button(
     ElevatedButton(
         onClick = onClick,
         shape = CustomButtonDefaults.defaultShape,
-        colors = basicButtonColor(),
+        colors = circleButtonColors(),
     ) {
-        ButtonText(text = if (flag) content1 else content2)
+        ButtonText(text = if (flag) content1 else content2, fontSize = 18.sp)
+    }
+}
+
+@Composable
+fun add_Button(
+    content: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        shape = CustomButtonDefaults.defaultShape,
+        colors = circleButtonColors(),
+    ) {
+        ButtonText(text = content, fontSize = 18.sp)
     }
 }
 
