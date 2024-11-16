@@ -1,6 +1,5 @@
 package com.example.standardofsplit.View.Screen
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -75,7 +74,6 @@ fun CalculatorScreen(
     var isToastShowing by remember { mutableStateOf(false) }
 
     LaunchedEffect(ps, Key, KeyKey, showToast) {
-        // 버튼 이름과 권한 설정
         for (i in 1..8) {
             buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
             buttonPermission[i.toString()] = if (i <= ps) true else false
@@ -108,7 +106,7 @@ fun CalculatorScreen(
             onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.intValue = index
-                buttonName[selectedIndex.intValue.toString()] = newName // 이 부분 수정
+                buttonName[selectedIndex.intValue.toString()] = newName
                 nameChangeDialog.value = false
             },
             name = currentName,

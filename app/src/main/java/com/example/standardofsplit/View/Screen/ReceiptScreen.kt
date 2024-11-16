@@ -17,6 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import com.example.standardofsplit.Model.ReceiptClass
 import com.example.standardofsplit.View.Components.*
 import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ui.theme.DarkGray
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -71,6 +73,8 @@ private fun ReceiptContent(
     receipt: Receipt,
     onNext: () -> Unit
 ) {
+    val context = LocalContext.current
+    var isToastShowing by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -97,7 +101,23 @@ private fun ReceiptContent(
                 .fillMaxWidth()
                 .padding(bottom = 50.dp), contentAlignment = Alignment.Center
         ) {
-            NextButton(onClick = onNext)
+            NextButton(
+                onClick = {
+                    if (receipt.check()) {
+                        onNext()
+                    } else if (!isToastShowing) {
+                        isToastShowing = true
+                        showCustomToast(
+                            context = context,
+                            message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상  필요합니다."
+                        )
+                        MainScope().launch {
+                            kotlinx.coroutines.delay(3000)
+                            isToastShowing = false
+                        }
+                    }
+                }
+            )
         }
     }
 }

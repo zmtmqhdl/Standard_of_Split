@@ -51,7 +51,6 @@ class Calculator : ViewModel() {
 
             _personPay.value = updatedPersonPay
 
-            // 스택 업데이트
             _stack.value = (_stack.value ?: mutableListOf()).apply {
                 add(updatedPersonPay.toMutableMap())
             }
@@ -110,7 +109,6 @@ class Calculator : ViewModel() {
         }
     }
 
-    // 새로운 LiveData 추가
     private val _updateTotalEvent = MutableLiveData<Boolean>()
     val updateTotalEvent: LiveData<Boolean> = _updateTotalEvent
 

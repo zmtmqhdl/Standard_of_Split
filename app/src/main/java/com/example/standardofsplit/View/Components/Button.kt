@@ -116,7 +116,7 @@ fun Small_Button(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 13.sp,
     onClick: () -> Unit,
-    color: Color = CustomButtonDefaults.yellowColor  // 기본값으로 Yellow 설정
+    color: Color = CustomButtonDefaults.yellowColor
 ) {
     Button(
         onClick = onClick,
@@ -125,7 +125,7 @@ fun Small_Button(
             .width(73.dp),
         shape = CustomButtonDefaults.defaultShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = color,  // 전달받은 color 사용
+            containerColor = color,
             contentColor = Color.White,
         )
     ) {

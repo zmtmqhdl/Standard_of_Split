@@ -84,4 +84,22 @@ class Receipt : ViewModel() {
             _receipts.value = currentList
         }
     }
+
+    fun check(): Boolean {
+        val currentList = _receipts.value?.toMutableList() ?: return false
+        val hasValidReceipt = currentList.any { receipt ->
+            receipt.ProductName.isNotEmpty()
+        }
+        if (!hasValidReceipt) {
+            return false
+        }
+        val emptyReceiptIndices = currentList.indices
+            .filter { index -> currentList[index].ProductName.isEmpty() }
+            .sortedDescending()
+        emptyReceiptIndices.forEach { index ->
+            deleteReceipt(index)
+        }
+        return true
+    }
+
 }
