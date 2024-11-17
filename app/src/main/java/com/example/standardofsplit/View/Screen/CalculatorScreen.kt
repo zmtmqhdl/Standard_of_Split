@@ -95,6 +95,10 @@ fun CalculatorScreen(
         if (receipts.isNotEmpty() && Key < receipts.size) {
             calculator.updateCurrentReceiptSize(receipts[Key].ProductPrice.size)
             
+            if (Key > 0) {
+                calculator.updatePreviousReceiptSize(receipts[Key - 1].ProductPrice.size)
+            }
+            
             if (KeyKey < receipts[Key].ProductPrice.size) {
                 total = formatNumberWithCommas(
                     (receipts[Key].ProductQuantity[KeyKey].toInt() *
@@ -114,6 +118,8 @@ fun CalculatorScreen(
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
     val buttonStates by calculator.buttonStates.observeAsState(emptyList())
+
+    val isLastProduct = remember { mutableStateOf(false) }
 
     if (nameChangeDialog.value) {
         val currentName = buttonName[selectedIndex.intValue.toString()] ?: ""
@@ -197,37 +203,57 @@ fun CalculatorScreen(
                     content = buttonName["1"] ?: "X",
                     result = buttonStates[1],
                     onClick = {
-                        if (isToggled == true && buttonPermission["1"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 1
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(1)
-                            if (1 !in payList) {
-                                payList.add(1)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["1"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 1
                             } else {
-                                payList.remove(1)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["1"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 1
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(1)
+                                if (1 !in payList) {
+                                    payList.add(1)
+                                } else {
+                                    payList.remove(1)
+                                }
                             }
                         }
-                    })
+                    }
+                )
 
                 Toggle_Square_Button(
                     content = buttonName["2"] ?: "X",
                     result = buttonStates[2],
                     onClick = {
-                        if (isToggled == true && buttonPermission["2"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 2
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(2)
-                            if (2 !in payList) {
-                                payList.add(2)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["2"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 2
                             } else {
-                                payList.remove(2)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["2"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 2
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(2)
+                                if (2 !in payList) {
+                                    payList.add(2)
+                                } else {
+                                    payList.remove(2)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -250,36 +276,56 @@ fun CalculatorScreen(
                     content = buttonName["3"] ?: "X",
                     result = buttonStates[3],
                     onClick = {
-                        if (isToggled == true && buttonPermission["3"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 3
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(3)
-                            if (3 !in payList) {
-                                payList.add(3)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["3"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 3
                             } else {
-                                payList.remove(3)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["3"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 3
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(3)
+                                if (3 !in payList) {
+                                    payList.add(3)
+                                } else {
+                                    payList.remove(3)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Toggle_Square_Button(
                     content = buttonName["4"] ?: "X",
                     result = buttonStates[4],
                     onClick = {
-                        if (isToggled == true && buttonPermission["4"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 4
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(4)
-                            if (4 !in payList) {
-                                payList.add(4)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["4"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 4
                             } else {
-                                payList.remove(4)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["4"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 4
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(4)
+                                if (4 !in payList) {
+                                    payList.add(4)
+                                } else {
+                                    payList.remove(4)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -304,52 +350,79 @@ fun CalculatorScreen(
                     content = buttonName["5"] ?: "X",
                     result = buttonStates[5],
                     onClick = {
-                        if (isToggled == true && buttonPermission["5"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 5
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(5)
-                            if (5 !in payList) {
-                                payList.add(5)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["5"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 5
                             } else {
-                                payList.remove(5)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["5"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 5
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(5)
+                                if (5 !in payList) {
+                                    payList.add(5)
+                                } else {
+                                    payList.remove(5)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Toggle_Square_Button(
                     content = buttonName["6"] ?: "X",
                     result = buttonStates[6],
                     onClick = {
-                        if (isToggled == true && buttonPermission["6"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 6
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(6)
-                            if (6 !in payList) {
-                                payList.add(6)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["6"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 6
                             } else {
-                                payList.remove(6)
+                                showToastIfNotShowing("정산이 완료되었���니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["6"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 6
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(6)
+                                if (6 !in payList) {
+                                    payList.add(6)
+                                } else {
+                                    payList.remove(6)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Box(
                     modifier = Modifier
                         .width(216.dp)
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Rectangle_Button(content = "전체 선택", onClick = {
-                        for (i in 1..8) {
-                            if (i <= ps) {
-                                payList.add(i)
-                                if (!buttonStates[i]) {
-                                    calculator.toggleButtonState(i)
+                    Rectangle_Button(
+                        content = "전체 선택", 
+                        onClick = {
+                            if (isLastProduct.value) {
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            } else {
+                                for (i in 1..8) {
+                                    if (i <= ps) {
+                                        payList.add(i)
+                                        if (!buttonStates[i]) {
+                                            calculator.toggleButtonState(i)
+                                        }
+                                    }
                                 }
                             }
                         }
-                    })
+                    )
                 }
             }
 
@@ -365,64 +438,93 @@ fun CalculatorScreen(
                     content = buttonName["7"] ?: "X",
                     result = buttonStates[7],
                     onClick = {
-                        if (isToggled == true && buttonPermission["7"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 7
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(7)
-                            if (7 !in payList) {
-                                payList.add(7)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["7"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 7
                             } else {
-                                payList.remove(7)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["7"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 7
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(7)
+                                if (7 !in payList) {
+                                    payList.add(7)
+                                } else {
+                                    payList.remove(7)
+                                }
                             }
                         }
-                    })
+                    }
+                )
                 Toggle_Square_Button(
                     content = buttonName["8"] ?: "X",
                     result = buttonStates[8],
                     onClick = {
-                        if (isToggled == true && buttonPermission["8"] == true) {
-                            nameChangeDialog.value = true
-                            selectedIndex.intValue = 8
-                        }
-                        if (isToggled == false) {
-                            calculator.toggleButtonState(8)
-                            if (8 !in payList) {
-                                payList.add(8)
+                        if (isLastProduct.value) {
+                            if (isToggled == true && buttonPermission["8"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 8
                             } else {
-                                payList.remove(8)
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                            }
+                        } else {
+                            if (isToggled == true && buttonPermission["8"] == true) {
+                                nameChangeDialog.value = true
+                                selectedIndex.intValue = 8
+                            }
+                            if (isToggled == false) {
+                                calculator.toggleButtonState(8)
+                                if (8 !in payList) {
+                                    payList.add(8)
+                                } else {
+                                    payList.remove(8)
+                                }
                             }
                         }
-                    })
+                    }
+                )
 
-                Square_Button(content = "적용", onClick = {
-                    if (payList.isNotEmpty()) {
-                        calculator.resetButtonStates()
-                        calculator.updatePersonPay(
-                            payList,
-                            receipts[Key].PlaceName,
-                            receipts[Key].ProductName[KeyKey],
-                            receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()
-                        )
-                        payList.clear()
-                        if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
+                Square_Button(
+                    content = if (isLastProduct.value) "정산 확인" else "적용",
+                    onClick = {
+                        if (isLastProduct.value) {
                             onNext()
                         } else {
-                            calculator.incrementKeyKey()
-                            if (KeyKey >= receipts[Key].ProductPrice.size) {
-                                calculator.resetKeyKey()
-                                calculator.incrementKey()
+                            if (payList.isNotEmpty()) {
+                                calculator.resetButtonStates()
+                                calculator.updatePersonPay(
+                                    payList,
+                                    receipts[Key].PlaceName,
+                                    receipts[Key].ProductName[KeyKey],
+                                    receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()
+                                )
+                                payList.clear()
+                                
+                                if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
+                                    isLastProduct.value = true
+                                    showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                                } else {
+                                    calculator.incrementKeyKey()
+                                    if (KeyKey >= receipts[Key].ProductPrice.size) {
+                                        calculator.resetKeyKey()
+                                        calculator.incrementKey()
+                                    }
+                                    total = formatNumberWithCommas(
+                                        (receipts[Key].ProductQuantity[KeyKey].toInt() *
+                                                receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                                    )
+                                }
+                            } else {
+                                showToastIfNotShowing("최소 1명 이상을 선택해주세요.")
                             }
-                            total = formatNumberWithCommas(
-                                (receipts[Key].ProductQuantity[KeyKey].toInt() *
-                                        receipts[Key].ProductPrice[KeyKey].toInt()).toString()
-                            )
                         }
-                    } else {
-                        showToastIfNotShowing("최소 1명 이상을 선택해주세요.")
                     }
-                })
+                )
             }
             Spacer(modifier = Modifier.height(30.dp))
         }

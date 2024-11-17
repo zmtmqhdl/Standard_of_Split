@@ -99,41 +99,42 @@ class Calculator : ViewModel() {
         _currentReceiptSize.value = size
     }
 
+    private val _previousReceiptSize = MutableLiveData<Int>(0)
+    val previousReceiptSize: LiveData<Int> = _previousReceiptSize
+
+    fun updatePreviousReceiptSize(size: Int) {
+        _previousReceiptSize.value = size
+    }
+
     fun reDo() {
         val currentStack = _stack.value ?: mutableListOf()
         if (currentStack.isNotEmpty()) {
             val currentKey = _Key.value ?: 0
             val currentKeyKey = _KeyKey.value ?: 0
-            val previousReceiptSize = _currentReceiptSize.value?.minus(1) ?: 0
             
             if (currentKey == 0 && currentKeyKey == 0) {
                 _showToastEvent.value = true
                 return
             }
             
-            val nextKeyKey = if (currentKeyKey == 0) {
-                if (currentKey > 0) previousReceiptSize else 0
-            } else {
-                currentKeyKey - 1
-            }
-            
-            if (currentKeyKey == 0) {
-                if (currentKey > 0) {
-                    decrementKey()
-                    _KeyKey.value = previousReceiptSize
-                } else {
-                    _KeyKey.value = 0
-                    _showToastEvent.value = true
-                    return
-                }
-            } else {
-                _KeyKey.value = nextKeyKey
-            }
-            
             try {
                 val lastElement = currentStack.removeAt(currentStack.size - 1)
                 _personPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
                 _stack.value = currentStack
+                
+                if (currentKeyKey == 0) {
+                    if (currentKey > 0) {
+                        val prevSize = _previousReceiptSize.value ?: 0
+                        decrementKey()
+                        _KeyKey.value = prevSize - 1
+                    } else {
+                        _KeyKey.value = 0
+                        _showToastEvent.value = true
+                    }
+                } else {
+                    decrementKeyKey()
+                }
+                
             } catch (e: Exception) {
                 e.printStackTrace()
                 _showToastEvent.value = true
