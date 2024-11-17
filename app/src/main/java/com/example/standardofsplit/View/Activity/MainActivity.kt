@@ -69,7 +69,10 @@ private fun AppNavigation(viewModels: Map<String, Any>) {
             )
         }
         composable(Screen.Result.route) {
-            ResultScreen()
+            ResultScreen(
+                start = viewModels["start"] as Start,
+                calculator = viewModels["calculator"] as Calculator,
+            )
         }
     }
 }
