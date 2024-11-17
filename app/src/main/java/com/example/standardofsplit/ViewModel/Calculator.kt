@@ -92,25 +92,56 @@ class Calculator : ViewModel() {
     val _showToastEvent = MutableLiveData<Boolean>()
     val showToastEvent: LiveData<Boolean> = _showToastEvent
 
+    private val _currentReceiptSize = MutableLiveData<Int>(0)
+    val currentReceiptSize: LiveData<Int> = _currentReceiptSize
+
+    fun updateCurrentReceiptSize(size: Int) {
+        _currentReceiptSize.value = size
+    }
+
     fun reDo() {
         val currentStack = _stack.value ?: mutableListOf()
         if (currentStack.isNotEmpty()) {
-            decrementKeyKey()
-            if (_KeyKey.value == -1) {
-                decrementKey()
-                _KeyKey.value = 0
+            val currentKey = _Key.value ?: 0
+            val currentKeyKey = _KeyKey.value ?: 0
+            val previousReceiptSize = _currentReceiptSize.value?.minus(1) ?: 0
+            
+            if (currentKey == 0 && currentKeyKey == 0) {
+                _showToastEvent.value = true
+                return
             }
-            val lastElement = currentStack.removeAt(currentStack.size - 1)
-            _personPay.value =
-                lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
-            _stack.value = currentStack
+            
+            val nextKeyKey = if (currentKeyKey == 0) {
+                if (currentKey > 0) previousReceiptSize else 0
+            } else {
+                currentKeyKey - 1
+            }
+            
+            if (currentKeyKey == 0) {
+                if (currentKey > 0) {
+                    decrementKey()
+                    _KeyKey.value = previousReceiptSize
+                } else {
+                    _KeyKey.value = 0
+                    _showToastEvent.value = true
+                    return
+                }
+            } else {
+                _KeyKey.value = nextKeyKey
+            }
+            
+            try {
+                val lastElement = currentStack.removeAt(currentStack.size - 1)
+                _personPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
+                _stack.value = currentStack
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _showToastEvent.value = true
+            }
         } else {
             _showToastEvent.value = true
         }
     }
-
-    private val _updateTotalEvent = MutableLiveData<Boolean>()
-    val updateTotalEvent: LiveData<Boolean> = _updateTotalEvent
 
     private val _buttonNames = MutableLiveData<Map<String, String>>(
         (1..8).associate { it.toString() to "인원$it" }
@@ -147,18 +178,14 @@ class Calculator : ViewModel() {
         
         for (i in 1..8) {
             val key = i.toString()
-            // 권한이 false인 경우 이름을 "X"로 설정
             if (currentPermissions[key] == false) {
                 currentNames[key] = "X"
             } else {
-                // 권한이 true이고 현재 이름이 "X"인 경우에만 기본 이름으로 설정
                 if (currentNames[key] == "X") {
                     currentNames[key] = "인원$i"
                 }
             }
         }
-        
         _buttonNames.value = currentNames
     }
-
 }

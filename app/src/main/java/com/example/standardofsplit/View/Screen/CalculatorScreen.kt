@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -87,17 +88,21 @@ fun CalculatorScreen(
         }
     }
 
-    LaunchedEffect(ps, Key, KeyKey, showToast) {
+    LaunchedEffect(ps, Key, KeyKey, showToast, receipts) {
         calculator.updateButtonPermissions(ps)
         calculator.updateButtonNamesBasedOnPermissions()
-
-        if (receipts.isNotEmpty() && Key < receipts.size && KeyKey < receipts[Key].ProductPrice.size) {
-            total = formatNumberWithCommas(
-                (receipts[Key].ProductQuantity[KeyKey].toInt() *
-                        receipts[Key].ProductPrice[KeyKey].toInt()).toString()
-            )
+        
+        if (receipts.isNotEmpty() && Key < receipts.size) {
+            calculator.updateCurrentReceiptSize(receipts[Key].ProductPrice.size)
+            
+            if (KeyKey < receipts[Key].ProductPrice.size) {
+                total = formatNumberWithCommas(
+                    (receipts[Key].ProductQuantity[KeyKey].toInt() *
+                            receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                )
+            }
         }
-
+        
         if (showToast == true) {
             showToastIfNotShowing("되돌릴 항목이 존재하지 않습니다.")
             calculator._showToastEvent.value = false
@@ -129,7 +134,7 @@ fun CalculatorScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp),
+                .height(300.dp).offset(y = 60.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
