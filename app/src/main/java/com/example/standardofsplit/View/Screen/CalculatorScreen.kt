@@ -405,7 +405,7 @@ fun CalculatorScreen(
                             onNext()
                         } else {
                             calculator.incrementKeyKey()
-                            if (KeyKey >= receipts[Key].ProductPrice.size - 1) {
+                            if (KeyKey >= receipts[Key].ProductPrice.size) {
                                 calculator.resetKeyKey()
                                 calculator.incrementKey()
                             }
