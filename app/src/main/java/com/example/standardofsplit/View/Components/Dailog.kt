@@ -1,15 +1,20 @@
 package com.example.standardofsplit.View.Components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -147,6 +152,94 @@ fun formatNumberWithCommas(number: String): String {
         String.format("%,d", longNumber)
     } catch (e: NumberFormatException) {
         number
+    }
+}
+
+@Composable
+fun Reset_Confirm_Dialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = DialogDefaults.shape,
+            color = DialogDefaults.backgroundColor,
+            modifier = DialogDefaults.dialogSize
+        ) {
+            Column(
+                modifier = Modifier.width(280.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "정산을 다시 하시겠습니까?\n정산 내역이 초기화됩니다.",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .drawBehind {
+                                drawLine(
+                                    color = Color.White,
+                                    start = Offset(size.width, 0f),
+                                    end = Offset(size.width, size.height),
+                                    strokeWidth = 10f
+                                )
+                                drawLine(
+                                    color = Color.White,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(size.width, 0f),
+                                    strokeWidth = 10f
+                                )
+                            },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.DarkGray
+                        ),
+                        shape = RoundedCornerShape(0.dp)
+                    ) {
+                        Text("아니요", color = Color.White)
+                    }
+                    Button(
+                        onClick = onConfirm,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .drawBehind {
+                                drawLine(
+                                    color = Color.White,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(0f, size.height),
+                                    strokeWidth = 10f
+                                )
+                                drawLine(
+                                    color = Color.White,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(size.width, 0f),
+                                    strokeWidth = 10f
+                                )
+                            },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.DarkGray
+                        ),
+                        shape = RoundedCornerShape(0.dp)
+                    ) {
+                        Text("네", color = Color.White)
+                    }
+                }
+            }
+        }
     }
 }
 

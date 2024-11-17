@@ -132,32 +132,47 @@ fun CalculatorScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "${receipts[Key].PlaceName} - ${receipts[Key].ProductName[KeyKey]}",
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 20.sp,
-                color = Color.White
-            )
-            Box(
-                modifier = Modifier
-                    .border(
-                        width = 2.dp, color = Color(0xFFDCD0FF), shape = RoundedCornerShape(10.dp)
-                    )
-                    .clip(RoundedCornerShape(10.dp))
-                    .padding(16.dp)
-                    .height(50.dp)
-                    .width(350.dp),
-                contentAlignment = Alignment.Center
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "${total}원",
-                    textAlign = TextAlign.Right,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 40.sp,
-                    color = Color.White
+                    text = receipts[Key].PlaceName,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
+
+                Text(
+                    text = receipts[Key].ProductName[KeyKey],
+                    fontSize = 48.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = 2.dp, color = Color(0xFFDCD0FF), shape = RoundedCornerShape(10.dp)
+                        )
+                        .clip(RoundedCornerShape(10.dp))
+                        .padding(16.dp)
+                        .height(50.dp)
+                        .width(350.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "${total}원",
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 40.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
 

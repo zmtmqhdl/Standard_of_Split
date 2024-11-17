@@ -16,7 +16,7 @@ fun showCustomToast(context: Context, message: String) {
         val text = TextView(context).apply {
             setText(message)
             setTextColor(Color.WHITE)
-            textSize = 14f
+            textSize = 16f
             setPadding(25, 16, 25, 16)
             background = ContextCompat.getDrawable(context, R.drawable.toast_background)
         }

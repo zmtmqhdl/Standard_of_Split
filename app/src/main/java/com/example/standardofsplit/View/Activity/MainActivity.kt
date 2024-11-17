@@ -72,6 +72,7 @@ private fun AppNavigation(viewModels: Map<String, Any>) {
             ResultScreen(
                 start = viewModels["start"] as Start,
                 calculator = viewModels["calculator"] as Calculator,
+                onBack = { navController.navigate(Screen.Calculator.route) }
             )
         }
     }

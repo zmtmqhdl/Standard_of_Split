@@ -112,4 +112,33 @@ class Calculator : ViewModel() {
     private val _updateTotalEvent = MutableLiveData<Boolean>()
     val updateTotalEvent: LiveData<Boolean> = _updateTotalEvent
 
+    private val _buttonNames = MutableLiveData<Map<String, String>>(
+        (1..8).associate { it.toString() to "인원$it" }
+    )
+    val buttonNames: LiveData<Map<String, String>> = _buttonNames
+
+    fun updateButtonName(index: String, newName: String) {
+        _buttonNames.value = _buttonNames.value?.toMutableMap()?.apply {
+            this[index] = newName
+        }
+    }
+
+    private val _buttonPermissions = MutableLiveData<Map<String, Boolean>>(
+        (1..8).associate { it.toString() to false }
+    )
+    val buttonPermissions: LiveData<Map<String, Boolean>> = _buttonPermissions
+
+    fun updateButtonPermissions(personCount: Int) {
+        _buttonPermissions.value = (1..8).associate { i ->
+            i.toString() to (i <= personCount)
+        }
+    }
+
+    fun resetPersonPay() {
+        _personPay.value = initialMap
+        _stack.value = mutableListOf()
+        _Key.value = 0
+        _KeyKey.value = 0
+    }
+
 }

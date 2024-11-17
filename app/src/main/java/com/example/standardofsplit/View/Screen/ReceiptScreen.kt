@@ -109,7 +109,7 @@ private fun ReceiptContent(
                         isToastShowing = true
                         showCustomToast(
                             context = context,
-                            message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상  필요합니다."
+                            message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다."
                         )
                         MainScope().launch {
                             kotlinx.coroutines.delay(3000)
