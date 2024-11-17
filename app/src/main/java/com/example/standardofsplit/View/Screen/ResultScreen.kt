@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.View.Components.Basic_Button
+import com.example.standardofsplit.View.Components.Receipt_Detail_Dialog
 import com.example.standardofsplit.View.Components.Reset_Confirm_Dialog
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Start
@@ -34,6 +35,8 @@ fun ResultScreen(
     onBack: () -> Unit
 ) {
     var showResetDialog by remember { mutableStateOf(false) }
+    var showDetailDialog by remember { mutableStateOf(false) }
+    var selectedPerson by remember { mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null) }
     
     BackHandler {
         showResetDialog = true
@@ -57,13 +60,12 @@ fun ResultScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(760.dp)
-                    .padding(top = 15.dp)
+                    .padding(top = 10.dp)
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -79,7 +81,15 @@ fun ResultScreen(
                                 name = if (leftIndex < personCount) personTotals[leftIndex].first else "",
                                 amount = if (leftIndex < personCount) personTotals[leftIndex].second else 0,
                                 isActive = leftIndex < personCount,
-                                onClick = { /* 나중에 기능 추가 */ }
+                                onClick = { 
+                                    if (leftIndex < personCount) {
+                                        selectedPerson = Pair(
+                                            personTotals[leftIndex].first,
+                                            personPayMap[leftIndex + 1] ?: emptyMap()
+                                        )
+                                        showDetailDialog = true
+                                    }
+                                }
                             )
                             
                             val rightIndex = 2 * i + 1
@@ -87,7 +97,15 @@ fun ResultScreen(
                                 name = if (rightIndex < personCount) personTotals[rightIndex].first else "",
                                 amount = if (rightIndex < personCount) personTotals[rightIndex].second else 0,
                                 isActive = rightIndex < personCount,
-                                onClick = { /* 나중에 기능 추가 */ }
+                                onClick = {
+                                    if (leftIndex < personCount) {
+                                        selectedPerson = Pair(
+                                            personTotals[leftIndex].first,
+                                            personPayMap[leftIndex + 1] ?: emptyMap()
+                                        )
+                                        showDetailDialog = true
+                                    }
+                                }
                             )
                         }
                     }
@@ -118,6 +136,14 @@ fun ResultScreen(
             }
         )
     }
+
+    if (showDetailDialog && selectedPerson != null) {
+        Receipt_Detail_Dialog(
+            onDismiss = { showDetailDialog = false },
+            name = selectedPerson!!.first,
+            receiptDetails = selectedPerson!!.second
+        )
+    }
 }
 
 @Composable
@@ -139,10 +165,9 @@ private fun ResultCard(
     ) {
         if (isActive) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
                     text = name,
@@ -152,10 +177,10 @@ private fun ResultCard(
                 )
                 Text(
                     text = "${formatNumberWithCommas(amount)}원",
-                    fontSize = 20.sp,
-                    color = White,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontSize = 24.sp,
+                    color = White
                 )
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

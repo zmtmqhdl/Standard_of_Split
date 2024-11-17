@@ -1,8 +1,10 @@
 package com.example.standardofsplit.View.Components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,7 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.standardofsplit.ui.theme.Gray
 import com.example.standardofsplit.ui.theme.Red
+import com.example.standardofsplit.ui.theme.White
+import com.example.standardofsplit.ui.theme.Yellow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -195,13 +200,13 @@ fun Reset_Confirm_Dialog(
                                     color = Color.White,
                                     start = Offset(size.width, 0f),
                                     end = Offset(size.width, size.height),
-                                    strokeWidth = 10f
+                                    strokeWidth = 7f
                                 )
                                 drawLine(
                                     color = Color.White,
                                     start = Offset(0f, 0f),
                                     end = Offset(size.width, 0f),
-                                    strokeWidth = 10f
+                                    strokeWidth = 7f
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(
@@ -379,5 +384,113 @@ fun Button_Name_Dialog(
             onDismiss = onDismiss,
             onConfirm = { onConfirm(index, newName) }
         )
+    }
+}
+
+@Composable
+fun Receipt_Detail_Dialog(
+    onDismiss: () -> Unit,
+    name: String,
+    receiptDetails: Map<String, Map<String, Int>>
+) {
+    val total = receiptDetails.values.sumOf { products -> 
+        products.values.sum() 
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = DialogDefaults.shape,
+            color = DialogDefaults.backgroundColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(600.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(25.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = name,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Yellow,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .width(500.dp)
+                        .background(Gray, shape = RoundedCornerShape(10.dp))
+                        .padding(10.dp)
+                ) {
+                    val entries = receiptDetails.entries.toList()
+                    entries.forEachIndexed { index, (placeName, products) ->
+                        item {
+                            Text(
+                                text = placeName,
+                                fontSize = 24.sp,
+                                color = White,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            products.forEach { (productName, amount) ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 16.dp, bottom = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = productName,
+                                        fontSize = 16.sp,
+                                        color = White
+                                    )
+                                    Text(
+                                        text = "${formatNumberWithCommas(amount.toString())}원",
+                                        fontSize = 16.sp,
+                                        color = White
+                                    )
+                                }
+                            }
+                            
+                            if (index < entries.size - 1) {
+                                Divider(
+                                    color = White,
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Text(
+                        text = "총합: ${formatNumberWithCommas(total.toString())}원",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = White
+                    )
+                }
+
+                Small_Button(
+                    content = "확인",
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .width(240.dp)
+                        .height(60.dp),  // 높이 증가
+                    fontSize = 20.sp  // 글씨 크기 증가
+                )
+            }
+        }
     }
 }
