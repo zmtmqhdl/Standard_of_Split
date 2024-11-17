@@ -141,4 +141,24 @@ class Calculator : ViewModel() {
         _KeyKey.value = 0
     }
 
+    fun updateButtonNamesBasedOnPermissions() {
+        val currentPermissions = _buttonPermissions.value ?: return
+        val currentNames = _buttonNames.value?.toMutableMap() ?: return
+        
+        for (i in 1..8) {
+            val key = i.toString()
+            // 권한이 false인 경우 이름을 "X"로 설정
+            if (currentPermissions[key] == false) {
+                currentNames[key] = "X"
+            } else {
+                // 권한이 true이고 현재 이름이 "X"인 경우에만 기본 이름으로 설정
+                if (currentNames[key] == "X") {
+                    currentNames[key] = "인원$i"
+                }
+            }
+        }
+        
+        _buttonNames.value = currentNames
+    }
+
 }

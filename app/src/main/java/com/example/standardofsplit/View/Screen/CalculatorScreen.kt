@@ -59,8 +59,8 @@ fun CalculatorScreen(
 
     val ps by start.personCount.observeAsState(2)
 
-    val buttonPermission = remember { mutableStateMapOf<String, Boolean>() }
-    val buttonName = remember { mutableStateMapOf<String, String>() }
+    val buttonPermission by calculator.buttonPermissions.observeAsState(emptyMap())
+    val buttonName by calculator.buttonNames.observeAsState(emptyMap())
 
     val receipts by receipt.receipts.observeAsState(emptyList<ReceiptClass>())
 
@@ -88,10 +88,8 @@ fun CalculatorScreen(
     }
 
     LaunchedEffect(ps, Key, KeyKey, showToast) {
-        for (i in 1..8) {
-            buttonName[i.toString()] = if (i <= ps) "인원$i" else "X"
-            buttonPermission[i.toString()] = if (i <= ps) true else false
-        }
+        calculator.updateButtonPermissions(ps)
+        calculator.updateButtonNamesBasedOnPermissions()
 
         if (receipts.isNotEmpty() && Key < receipts.size && KeyKey < receipts[Key].ProductPrice.size) {
             total = formatNumberWithCommas(
@@ -119,7 +117,7 @@ fun CalculatorScreen(
             onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.intValue = index
-                buttonName[selectedIndex.intValue.toString()] = newName
+                calculator.updateButtonName(selectedIndex.intValue.toString(), newName)
                 nameChangeDialog.value = false
             },
             name = currentName,
