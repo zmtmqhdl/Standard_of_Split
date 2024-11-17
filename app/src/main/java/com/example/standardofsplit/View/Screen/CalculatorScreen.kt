@@ -1,6 +1,7 @@
 package com.example.standardofsplit.View.Screen
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,7 +53,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun CalculatorScreen(
-    calculator: Calculator, start: Start, receipt: Receipt, onNext: () -> Unit
+    calculator: Calculator, start: Start, receipt: Receipt, onNext: () -> Unit, onBack: () -> Unit
 ) {
 
     val isToggled by calculator.changeMode.observeAsState()
@@ -86,6 +87,10 @@ fun CalculatorScreen(
                 isToastShowing = false
             }
         }
+    }
+
+    BackHandler {
+        onBack()
     }
 
     LaunchedEffect(ps, Key, KeyKey, showToast, receipts) {

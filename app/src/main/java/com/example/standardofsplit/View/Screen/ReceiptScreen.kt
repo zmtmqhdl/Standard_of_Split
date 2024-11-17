@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,11 +32,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt, onNext: () -> Unit
+    receipt: Receipt, onNext: () -> Unit, onBack: () -> Unit
 ) {
     val receipts = receipt.receipts.observeAsState(initial = emptyList())
     val dialogStates = remember { DialogStates() }
     val selectedIndices = remember { SelectedIndices() }
+
+    BackHandler {
+        onBack()
+    }
 
     ReceiptContent(
         receipts = receipts.value,

@@ -57,7 +57,8 @@ private fun AppNavigation(viewModels: Map<String, Any>) {
         composable(Screen.Receipt.route) {
             ReceiptScreen(
                 receipt = viewModels["receipt"] as Receipt,
-                onNext = { navController.navigate(Screen.Calculator.route) }
+                onNext = { navController.navigate(Screen.Calculator.route) },
+                onBack = { navController.navigate(Screen.Start.route) }
             )
         }
         composable(Screen.Calculator.route) {
@@ -65,7 +66,8 @@ private fun AppNavigation(viewModels: Map<String, Any>) {
                 calculator = viewModels["calculator"] as Calculator,
                 receipt = viewModels["receipt"] as Receipt,
                 start = viewModels["start"] as Start,
-                onNext = { navController.navigate(Screen.Result.route) }
+                onNext = { navController.navigate(Screen.Result.route) },
+                onBack = { navController.navigate(Screen.Receipt.route) }
             )
         }
         composable(Screen.Result.route) {
