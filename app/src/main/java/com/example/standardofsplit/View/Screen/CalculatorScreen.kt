@@ -121,6 +121,16 @@ fun CalculatorScreen(
 
     val isLastProduct = remember { mutableStateOf(false) }
 
+    val isResetFromResult by calculator.isResetFromResult.observeAsState(false)
+
+    LaunchedEffect(Key, KeyKey, isResetFromResult) {
+        if (Key == 0 && KeyKey == 0 && isResetFromResult) {
+            payList.clear()
+            calculator.setChangeMode(false)
+            calculator.setResetFromResult(false)
+        }
+    }
+
     if (nameChangeDialog.value) {
         val currentName = buttonName[selectedIndex.intValue.toString()] ?: ""
 
@@ -382,7 +392,7 @@ fun CalculatorScreen(
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 6
                             } else {
-                                showToastIfNotShowing("정산이 완료되었���니다. 정산을 확인해주세요.")
+                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
                             if (isToggled == true && buttonPermission["6"] == true) {
@@ -515,9 +525,7 @@ fun CalculatorScreen(
                                         calculator.incrementKey()
                                     }
                                     total = formatNumberWithCommas(
-                                        (receipts[Key].ProductQuantity[KeyKey].toInt() *
-                                                receipts[Key].ProductPrice[KeyKey].toInt()).toString()
-                                    )
+                                        (receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
                                 }
                             } else {
                                 showToastIfNotShowing("최소 1명 이상을 선택해주세요.")

@@ -166,11 +166,19 @@ class Calculator : ViewModel() {
         }
     }
 
+    private val _isResetFromResult = MutableLiveData<Boolean>(false)
+    val isResetFromResult: LiveData<Boolean> = _isResetFromResult
+
+    fun setResetFromResult(value: Boolean) {
+        _isResetFromResult.value = value
+    }
+
     fun resetPersonPay() {
         _personPay.value = initialMap
         _stack.value = mutableListOf()
         _Key.value = 0
         _KeyKey.value = 0
+        _isResetFromResult.value = true
     }
 
     fun updateButtonNamesBasedOnPermissions() {
@@ -188,5 +196,9 @@ class Calculator : ViewModel() {
             }
         }
         _buttonNames.value = currentNames
+    }
+
+    fun setChangeMode(value: Boolean) {
+        _changeMode.value = value
     }
 }
