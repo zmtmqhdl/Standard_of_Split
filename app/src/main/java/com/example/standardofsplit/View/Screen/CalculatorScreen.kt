@@ -349,20 +349,18 @@ fun CalculatorScreen(
                 ) {
                     Rectangle_Button(content = "되돌리기", onClick = {
                         if (isLastProduct.value) {
-                            isLastProduct.value = false  // 정산 확인 상태 해제
-                            calculator.reDo()  // 마지막 정산 내역 되돌리기
-                            // KeyKey와 Key 값을 마지막 상품으로 설정
+                            isLastProduct.value = false
+                            calculator.reDo()
                             if (receipts.isNotEmpty()) {
                                 calculator.setKey(receipts.size - 1)
                                 calculator.setKeyKey(receipts.last().ProductPrice.size - 1)
-                                // 총액 업데이트
                                 total = formatNumberWithCommas(
-                                    (receipts[Key].ProductQuantity[KeyKey].toInt() * 
+                                    (receipts[Key].ProductQuantity[KeyKey].toInt() *
                                      receipts[Key].ProductPrice[KeyKey].toInt()).toString()
                                 )
                             }
                         } else {
-                            calculator.reDo()  // 기존 되돌리기 동작
+                            calculator.reDo()
                         }
                     })
                 }
@@ -437,7 +435,7 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Rectangle_Button(
-                        content = "전체 선택", 
+                        content = "전체 선택",
                         onClick = {
                             if (isLastProduct.value) {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
@@ -534,7 +532,7 @@ fun CalculatorScreen(
                                     receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()
                                 )
                                 payList.clear()
-                                
+
                                 if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
                                     isLastProduct.value = true
                                     showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
