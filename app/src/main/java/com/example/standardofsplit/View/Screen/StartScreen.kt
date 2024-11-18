@@ -1,5 +1,7 @@
 package com.example.standardofsplit.View.Screen
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -31,6 +33,17 @@ fun StartScreen(
     val context = LocalContext.current
     val personCount by start.personCount.observeAsState()
     var isToastShowing by remember { mutableStateOf(false) }
+    var backPressedTime by remember { mutableStateOf(0L) }
+
+    BackHandler {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - backPressedTime > 2000) {
+            backPressedTime = currentTime
+            showCustomToast(context, "한 번 더 뒤로가기 키를 누르면 종료됩니다.")
+        } else {
+            (context as? ComponentActivity)?.finish()
+        }
+    }
 
     fun showToastIfNotShowing() {
         if (!isToastShowing) {
