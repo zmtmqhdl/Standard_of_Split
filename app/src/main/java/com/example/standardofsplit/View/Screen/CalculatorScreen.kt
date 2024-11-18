@@ -535,7 +535,7 @@ fun CalculatorScreen(
 
                                 if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
                                     isLastProduct.value = true
-                                    showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                                    showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
                                 } else {
                                     calculator.incrementKeyKey()
                                     if (KeyKey >= receipts[Key].ProductPrice.size) {
