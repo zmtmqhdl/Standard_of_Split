@@ -106,17 +106,25 @@ class Calculator : ViewModel() {
         _previousReceiptSize.value = size
     }
 
+    fun setKey(value: Int) {
+        _Key.value = value
+    }
+
+    fun setKeyKey(value: Int) {
+        _KeyKey.value = value
+    }
+
     fun reDo() {
         val currentStack = _stack.value ?: mutableListOf()
         if (currentStack.isNotEmpty()) {
             val currentKey = _Key.value ?: 0
             val currentKeyKey = _KeyKey.value ?: 0
-            
-            if (currentKey == 0 && currentKeyKey == 0) {
+
+            if (currentStack.isEmpty()) {
                 _showToastEvent.value = true
                 return
             }
-            
+
             try {
                 val lastElement = currentStack.removeAt(currentStack.size - 1)
                 _personPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>

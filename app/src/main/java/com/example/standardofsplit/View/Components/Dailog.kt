@@ -226,13 +226,13 @@ fun Reset_Confirm_Dialog(
                                     color = Color.White,
                                     start = Offset(0f, 0f),
                                     end = Offset(0f, size.height),
-                                    strokeWidth = 10f
+                                    strokeWidth = 7f
                                 )
                                 drawLine(
                                     color = Color.White,
                                     start = Offset(0f, 0f),
                                     end = Offset(size.width, 0f),
-                                    strokeWidth = 10f
+                                    strokeWidth = 7f
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(

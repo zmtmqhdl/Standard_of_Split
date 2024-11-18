@@ -348,7 +348,22 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Rectangle_Button(content = "되돌리기", onClick = {
-                        calculator.reDo()
+                        if (isLastProduct.value) {
+                            isLastProduct.value = false  // 정산 확인 상태 해제
+                            calculator.reDo()  // 마지막 정산 내역 되돌리기
+                            // KeyKey와 Key 값을 마지막 상품으로 설정
+                            if (receipts.isNotEmpty()) {
+                                calculator.setKey(receipts.size - 1)
+                                calculator.setKeyKey(receipts.last().ProductPrice.size - 1)
+                                // 총액 업데이트
+                                total = formatNumberWithCommas(
+                                    (receipts[Key].ProductQuantity[KeyKey].toInt() * 
+                                     receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                                )
+                            }
+                        } else {
+                            calculator.reDo()  // 기존 되돌리기 동작
+                        }
                     })
                 }
             }
