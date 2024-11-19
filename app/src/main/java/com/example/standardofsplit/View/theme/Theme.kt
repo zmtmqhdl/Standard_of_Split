@@ -1,4 +1,4 @@
-package com.example.standardofsplit.ui.theme
+package com.example.standardofsplit.View.theme
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme

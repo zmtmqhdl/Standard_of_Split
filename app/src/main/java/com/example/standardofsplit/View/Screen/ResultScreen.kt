@@ -24,9 +24,9 @@ import com.example.standardofsplit.View.Components.Receipt_Detail_Dialog
 import com.example.standardofsplit.View.Components.Reset_Confirm_Dialog
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.ui.theme.DarkGray
-import com.example.standardofsplit.ui.theme.White
-import com.example.standardofsplit.ui.theme.Yellow
+import com.example.standardofsplit.View.theme.DarkGray
+import com.example.standardofsplit.View.theme.White
+import com.example.standardofsplit.View.theme.Yellow
 
 @Composable
 fun ResultScreen(

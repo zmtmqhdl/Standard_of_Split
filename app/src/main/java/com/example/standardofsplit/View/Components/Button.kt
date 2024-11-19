@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.ViewModel.Calculator
-import com.example.standardofsplit.ui.theme.Black
-import com.example.standardofsplit.ui.theme.DarkGray
-import com.example.standardofsplit.ui.theme.DarkerGray
-import com.example.standardofsplit.ui.theme.Gray
-import com.example.standardofsplit.ui.theme.Green
-import com.example.standardofsplit.ui.theme.Red
-import com.example.standardofsplit.ui.theme.Yellow
+import com.example.standardofsplit.View.theme.Black
+import com.example.standardofsplit.View.theme.DarkGray
+import com.example.standardofsplit.View.theme.DarkerGray
+import com.example.standardofsplit.View.theme.Gray
+import com.example.standardofsplit.View.theme.Green
+import com.example.standardofsplit.View.theme.Red
+import com.example.standardofsplit.View.theme.Yellow
 
 private object CustomButtonDefaults {
     val defaultShape = RoundedCornerShape(10.dp)

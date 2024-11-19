@@ -17,7 +17,7 @@ import com.example.standardofsplit.View.Screen.ResultScreen
 import com.example.standardofsplit.ViewModel.Calculator
 import com.example.standardofsplit.ViewModel.Receipt
 import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.ui.theme.StandardOfSplitTheme
+import com.example.standardofsplit.View.theme.StandardOfSplitTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModels by lazy {

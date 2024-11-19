@@ -2,7 +2,6 @@ package com.example.standardofsplit.View.Components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,10 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.standardofsplit.ui.theme.Gray
-import com.example.standardofsplit.ui.theme.Red
-import com.example.standardofsplit.ui.theme.White
-import com.example.standardofsplit.ui.theme.Yellow
+import com.example.standardofsplit.View.theme.Gray
+import com.example.standardofsplit.View.theme.Red
+import com.example.standardofsplit.View.theme.White
+import com.example.standardofsplit.View.theme.Yellow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -173,15 +172,21 @@ fun Reset_Confirm_Dialog(
         ) {
             Column(
                 modifier = Modifier.width(280.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "정산을 다시 하시겠습니까?\n정산 내역이 초기화됩니다.",
+                    text = "정산을 다시 하시겠습니까?",
                     color = Color.White,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 20.dp)
+                    modifier = Modifier.padding(top = 15.dp)
+                )
+                Text(
+                    text = "정산 내역이 초기화됩니다.",
+                    color = Color.White,
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 15.dp)
                 )
 
                 Row(

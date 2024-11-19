@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.R
 import com.example.standardofsplit.View.Components.*
 import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.ui.theme.White
-import com.example.standardofsplit.ui.theme.Yellow
+import com.example.standardofsplit.View.theme.White
+import com.example.standardofsplit.View.theme.Yellow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
