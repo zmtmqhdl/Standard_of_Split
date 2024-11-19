@@ -1,5 +1,6 @@
 package com.example.standardofsplit.View.Screen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,10 @@ fun ResultScreen(
     var showDetailDialog by remember { mutableStateOf(false) }
     var selectedPerson by remember { mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null) }
     
+    LaunchedEffect(Unit) {
+        calculator.updatePersonPay()
+    }
+    
     BackHandler {
         showResetDialog = true
     }
@@ -45,7 +51,8 @@ fun ResultScreen(
     val personCount by start.personCount.observeAsState(2)
     val personPayMap by calculator.personPay.observeAsState(mutableMapOf())
     val buttonNames by calculator.buttonNames.observeAsState(emptyMap())
-    
+
+    Log.d("로그", personPayMap.values.toString())
     val personTotals = (1..personCount).map { personIndex ->
         val personData = personPayMap[personIndex] ?: mutableMapOf()
         val total = personData.values.sumOf { products -> 
@@ -98,10 +105,10 @@ fun ResultScreen(
                                 amount = if (rightIndex < personCount) personTotals[rightIndex].second else 0,
                                 isActive = rightIndex < personCount,
                                 onClick = {
-                                    if (leftIndex < personCount) {
+                                    if (rightIndex < personCount) {
                                         selectedPerson = Pair(
-                                            personTotals[leftIndex].first,
-                                            personPayMap[leftIndex + 1] ?: emptyMap()
+                                            personTotals[rightIndex].first,
+                                            personPayMap[rightIndex + 1] ?: emptyMap()
                                         )
                                         showDetailDialog = true
                                     }
@@ -132,6 +139,7 @@ fun ResultScreen(
             onDismiss = { showResetDialog = false },
             onConfirm = {
                 calculator.resetPersonPay()
+                showResetDialog = false
                 onBack()
             }
         )

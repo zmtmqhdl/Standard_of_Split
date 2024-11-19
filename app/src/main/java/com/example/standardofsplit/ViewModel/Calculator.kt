@@ -1,5 +1,6 @@
 package com.example.standardofsplit.ViewModel
 
+import androidx.collection.mutableIntSetOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -182,11 +183,14 @@ class Calculator : ViewModel() {
     }
 
     fun resetPersonPay() {
-        _personPay.value = initialMap
+        val newMap = (0..7).associate { index ->  // 0부터 7까지로 변경
+            index to mutableMapOf<String, MutableMap<String, Int>>()
+        }.toMutableMap()
+        
+        _personPay.value = newMap
         _stack.value = mutableListOf()
         _Key.value = 0
         _KeyKey.value = 0
-        _isResetFromResult.value = true
     }
 
     fun updateButtonNamesBasedOnPermissions() {
@@ -208,5 +212,9 @@ class Calculator : ViewModel() {
 
     fun setChangeMode(value: Boolean) {
         _changeMode.value = value
+    }
+
+    fun updatePersonPay() {
+        _personPay.value = _personPay.value?.toMutableMap()
     }
 }
