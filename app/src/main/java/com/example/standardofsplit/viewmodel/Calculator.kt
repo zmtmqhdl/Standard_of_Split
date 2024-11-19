@@ -1,6 +1,5 @@
-package com.example.standardofsplit.ViewModel
+package com.example.standardofsplit.viewmodel
 
-import androidx.collection.mutableIntSetOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.example.standardofsplit.ViewModel
+package com.example.standardofsplit.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

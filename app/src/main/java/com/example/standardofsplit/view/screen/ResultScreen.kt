@@ -1,4 +1,4 @@
-package com.example.standardofsplit.View.Screen
+package com.example.standardofsplit.view.screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -21,14 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.View.Components.Basic_Button
-import com.example.standardofsplit.View.Components.Receipt_Detail_Dialog
-import com.example.standardofsplit.View.Components.Reset_Confirm_Dialog
-import com.example.standardofsplit.ViewModel.Calculator
-import com.example.standardofsplit.ViewModel.Start
-import com.example.standardofsplit.View.theme.DarkGray
-import com.example.standardofsplit.View.theme.White
-import com.example.standardofsplit.View.theme.Yellow
+import com.example.standardofsplit.view.component.SubmitButton
+import com.example.standardofsplit.view.component.Receipt_Detail_Dialog
+import com.example.standardofsplit.view.component.Reset_Confirm_Dialog
+import com.example.standardofsplit.viewmodel.Calculator
+import com.example.standardofsplit.viewmodel.Start
 
 @Composable
 fun ResultScreen(
@@ -127,8 +124,8 @@ fun ResultScreen(
                 .padding(bottom = 50.dp),
             contentAlignment = Alignment.Center
         ) {
-            Basic_Button(
-                content = "공유하기",
+            SubmitButton(
+                text = "공유하기",
                 onClick = { /* 나중에 기능 추가 */ }
             )
         }
@@ -165,7 +162,7 @@ private fun ResultCard(
         modifier = Modifier
             .size(width = 180.dp, height = 160.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(if (isActive) DarkGray else Color.Black)
+            .background(if (isActive) Color.DarkGray else Color.Black)
             .clickable(
                 enabled = isActive,
                 onClick = onClick
@@ -181,12 +178,12 @@ private fun ResultCard(
                     text = name,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Yellow
+                    color = Color.Yellow
                 )
                 Text(
                     text = "${formatNumberWithCommas(amount)}원",
                     fontSize = 24.sp,
-                    color = White
+                    color = Color.White
                 )
                 Spacer(modifier = Modifier.height(24.dp))
             }

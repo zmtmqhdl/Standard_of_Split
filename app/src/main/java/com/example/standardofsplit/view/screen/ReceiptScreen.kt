@@ -1,4 +1,4 @@
-package com.example.standardofsplit.View.Screen
+package com.example.standardofsplit.view.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
@@ -20,10 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.Model.ReceiptClass
-import com.example.standardofsplit.View.Components.*
-import com.example.standardofsplit.ViewModel.Receipt
-import com.example.standardofsplit.View.theme.DarkGray
+import com.example.standardofsplit.model.ReceiptClass
+import com.example.standardofsplit.view.component.*
+import com.example.standardofsplit.viewmodel.Receipt
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -268,7 +267,7 @@ private fun ReceiptCard(
             .wrapContentHeight()
             .padding(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DarkGray
+            containerColor = Color.DarkGray
         )
     ) {
         Column(
@@ -430,8 +429,8 @@ private fun ReceiptItem(
 
 @Composable
 private fun NextButton(onClick: () -> Unit) {
-    Basic_Button(
-        content = "정산 시작",
+    SubmitButton(
+        text = "정산 시작",
         onClick = onClick,
     )
 }

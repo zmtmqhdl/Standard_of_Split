@@ -1,4 +1,4 @@
-package com.example.standardofsplit.View.Components
+package com.example.standardofsplit.view.component
 
 import android.content.Context
 import android.graphics.Color

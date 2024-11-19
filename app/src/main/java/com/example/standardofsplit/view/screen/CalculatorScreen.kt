@@ -1,6 +1,5 @@
-package com.example.standardofsplit.View.Screen
+package com.example.standardofsplit.view.screen
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,21 +33,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.Model.ReceiptClass
-import com.example.standardofsplit.View.Components.Button_Name_Dialog
-import com.example.standardofsplit.View.Components.Rectangle_Button
-import com.example.standardofsplit.View.Components.Square_Button
-import com.example.standardofsplit.View.Components.Toggle_Square_Button
-import com.example.standardofsplit.View.Components.Toggle_Name_Button
-import com.example.standardofsplit.View.Components.formatNumberWithCommas
-import com.example.standardofsplit.View.Components.showCustomToast
-import com.example.standardofsplit.ViewModel.Calculator
-import com.example.standardofsplit.ViewModel.Receipt
-import com.example.standardofsplit.ViewModel.Start
+import com.example.standardofsplit.model.ReceiptClass
+import com.example.standardofsplit.view.component.Button_Name_Dialog
+import com.example.standardofsplit.view.component.Rectangle_Button
+import com.example.standardofsplit.view.component.Square_Button
+import com.example.standardofsplit.view.component.Toggle_Square_Button
+import com.example.standardofsplit.view.component.Toggle_Name_Button
+import com.example.standardofsplit.view.component.formatNumberWithCommas
+import com.example.standardofsplit.view.component.showCustomToast
+import com.example.standardofsplit.viewmodel.Calculator
+import com.example.standardofsplit.viewmodel.Receipt
+import com.example.standardofsplit.viewmodel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 @Composable
 fun CalculatorScreen(

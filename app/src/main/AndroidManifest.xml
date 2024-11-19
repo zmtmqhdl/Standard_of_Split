@@ -13,17 +13,17 @@
         android:theme="@style/Theme.StandardOfSplit"
         tools:targetApi="31">
         <activity
-            android:name=".View.Activity.ReceiptActivity"
+            android:name=".view.activity.ReceiptActivity"
             android:exported="false"
             android:label="@string/title_activity_receipt"
             android:theme="@style/Theme.StandardOfSplit" />
         <activity
-            android:name=".View.Activity.CalculatorActivity"
+            android:name=".view.activity.CalculatorActivity"
             android:exported="false"
             android:label="@string/title_activity_calculator"
             android:theme="@style/Theme.StandardOfSplit" /> <!-- StartActivity가 앱의 첫 화면이 되도록 intent-filter를 추가 -->
         <activity
-            android:name=".View.Activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_start"
             android:theme="@style/Theme.StandardOfSplit">

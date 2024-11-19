@@ -1,4 +1,4 @@
-package com.example.standardofsplit.View.Components
+package com.example.standardofsplit.view.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -19,12 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.standardofsplit.View.theme.Gray
-import com.example.standardofsplit.View.theme.Red
-import com.example.standardofsplit.View.theme.White
-import com.example.standardofsplit.View.theme.Yellow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import com.example.standardofsplit.view.theme.Color
 
 private object DialogDefaults {
     val shape = RoundedCornerShape(10.dp)
@@ -37,8 +33,8 @@ private object DialogDefaults {
 
 @Composable
 private fun getTextFieldColors() = TextFieldDefaults.colors(
-    unfocusedIndicatorColor = Color.Transparent,
-    focusedIndicatorColor = Color.Transparent
+    unfocusedIndicatorColor = Color.White,
+    focusedIndicatorColor = Color.White
 )
 
 @Composable
@@ -110,7 +106,6 @@ private fun DialogButtons(
             Small_Button(
                 content = "삭제",
                 onClick = onDelete,
-                color = Red
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
@@ -420,7 +415,7 @@ fun Receipt_Detail_Dialog(
                     text = name,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Yellow,
+                    color = Color.Yellow,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -428,7 +423,7 @@ fun Receipt_Detail_Dialog(
                     modifier = Modifier
                         .weight(1f)
                         .width(500.dp)
-                        .background(Gray, shape = RoundedCornerShape(10.dp))
+                        .background(Color.Gray, shape = RoundedCornerShape(10.dp))
                         .padding(10.dp)
                 ) {
                     val entries = receiptDetails.entries.toList()
@@ -437,7 +432,7 @@ fun Receipt_Detail_Dialog(
                             Text(
                                 text = placeName,
                                 fontSize = 24.sp,
-                                color = White,
+                                color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
@@ -451,19 +446,19 @@ fun Receipt_Detail_Dialog(
                                     Text(
                                         text = productName,
                                         fontSize = 16.sp,
-                                        color = White
+                                        color = Color.White
                                     )
                                     Text(
                                         text = "${formatNumberWithCommas(amount.toString())}원",
                                         fontSize = 16.sp,
-                                        color = White
+                                        color = Color.White
                                     )
                                 }
                             }
                             
                             if (index < entries.size - 1) {
                                 Divider(
-                                    color = White,
+                                    color = Color.White,
                                     thickness = 1.dp,
                                     modifier = Modifier.padding(vertical = 8.dp)
                                 )
@@ -482,7 +477,7 @@ fun Receipt_Detail_Dialog(
                         text = "총합: ${formatNumberWithCommas(total.toString())}원",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = White
+                        color = Color.White
                     )
                 }
 

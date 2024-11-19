@@ -1,7 +1,6 @@
-package com.example.standardofsplit.View.Components
+package com.example.standardofsplit.view.component
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -11,30 +10,19 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.ViewModel.Calculator
-import com.example.standardofsplit.View.theme.Black
-import com.example.standardofsplit.View.theme.DarkGray
-import com.example.standardofsplit.View.theme.DarkerGray
-import com.example.standardofsplit.View.theme.Gray
-import com.example.standardofsplit.View.theme.Green
-import com.example.standardofsplit.View.theme.Red
-import com.example.standardofsplit.View.theme.Yellow
+import com.example.standardofsplit.view.theme.Shape
+import com.example.standardofsplit.view.theme.Typography
+import com.example.standardofsplit.viewmodel.Calculator
+import com.example.standardofsplit.view.theme.Color
 
 private object CustomButtonDefaults {
     val defaultShape = RoundedCornerShape(10.dp)
-    val defaultColor = Black
-    val yellowColor = Yellow
-    val grayColor = Gray
-    val darkGrayColor = DarkGray
-    val darkerGrayColor = DarkerGray
-    val redColor = Red
-    val greenColor = Green
     val defaultModifier = Modifier.height(53.dp)
     val smallModifier = Modifier.height(33.dp)
     val defaultFontSize = 26.sp
@@ -44,13 +32,7 @@ private object CustomButtonDefaults {
 
 @Composable
 private fun basicButtonColor() = ButtonDefaults.buttonColors(
-    containerColor = CustomButtonDefaults.yellowColor,
-    contentColor = Color.White
-)
-
-@Composable
-private fun circleButtonColors() = ButtonDefaults.buttonColors(
-    containerColor = CustomButtonDefaults.grayColor,
+    containerColor = Color.Yellow,
     contentColor = Color.White
 )
 
@@ -64,36 +46,73 @@ private fun ButtonText(
 ) {
     Text(
         text = text,
-        fontSize = fontSize,
-        textAlign = textAlign,
-        color = Color.White,
-        fontWeight = fontWeight,
-        modifier = modifier,
+        style = Typography.SubmitButtonText
     )
 }
 
 @Composable
-fun Basic_Button(
-    content: String,
+fun SubmitButton(
     modifier: Modifier = Modifier,
-    fontSize: TextUnit = CustomButtonDefaults.defaultFontSize,
-    onClick: () -> Unit
+    text: String,
+    onClick: () -> Unit,
 ) {
     Button(
-        onClick = onClick,
         modifier = modifier
-            .then(CustomButtonDefaults.defaultModifier)
-            .width(263.dp),
-        shape = CustomButtonDefaults.defaultShape,
-        colors = basicButtonColor()
+            .height(53.dp)
+            .width(223.dp),
+        shape = Shape.RoundedCRectangle,
+        colors = ButtonDefaults.buttonColors(Color.Yellow),
+        contentPadding = PaddingValues(0.dp),
+        onClick = onClick,
     ) {
-        ButtonText(
-            text = content,
-            fontSize = fontSize,
-            modifier = Modifier.padding(horizontal = 16.dp)
+        Text(
+            text = text,
+            style = Typography.SubmitButtonText
         )
     }
 }
+
+@Composable
+fun CircleButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        modifier = modifier
+            .size(50.dp),
+        shape = Shape.Circle,
+        colors = ButtonDefaults.buttonColors(Color.Gray2),
+        contentPadding = PaddingValues(0.dp),
+        onClick = onClick,
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                style = Typography.CircleButtonText
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun Preview_SubmitButton() {
+    SubmitButton(
+        text = "확인",
+        onClick = {}
+    )
+}
+
+@Preview
+@Composable
+fun Preview_CircleButton() {
+
+}
+
 
 @Composable
 fun Basic_Button2(
@@ -123,7 +142,6 @@ fun Small_Button(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 13.sp,
     onClick: () -> Unit,
-    color: Color = CustomButtonDefaults.yellowColor
 ) {
     Button(
         onClick = onClick,
@@ -132,7 +150,7 @@ fun Small_Button(
             .width(73.dp),
         shape = CustomButtonDefaults.defaultShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = color,
+            containerColor = Color.Yellow,
             contentColor = Color.White,
         )
     ) {
@@ -171,33 +189,6 @@ fun add_Button(
 }
 
 @Composable
-fun Circle_Button(
-    content: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    fontSize: TextUnit = 36.sp,
-) {
-    Button(
-        onClick = onClick,
-        shape = CircleShape,
-        modifier = modifier.size(50.dp),
-        colors = circleButtonColors(),
-        contentPadding = PaddingValues(0.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            ButtonText(
-                text = content,
-                fontSize = fontSize,
-                modifier = Modifier.wrapContentHeight()
-            )
-        }
-    }
-}
-
-@Composable
 fun Toggle_Name_Button(
     viewModel: Calculator,
     modifier: Modifier = Modifier,
@@ -213,7 +204,7 @@ fun Toggle_Name_Button(
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isToggled == true) Green else Red,  // ON일 때 초록색, OFF일 때 빨간색
+            containerColor = if (isToggled == true) Color.Green else Color.Red,  // ON일 때 초록색, OFF일 때 빨간색
             contentColor = Color.White
         )
     ) {
@@ -234,7 +225,7 @@ fun Rectangle_Button(
             .then(CustomButtonDefaults.defaultModifier)
             .width(353.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = CustomButtonDefaults.darkGrayColor,
+            containerColor = Color.Gray1,
             contentColor = Color.White
         )
     ) {
@@ -261,8 +252,8 @@ fun Toggle_Square_Button(
             buttonColors(
                 containerColor = when {
                     isDisabled -> Color.Black
-                    result -> CustomButtonDefaults.darkerGrayColor
-                    else -> CustomButtonDefaults.grayColor
+                    result -> Color.Gray1
+                    else -> Color.Gray1
                 },
                 contentColor = if (isDisabled) Color.Black else Color.White,
                 disabledContainerColor = Color.Black,
