@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.screen
+package com.example.standardofsplit.presentation.view.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.model.ReceiptClass
-import com.example.standardofsplit.view.component.*
-import com.example.standardofsplit.viewmodel.Receipt
+import com.example.standardofsplit.presentation.view.component.*
+import com.example.standardofsplit.presentation.view.viewmodel.Receipt
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -242,8 +242,8 @@ private fun ReceiptList(
                     .padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                add_Button(
-                    content = "영수증 추가",
+                ReceiptAddButton(
+                    text = "영수증 추가",
                     onClick = { dialogStates.newDialog = true }
                 )
             }
@@ -314,8 +314,8 @@ private fun ReceiptHeader(
             fontSize = 18.sp
         )
 
-        Elevated_Button(
-            content1 = "영수증 접기", content2 = "영수증 펼치기", flag = expanded, onClick = onExpandClick
+        ReceiptOpenCloseButton(
+            text1 = "영수증 접기", text2 = "영수증 펼치기", flag = expanded, onClick = onExpandClick
         )
     }
 }
@@ -342,8 +342,8 @@ private fun ReceiptDetails(
                 .padding(top = 10.dp),
             contentAlignment = Alignment.Center
         ) {
-            Basic_Button2(
-                content = "상품 추가", onClick = onAddClick
+            ProductAddButton(
+                text = "상품 추가", onClick = onAddClick
             )
         }
     }

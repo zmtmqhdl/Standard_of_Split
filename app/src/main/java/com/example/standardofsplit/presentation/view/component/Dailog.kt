@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.component
+package com.example.standardofsplit.presentation.view.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import com.example.standardofsplit.view.theme.Color
+import com.example.standardofsplit.presentation.view.theme.Color
 
 private object DialogDefaults {
     val shape = RoundedCornerShape(10.dp)
-    val backgroundColor = Color.DarkGray
+    val backgroundColor = Color.White
     val dialogSize = Modifier.wrapContentSize()
     val contentPadding = 20.dp
     val buttonSpacing = 8.dp
@@ -103,16 +103,16 @@ private fun DialogButtons(
         horizontalArrangement = Arrangement.End
     ) {
         if (onDelete != null) {
-            Small_Button(
-                content = "삭제",
+            DialogButton(
+                text = "삭제",
                 onClick = onDelete,
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
-        Small_Button("취소", onClick = onDismiss)
+        DialogButton("취소", onClick = onDismiss)
         Spacer(modifier = Modifier.width(DialogDefaults.buttonSpacing))
-        Small_Button(
-            content = "확인",
+        DialogButton(
+            text = "확인",
             onClick = onConfirm,
         )
     }
@@ -210,7 +210,7 @@ fun Reset_Confirm_Dialog(
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.DarkGray
+                            containerColor = Color.White
                         ),
                         shape = RoundedCornerShape(0.dp)
                     ) {
@@ -236,7 +236,7 @@ fun Reset_Confirm_Dialog(
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.DarkGray
+                            containerColor = Color.White
                         ),
                         shape = RoundedCornerShape(0.dp)
                     ) {
@@ -423,7 +423,7 @@ fun Receipt_Detail_Dialog(
                     modifier = Modifier
                         .weight(1f)
                         .width(500.dp)
-                        .background(Color.Gray, shape = RoundedCornerShape(10.dp))
+                        .background(Color.White, shape = RoundedCornerShape(10.dp))
                         .padding(10.dp)
                 ) {
                     val entries = receiptDetails.entries.toList()
@@ -481,8 +481,8 @@ fun Receipt_Detail_Dialog(
                     )
                 }
 
-                Small_Button(
-                    content = "확인",
+                DialogButton(
+                    text = "확인",
                     onClick = onDismiss,
                     modifier = Modifier
                         .padding(top = 16.dp)

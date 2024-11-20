@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.activity
+package com.example.standardofsplit.presentation.view.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,14 +10,14 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.standardofsplit.view.screen.CalculatorScreen
-import com.example.standardofsplit.view.screen.ReceiptScreen
-import com.example.standardofsplit.view.screen.StartScreen
-import com.example.standardofsplit.view.screen.ResultScreen
-import com.example.standardofsplit.viewmodel.Calculator
-import com.example.standardofsplit.viewmodel.Receipt
-import com.example.standardofsplit.viewmodel.Start
-import com.example.standardofsplit.view.theme.StandardOfSplitTheme
+import com.example.standardofsplit.presentation.view.screen.CalculatorScreen
+import com.example.standardofsplit.presentation.view.screen.ReceiptScreen
+import com.example.standardofsplit.presentation.view.screen.StartScreen
+import com.example.standardofsplit.presentation.view.screen.ResultScreen
+import com.example.standardofsplit.presentation.view.viewmodel.Calculator
+import com.example.standardofsplit.presentation.view.viewmodel.Receipt
+import com.example.standardofsplit.presentation.view.viewmodel.Start
+import com.example.standardofsplit.presentation.view.theme.StandardOfSplitTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModels by lazy {

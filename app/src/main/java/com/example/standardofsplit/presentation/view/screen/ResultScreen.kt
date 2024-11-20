@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.screen
+package com.example.standardofsplit.presentation.view.screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -21,11 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.view.component.SubmitButton
-import com.example.standardofsplit.view.component.Receipt_Detail_Dialog
-import com.example.standardofsplit.view.component.Reset_Confirm_Dialog
-import com.example.standardofsplit.viewmodel.Calculator
-import com.example.standardofsplit.viewmodel.Start
+import com.example.standardofsplit.presentation.view.component.SubmitButton
+import com.example.standardofsplit.presentation.view.component.Receipt_Detail_Dialog
+import com.example.standardofsplit.presentation.view.component.Reset_Confirm_Dialog
+import com.example.standardofsplit.presentation.view.viewmodel.Calculator
+import com.example.standardofsplit.presentation.view.viewmodel.Start
 
 @Composable
 fun ResultScreen(

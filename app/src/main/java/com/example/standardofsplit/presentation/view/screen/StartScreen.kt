@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.screen
+package com.example.standardofsplit.presentation.view.screen
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -30,10 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.R
-import com.example.standardofsplit.view.component.SubmitButton
-import com.example.standardofsplit.view.component.CircleButton
-import com.example.standardofsplit.view.component.showCustomToast
-import com.example.standardofsplit.viewmodel.Start
+import com.example.standardofsplit.presentation.view.component.SubmitButton
+import com.example.standardofsplit.presentation.view.component.CircleButton
+import com.example.standardofsplit.presentation.view.component.showCustomToast
+import com.example.standardofsplit.presentation.view.viewmodel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

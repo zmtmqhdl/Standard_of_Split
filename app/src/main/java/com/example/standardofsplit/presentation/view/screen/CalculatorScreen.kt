@@ -1,4 +1,4 @@
-package com.example.standardofsplit.view.screen
+package com.example.standardofsplit.presentation.view.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
@@ -34,16 +34,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.model.ReceiptClass
-import com.example.standardofsplit.view.component.Button_Name_Dialog
-import com.example.standardofsplit.view.component.Rectangle_Button
-import com.example.standardofsplit.view.component.Square_Button
-import com.example.standardofsplit.view.component.Toggle_Square_Button
-import com.example.standardofsplit.view.component.Toggle_Name_Button
-import com.example.standardofsplit.view.component.formatNumberWithCommas
-import com.example.standardofsplit.view.component.showCustomToast
-import com.example.standardofsplit.viewmodel.Calculator
-import com.example.standardofsplit.viewmodel.Receipt
-import com.example.standardofsplit.viewmodel.Start
+import com.example.standardofsplit.presentation.view.component.Button_Name_Dialog
+import com.example.standardofsplit.presentation.view.component.FunctionButton
+import com.example.standardofsplit.presentation.view.component.CalculateButton
+import com.example.standardofsplit.presentation.view.component.PersonSelectButton
+import com.example.standardofsplit.presentation.view.component.NameChangeToggleButton
+import com.example.standardofsplit.presentation.view.component.formatNumberWithCommas
+import com.example.standardofsplit.presentation.view.component.showCustomToast
+import com.example.standardofsplit.presentation.view.viewmodel.Calculator
+import com.example.standardofsplit.presentation.view.viewmodel.Receipt
+import com.example.standardofsplit.presentation.view.viewmodel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -211,9 +211,9 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(
-                    content = buttonName["1"] ?: "X",
-                    result = buttonStates[1],
+                PersonSelectButton(
+                    text = buttonName["1"] ?: "X",
+                    flag = buttonStates[1],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["1"] == true) {
@@ -239,9 +239,9 @@ fun CalculatorScreen(
                     }
                 )
 
-                Toggle_Square_Button(
-                    content = buttonName["2"] ?: "X",
-                    result = buttonStates[2],
+                PersonSelectButton(
+                    text = buttonName["2"] ?: "X",
+                    flag = buttonStates[2],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["2"] == true) {
@@ -272,7 +272,7 @@ fun CalculatorScreen(
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Toggle_Name_Button(viewModel = calculator)
+                    NameChangeToggleButton(text1 = "OFF", text2 = "ON", onClick = {}, viewModel = calculator)
                 }
             }
 
@@ -284,9 +284,9 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(
-                    content = buttonName["3"] ?: "X",
-                    result = buttonStates[3],
+                PersonSelectButton(
+                    text = buttonName["3"] ?: "X",
+                    flag = buttonStates[3],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["3"] == true) {
@@ -311,9 +311,9 @@ fun CalculatorScreen(
                         }
                     }
                 )
-                Toggle_Square_Button(
-                    content = buttonName["4"] ?: "X",
-                    result = buttonStates[4],
+                PersonSelectButton(
+                    text = buttonName["4"] ?: "X",
+                    flag = buttonStates[4],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["4"] == true) {
@@ -344,7 +344,7 @@ fun CalculatorScreen(
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Rectangle_Button(content = "되돌리기", onClick = {
+                    FunctionButton(text = "되돌리기", onClick = {
                         if (isLastProduct.value) {
                             isLastProduct.value = false
                             calculator.reDo()
@@ -371,9 +371,9 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(
-                    content = buttonName["5"] ?: "X",
-                    result = buttonStates[5],
+                PersonSelectButton(
+                    text = buttonName["5"] ?: "X",
+                    flag = buttonStates[5],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["5"] == true) {
@@ -398,9 +398,9 @@ fun CalculatorScreen(
                         }
                     }
                 )
-                Toggle_Square_Button(
-                    content = buttonName["6"] ?: "X",
-                    result = buttonStates[6],
+                PersonSelectButton(
+                    text = buttonName["6"] ?: "X",
+                    flag = buttonStates[6],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["6"] == true) {
@@ -431,8 +431,8 @@ fun CalculatorScreen(
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Rectangle_Button(
-                        content = "전체 선택",
+                    FunctionButton(
+                        text = "전체 선택",
                         onClick = {
                             if (isLastProduct.value) {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
@@ -459,9 +459,9 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Toggle_Square_Button(
-                    content = buttonName["7"] ?: "X",
-                    result = buttonStates[7],
+                PersonSelectButton(
+                    text = buttonName["7"] ?: "X",
+                    flag = buttonStates[7],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["7"] == true) {
@@ -486,9 +486,9 @@ fun CalculatorScreen(
                         }
                     }
                 )
-                Toggle_Square_Button(
-                    content = buttonName["8"] ?: "X",
-                    result = buttonStates[8],
+                PersonSelectButton(
+                    text = buttonName["8"] ?: "X",
+                    flag = buttonStates[8],
                     onClick = {
                         if (isLastProduct.value) {
                             if (isToggled == true && buttonPermission["8"] == true) {
@@ -514,8 +514,8 @@ fun CalculatorScreen(
                     }
                 )
 
-                Square_Button(
-                    content = if (isLastProduct.value) "정산 확인" else "적용",
+                CalculateButton(
+                    text = if (isLastProduct.value) "정산 확인" else "적용",
                     onClick = {
                         if (isLastProduct.value) {
                             onNext()
