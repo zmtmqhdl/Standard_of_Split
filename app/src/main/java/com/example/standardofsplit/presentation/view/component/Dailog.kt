@@ -488,7 +488,6 @@ fun Receipt_Detail_Dialog(
                         .padding(top = 16.dp)
                         .width(240.dp)
                         .height(60.dp),  // 높이 증가
-                    fontSize = 20.sp  // 글씨 크기 증가
                 )
             }
         }

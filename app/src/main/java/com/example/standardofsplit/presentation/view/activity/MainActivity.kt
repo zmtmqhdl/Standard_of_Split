@@ -14,9 +14,9 @@ import com.example.standardofsplit.presentation.view.screen.CalculatorScreen
 import com.example.standardofsplit.presentation.view.screen.ReceiptScreen
 import com.example.standardofsplit.presentation.view.screen.StartScreen
 import com.example.standardofsplit.presentation.view.screen.ResultScreen
-import com.example.standardofsplit.presentation.view.viewmodel.Calculator
-import com.example.standardofsplit.presentation.view.viewmodel.Receipt
-import com.example.standardofsplit.presentation.view.viewmodel.Start
+import com.example.standardofsplit.presentation.view.viewModel.Calculator
+import com.example.standardofsplit.presentation.view.viewModel.Receipt
+import com.example.standardofsplit.presentation.view.viewModel.Start
 import com.example.standardofsplit.presentation.view.theme.StandardOfSplitTheme
 
 class MainActivity : ComponentActivity() {

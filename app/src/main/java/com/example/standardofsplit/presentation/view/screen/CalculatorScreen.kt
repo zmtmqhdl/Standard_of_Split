@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.model.ReceiptClass
+import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.view.component.Button_Name_Dialog
 import com.example.standardofsplit.presentation.view.component.FunctionButton
 import com.example.standardofsplit.presentation.view.component.CalculateButton
@@ -41,9 +41,9 @@ import com.example.standardofsplit.presentation.view.component.PersonSelectButto
 import com.example.standardofsplit.presentation.view.component.NameChangeToggleButton
 import com.example.standardofsplit.presentation.view.component.formatNumberWithCommas
 import com.example.standardofsplit.presentation.view.component.showCustomToast
-import com.example.standardofsplit.presentation.view.viewmodel.Calculator
-import com.example.standardofsplit.presentation.view.viewmodel.Receipt
-import com.example.standardofsplit.presentation.view.viewmodel.Start
+import com.example.standardofsplit.presentation.view.viewModel.Calculator
+import com.example.standardofsplit.presentation.view.viewModel.Receipt
+import com.example.standardofsplit.presentation.view.viewModel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

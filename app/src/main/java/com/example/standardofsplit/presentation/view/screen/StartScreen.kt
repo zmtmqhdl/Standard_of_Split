@@ -6,9 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,7 +31,8 @@ import com.example.standardofsplit.R
 import com.example.standardofsplit.presentation.view.component.SubmitButton
 import com.example.standardofsplit.presentation.view.component.CircleButton
 import com.example.standardofsplit.presentation.view.component.showCustomToast
-import com.example.standardofsplit.presentation.view.viewmodel.Start
+import com.example.standardofsplit.presentation.view.theme.Typography
+import com.example.standardofsplit.presentation.view.viewModel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -146,12 +145,9 @@ private fun StartScreenContent(
                 onDecrement = onDecrement
             )
 
-            InstructionText()
-
-            Spacer(modifier = Modifier.height(70.dp))
+            Text(text = "※ 인원 수를 선택해주세요 ※", fontSize = 20.sp, color = Color.White)
         }
-
-        StartButton(onClick = onStart)
+        SubmitButton(text = "시작하기", onClick = onStart, modifier = Modifier.padding(top = 70.dp))
     }
 }
 
@@ -167,39 +163,11 @@ private fun PersonCountSelector(
             onClick = onDecrement
         )
 
-        CountText(count = count)
+        Text(text = "$count", modifier = Modifier.padding(horizontal = 40.dp), style = Typography.CountText)
 
         CircleButton(
             text = "+",
             onClick = onIncrement
         )
     }
-}
-
-@Composable
-private fun CountText(count: Int) {
-    Text(
-        text = "$count",
-        modifier = Modifier.padding(horizontal = 40.dp),
-        fontSize = 60.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.White
-    )
-}
-
-@Composable
-private fun InstructionText() {
-    Text(
-        text = "※ 인원 수를 선택해주세요 ※",
-        fontSize = 20.sp,
-        color = Color.White
-    )
-}
-
-@Composable
-private fun StartButton(onClick: () -> Unit) {
-    SubmitButton(
-        text = "시작하기",
-        onClick = onClick
-    )
 }

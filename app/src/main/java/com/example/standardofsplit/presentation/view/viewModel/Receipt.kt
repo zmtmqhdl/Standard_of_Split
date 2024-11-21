@@ -1,9 +1,9 @@
-package com.example.standardofsplit.presentation.view.viewmodel
+package com.example.standardofsplit.presentation.view.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.standardofsplit.model.ReceiptClass
+import com.example.standardofsplit.data.model.ReceiptClass
 
 class Receipt : ViewModel() {
     private val _receipts = MutableLiveData<MutableList<ReceiptClass>>(mutableListOf())

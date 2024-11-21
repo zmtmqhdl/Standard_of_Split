@@ -1,4 +1,4 @@
-package com.example.standardofsplit.model
+package com.example.standardofsplit.data.model
 
 data class ReceiptClass(
     var ReceiptNumber: Int,

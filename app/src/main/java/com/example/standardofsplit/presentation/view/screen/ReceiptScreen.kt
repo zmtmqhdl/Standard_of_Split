@@ -20,9 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.model.ReceiptClass
+import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.view.component.*
-import com.example.standardofsplit.presentation.view.viewmodel.Receipt
+import com.example.standardofsplit.presentation.view.viewModel.Receipt
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 

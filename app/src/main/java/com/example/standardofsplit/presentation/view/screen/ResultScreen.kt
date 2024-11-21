@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.presentation.view.component.SubmitButton
 import com.example.standardofsplit.presentation.view.component.Receipt_Detail_Dialog
 import com.example.standardofsplit.presentation.view.component.Reset_Confirm_Dialog
-import com.example.standardofsplit.presentation.view.viewmodel.Calculator
-import com.example.standardofsplit.presentation.view.viewmodel.Start
+import com.example.standardofsplit.presentation.view.viewModel.Calculator
+import com.example.standardofsplit.presentation.view.viewModel.Start
 
 @Composable
 fun ResultScreen(

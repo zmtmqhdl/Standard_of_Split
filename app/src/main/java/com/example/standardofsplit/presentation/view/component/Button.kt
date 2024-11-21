@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.presentation.view.theme.Color
 import com.example.standardofsplit.presentation.view.theme.Shape
 import com.example.standardofsplit.presentation.view.theme.Typography
-import com.example.standardofsplit.presentation.view.viewmodel.Calculator
+import com.example.standardofsplit.presentation.view.viewModel.Calculator
 
 private object CustomButtonDefaults {
     val defaultFontSize = 26.sp
