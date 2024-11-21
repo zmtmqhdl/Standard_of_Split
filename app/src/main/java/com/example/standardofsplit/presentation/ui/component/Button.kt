@@ -1,4 +1,4 @@
-package com.example.standardofsplit.presentation.view.component
+package com.example.standardofsplit.presentation.ui.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -18,10 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standardofsplit.presentation.view.theme.Color
-import com.example.standardofsplit.presentation.view.theme.Shape
-import com.example.standardofsplit.presentation.view.theme.Typography
-import com.example.standardofsplit.presentation.view.viewModel.Calculator
+import com.example.standardofsplit.presentation.ui.theme.Color
+import com.example.standardofsplit.presentation.ui.theme.Shape
+import com.example.standardofsplit.presentation.ui.theme.Typography
+import com.example.standardofsplit.presentation.viewModel.Calculator
 
 private object CustomButtonDefaults {
     val defaultFontSize = 26.sp

@@ -1,4 +1,4 @@
-package com.example.standardofsplit.presentation.view.theme
+package com.example.standardofsplit.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

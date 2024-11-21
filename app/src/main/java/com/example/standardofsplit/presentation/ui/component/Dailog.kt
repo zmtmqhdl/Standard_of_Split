@@ -1,4 +1,4 @@
-package com.example.standardofsplit.presentation.view.component
+package com.example.standardofsplit.presentation.ui.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import com.example.standardofsplit.presentation.view.theme.Color
+import com.example.standardofsplit.presentation.ui.theme.Color
 
 private object DialogDefaults {
     val shape = RoundedCornerShape(10.dp)

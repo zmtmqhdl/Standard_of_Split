@@ -1,4 +1,4 @@
-package com.example.standardofsplit.presentation.view.screen
+package com.example.standardofsplit.presentation.ui.screen
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,23 +27,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.R
-import com.example.standardofsplit.presentation.view.component.SubmitButton
-import com.example.standardofsplit.presentation.view.component.CircleButton
-import com.example.standardofsplit.presentation.view.component.showCustomToast
-import com.example.standardofsplit.presentation.view.theme.Typography
-import com.example.standardofsplit.presentation.view.viewModel.Start
+import com.example.standardofsplit.domain.useCase.StartUseCase
+import com.example.standardofsplit.presentation.event.StartScreenEvent
+import com.example.standardofsplit.presentation.ui.component.SubmitButton
+import com.example.standardofsplit.presentation.ui.component.CircleButton
+import com.example.standardofsplit.presentation.ui.component.showCustomToast
+import com.example.standardofsplit.presentation.ui.theme.Typography
+import com.example.standardofsplit.presentation.viewModel.Start
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun StartScreen(
-    start: Start,
     onNext: () -> Unit
 ) {
+    val startViewModel: Start = hiltViewModel()  // 동일한 ViewModel 인스턴스 접근
+    val personCount by startViewModel.personCount.collectAsState()
+
     val context = LocalContext.current
-    val personCount by start.personCount.observeAsState()
+
     var isToastShowing by remember { mutableStateOf(false) }
     var backPressedTime by remember { mutableStateOf(0L) }
 
@@ -102,31 +107,17 @@ fun StartScreen(
     }
 
     StartScreenContent(
-        personCount = personCount ?: 2,
-        onIncrement = { 
-            if (personCount == Start.MAX_PERSON_COUNT) {
-                showToastIfNotShowing()
-            } else {
-                start.increment()
-            }
-        },
-        onDecrement = { 
-            if (personCount == Start.MIN_PERSON_COUNT) {
-                showToastIfNotShowing()
-            } else {
-                start.decrement()
-            }
-        },
+        onEvent = startViewModel::onEvent,
+        personCount = personCount,
         onStart = onNext
     )
 }
 
 @Composable
 private fun StartScreenContent(
+    onEvent: (StartScreenEvent) -> Unit,
+    onStart: () -> Unit,
     personCount: Int,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit,
-    onStart: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -140,12 +131,11 @@ private fun StartScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PersonCountSelector(
+                onEvent = onEvent,
                 count = personCount,
-                onIncrement = onIncrement,
-                onDecrement = onDecrement
             )
 
-            Text(text = "※ 인원 수를 선택해주세요 ※", fontSize = 20.sp, color = Color.White)
+            Text(text = "※ 인원 수를 선택해주세요 ※", style = Typography.#here..)
         }
         SubmitButton(text = "시작하기", onClick = onStart, modifier = Modifier.padding(top = 70.dp))
     }
@@ -153,21 +143,20 @@ private fun StartScreenContent(
 
 @Composable
 private fun PersonCountSelector(
+    onEvent: (StartScreenEvent) -> Unit,
     count: Int,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         CircleButton(
             text = "-",
-            onClick = onDecrement
+            onClick = { onEvent(StartScreenEvent.OnDecrementClick) }
         )
 
         Text(text = "$count", modifier = Modifier.padding(horizontal = 40.dp), style = Typography.CountText)
 
         CircleButton(
             text = "+",
-            onClick = onIncrement
+            onClick = { onEvent(StartScreenEvent.OnIncrementClick) }
         )
     }
 }
