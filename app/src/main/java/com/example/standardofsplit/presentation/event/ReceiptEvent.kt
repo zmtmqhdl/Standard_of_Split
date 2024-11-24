@@ -20,5 +20,5 @@ sealed class ReceiptEvent {
     ) : ReceiptEvent()
     data class DeleteReceipt(val index: Int) : ReceiptEvent()
     data class DeleteReceiptItem(val receiptIndex: Int, val itemIndex: Int) : ReceiptEvent()
-    object CheckReceipts : ReceiptEvent()
+    data object CheckReceipts : ReceiptEvent()
 }

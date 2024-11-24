@@ -102,6 +102,7 @@ fun StartScreen(
     onNext: () -> Unit,
 ) {
     val startViewModel: StartViewModel = hiltViewModel()
+
     val personCount by startViewModel.personCount.collectAsState()
 
     val context = LocalContext.current
