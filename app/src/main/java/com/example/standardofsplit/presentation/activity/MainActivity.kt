@@ -43,7 +43,6 @@ private fun Navigation() {
         composable(Screen.Start.route) {
             StartScreen(
                 onNext = { navigator.navigateToReceipt() },
-                modifier = Modifier
             )
         }
         composable(Screen.Receipt.route) {
