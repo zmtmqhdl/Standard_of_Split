@@ -381,17 +381,17 @@ private fun ReceiptColumnHeaders() {
         Text(
             text = "상품명",
             modifier = Modifier.weight(1f),
-            style = Typography.ReceiptColumnHeaderTextStyle
+            style = Typography.receiptColumnHeaderTextStyle
         )
         Text(
             text = "단가 (수량)",
             modifier = Modifier.weight(2f),
-            style = Typography.ReceiptColumnHeaderTextStyle
+            style = Typography.receiptColumnHeaderTextStyle
         )
         Text(
             text = "금액",
             modifier = Modifier.weight(1f),
-            style = Typography.ReceiptColumnHeaderTextStyle
+            style = Typography.receiptColumnHeaderTextStyle
         )
     }
 }
@@ -418,23 +418,17 @@ private fun ReceiptItem(
             Text(
                 text = productName,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 18.sp
+                style = Typography.receiptItemTextStyle
             )
             Text(
                 text = "$formattedPrice ($quantity)",
                 modifier = Modifier.weight(2f),
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 18.sp
+                style = Typography.receiptItemTextStyle
             )
             Text(
                 text = formattedTotalCost,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 18.sp
+                style = Typography.receiptItemTextStyle
             )
         }
     }
