@@ -1,9 +1,8 @@
 package com.example.standardofsplit.data.model
 
 data class ReceiptClass(
-    var ReceiptNumber: Int,
-    var PlaceName: String = "영수증",
-    val ProductName: MutableList<String> = mutableListOf(),
-    val ProductQuantity: MutableList<String> = mutableListOf(),
-    val ProductPrice: MutableList<String> = mutableListOf(),
+    var placeName: String = "영수증",
+    val productName: MutableList<String> = mutableListOf(),
+    val productQuantity: MutableList<String> = mutableListOf(),
+    val productPrice: MutableList<String> = mutableListOf(),
 )

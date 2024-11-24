@@ -12,41 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.presentation.ui.theme.Color
 import com.example.standardofsplit.presentation.ui.theme.Shape
 import com.example.standardofsplit.presentation.ui.theme.Typography
-import com.example.standardofsplit.presentation.viewModel.Calculator
-
-private object CustomButtonDefaults {
-    val defaultFontSize = 26.sp
-    val defaultFontWeight = FontWeight.Bold
-}
-
-@Composable
-private fun basicButtonColor() = ButtonDefaults.buttonColors(
-    containerColor = Color.Yellow, contentColor = Color.White
-)
-
-@Composable
-private fun ButtonText(
-    text: String,
-    fontSize: TextUnit = CustomButtonDefaults.defaultFontSize,
-    modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Center,
-    fontWeight: FontWeight = CustomButtonDefaults.defaultFontWeight
-) {
-    Text(
-        text = text, style = Typography.SubmitButtonText
-    )
-}
-
-// Button
+import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 
 @Composable
 fun SubmitButton(
@@ -64,7 +35,7 @@ fun SubmitButton(
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
-            text = text, style = Typography.SubmitButtonText
+            text = text, style = Typography.submitButtonTextStyle
         )
     }
 }
@@ -85,7 +56,7 @@ fun ProductAddButton(
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
-            text = text, style = Typography.ProductAddButtonText
+            text = text, style = Typography.productAddButtonTextStyle
         )
     }
 }
@@ -106,7 +77,7 @@ fun CircleButton(
     ) {
         Text(
             text = text,
-            style = Typography.CircleButtonText,
+            style = Typography.circleButtonTextStyle,
         )
     }
 }
@@ -117,7 +88,7 @@ fun NameChangeToggleButton(
     text2: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: Calculator,
+    viewModel: CalculatorViewModel,
 ) {
     val isToggled by viewModel.changeMode.observeAsState()
 //    viewModel.toggleChangeMode()
@@ -134,7 +105,7 @@ fun NameChangeToggleButton(
     ) {
         Text(
             text = if (isToggled == true) text2 else text1,
-            style = Typography.NameChangeToggleButton,
+            style = Typography.nameChangeToggleButtonStyle,
         )
     }
 }
@@ -169,7 +140,7 @@ fun PersonSelectButton(
         if (!isDisabled) {
             Text(
                 text = text,
-                style = Typography.PersonSelectButton,
+                style = Typography.personSelectButtonStyle,
             )
         }
     }
@@ -191,7 +162,7 @@ fun ReceiptAddButton(
     ) {
         Text(
             text = text,
-            style = Typography.ReceiptAddButtonText,
+            style = Typography.receiptAddButtonTextStyle,
         )
     }
 }
@@ -207,7 +178,7 @@ fun ReceiptOpenCloseButton(
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
-            text = if (flag) text1 else text2, style = Typography.ReceiptOpenCloseButtonText
+            text = if (flag) text1 else text2, style = Typography.receiptOpenCloseButtonTextStyle
         )
     }
 }
@@ -229,7 +200,7 @@ fun FunctionButton(
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Text(text = text, style = Typography.FunctionButtonText)
+        Text(text = text, style = Typography.functionButtonTextStyle)
     }
 }
 
@@ -245,10 +216,12 @@ fun CalculateButton(
             .width(216.dp)
             .height(105.dp),
         shape = Shape.RoundedCRectangle,
-        colors = basicButtonColor(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Gray1, contentColor = Color.White
+        ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Text(text = text, style = Typography.CalculatorButtonText)
+        Text(text = text, style = Typography.calculatorButtonTextStyle)
     }
 }
 
@@ -268,7 +241,7 @@ fun DialogButton(
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Text(text = text, style = Typography.DialogButtonText)
+        Text(text = text, style = Typography.dialogButtonTextStyle)
     }
 }
 

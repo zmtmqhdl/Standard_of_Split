@@ -1,38 +1,27 @@
 package com.example.standardofsplit.domain.useCase
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class StartUseCase @Inject constructor() {
-    private val _personCount = MutableStateFlow(DEFAULT_PERSON_COUNT)
-    val personCount: StateFlow<Int> = _personCount.asStateFlow()
 
-    fun incrementPersonCount(): Boolean {
-        val currentCount = _personCount.value
+    fun incrementPersonCount(currentCount: Int): Int {
         return if (currentCount < MAX_PERSON_COUNT) {
-            _personCount.value = currentCount + 1
-            true
+            currentCount + 1
         } else {
-            false
+            currentCount
         }
     }
 
-    fun decrementPersonCount(): Boolean {
-        val currentCount = _personCount.value
+    fun decrementPersonCount(currentCount: Int): Int {
         return if (currentCount > MIN_PERSON_COUNT) {
-            _personCount.value = currentCount - 1
-            true
+            currentCount - 1
         } else {
-            false
+            currentCount
         }
     }
 
     companion object {
-        const val DEFAULT_PERSON_COUNT = 2
         const val MIN_PERSON_COUNT = 2
         const val MAX_PERSON_COUNT = 8
     }
 }
-

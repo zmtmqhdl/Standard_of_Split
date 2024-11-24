@@ -11,26 +11,29 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
+import com.example.standardofsplit.presentation.event.ReceiptEvent
 import com.example.standardofsplit.presentation.ui.component.*
-import com.example.standardofsplit.presentation.viewModel.Receipt
+import com.example.standardofsplit.presentation.ui.theme.Typography
+import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReceiptScreen(
-    receipt: Receipt, onNext: () -> Unit, onBack: () -> Unit
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    viewModel: ReceiptViewModel = hiltViewModel()
 ) {
-    val receipts = receipt.receipts.observeAsState(initial = emptyList())
+    val receipts by viewModel.receipts.collectAsState()
     val dialogStates = remember { DialogStates() }
     val selectedIndices = remember { SelectedIndices() }
 
@@ -39,18 +42,18 @@ fun ReceiptScreen(
     }
 
     ReceiptContent(
-        receipts = receipts.value,
+        receipts = receipts,
         dialogStates = dialogStates,
         selectedIndices = selectedIndices,
-        receipt = receipt,
+        onEvent = viewModel::onEvent,
         onNext = onNext
     )
 
     HandleDialogs(
-        receipts = receipts.value,
+        receipts = receipts,
         dialogStates = dialogStates,
         selectedIndices = selectedIndices,
-        receipt = receipt
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -62,8 +65,8 @@ private class DialogStates {
 }
 
 private class SelectedIndices {
-    var receiptIndex by mutableStateOf(-1)
-    var receiptIIndex by mutableStateOf(-1)
+    var selectedReceiptIndex by mutableStateOf(-1)
+    var selectedItemIndex by mutableStateOf(-1)
 }
 
 @Composable
@@ -71,7 +74,7 @@ private fun ReceiptContent(
     receipts: List<ReceiptClass>,
     dialogStates: DialogStates,
     selectedIndices: SelectedIndices,
-    receipt: Receipt,
+    onEvent: (ReceiptEvent) -> Unit,
     onNext: () -> Unit
 ) {
     val context = LocalContext.current
@@ -91,7 +94,7 @@ private fun ReceiptContent(
                     receipts = receipts,
                     dialogStates = dialogStates,
                     selectedIndices = selectedIndices,
-                    receipt = receipt
+                    onEvent = onEvent
                 )
             }
         }
@@ -102,9 +105,11 @@ private fun ReceiptContent(
                 .fillMaxWidth()
                 .padding(bottom = 50.dp), contentAlignment = Alignment.Center
         ) {
-            NextButton(
+            SubmitButton(
+                text = "정산 시작",
                 onClick = {
-                    if (receipt.check()) {
+                    onEvent(ReceiptEvent.CheckReceipts)
+                    if (receipts.any { it.productName.isNotEmpty() }) {
                         onNext()
                     } else if (!isToastShowing) {
                         isToastShowing = true
@@ -113,7 +118,7 @@ private fun ReceiptContent(
                             message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다."
                         )
                         MainScope().launch {
-                            kotlinx.coroutines.delay(3000)
+                            kotlinx.coroutines.delay(2000)
                             isToastShowing = false
                         }
                     }
@@ -128,53 +133,64 @@ private fun HandleDialogs(
     receipts: List<ReceiptClass>,
     dialogStates: DialogStates,
     selectedIndices: SelectedIndices,
-    receipt: Receipt
+    onEvent: (ReceiptEvent) -> Unit
 ) {
     if (dialogStates.addDialog) {
-        Receipt_Add_Dialog(onDismiss = { dialogStates.addDialog = false },
-            onConfirm = { newproductname, newprice, newquantity ->
-                receipt.updateAddReceipt(
-                    selectedIndices.receiptIndex, newproductname, newquantity, newprice
-                )
+        Receipt_Add_Dialog(
+            onDismiss = { dialogStates.addDialog = false },
+            onConfirm = { productName, price, quantity ->
+                onEvent(ReceiptEvent.AddReceiptItem(
+                    index = selectedIndices.selectedReceiptIndex,
+                    productName = productName,
+                    productQuantity = quantity,
+                    productPrice = price
+                ))
                 dialogStates.addDialog = false
-            })
+            }
+        )
     }
 
     if (dialogStates.nameDialog) {
-        Receipt_Name_Dialog(onDismiss = { dialogStates.nameDialog = false },
+        Receipt_Name_Dialog(
+            onDismiss = { dialogStates.nameDialog = false },
             onConfirm = { newName ->
-                receipt.updateReceiptName(selectedIndices.receiptIndex, newName)
+                onEvent(ReceiptEvent.UpdateReceiptName(
+                    index = selectedIndices.selectedReceiptIndex,
+                    newName = newName
+                ))
                 dialogStates.nameDialog = false
             },
             onDelete = {
-                receipt.deleteReceipt(selectedIndices.receiptIndex)
+                onEvent(ReceiptEvent.DeleteReceipt(selectedIndices.selectedReceiptIndex))
                 dialogStates.nameDialog = false
             },
-            name = receipts[selectedIndices.receiptIndex].PlaceName
+            name = receipts[selectedIndices.selectedReceiptIndex].placeName
         )
     }
 
     if (dialogStates.changeDialog) {
-        Receipt_Change_Dialog(onDismiss = { dialogStates.changeDialog = false },
-            onConfirm = { newproductname, newprice, newquantity ->
-                receipt.updateReceiptDetail(
-                    selectedIndices.receiptIndex,
-                    selectedIndices.receiptIIndex,
-                    newproductname,
-                    newquantity,
-                    newprice
-                )
+        Receipt_Change_Dialog(
+            onDismiss = { dialogStates.changeDialog = false },
+            onConfirm = { productName, price, quantity ->
+                onEvent(ReceiptEvent.UpdateReceiptDetail(
+                    index = selectedIndices.selectedReceiptIndex,
+                    itemIndex = selectedIndices.selectedItemIndex,
+                    productName = productName,
+                    productQuantity = quantity,
+                    productPrice = price
+                ))
                 dialogStates.changeDialog = false
             },
             onDelete = {
-                receipt.deleteReceiptItem(
-                    selectedIndices.receiptIndex, selectedIndices.receiptIIndex
-                )
+                onEvent(ReceiptEvent.DeleteReceiptItem(
+                    receiptIndex = selectedIndices.selectedReceiptIndex,
+                    itemIndex = selectedIndices.selectedItemIndex
+                ))
                 dialogStates.changeDialog = false
             },
-            productName = receipts[selectedIndices.receiptIndex].ProductName[selectedIndices.receiptIIndex],
-            price = receipts[selectedIndices.receiptIndex].ProductQuantity[selectedIndices.receiptIIndex],
-            quantity = receipts[selectedIndices.receiptIndex].ProductPrice[selectedIndices.receiptIIndex]
+            productName = receipts[selectedIndices.selectedReceiptIndex].productName[selectedIndices.selectedItemIndex],
+            price = receipts[selectedIndices.selectedReceiptIndex].productQuantity[selectedIndices.selectedItemIndex],
+            quantity = receipts[selectedIndices.selectedReceiptIndex].productPrice[selectedIndices.selectedItemIndex]
         )
     }
 
@@ -182,9 +198,13 @@ private fun HandleDialogs(
         Receipt_New_Dialog(
             onDismiss = { dialogStates.newDialog = false },
             onConfirm = { newName ->
-                val newReceipt = ReceiptClass(ReceiptNumber = receipts.size)
-                newReceipt.PlaceName = newName
-                receipt.addReceipt(newReceipt)
+                val newReceipt = ReceiptClass(
+                    placeName = newName,
+                    productName = mutableListOf(),
+                    productPrice = mutableListOf(),
+                    productQuantity = mutableListOf()
+                )
+                onEvent(ReceiptEvent.AddReceipt(newReceipt))
                 dialogStates.newDialog = false
             }
         )
@@ -196,7 +216,7 @@ private fun ReceiptList(
     receipts: List<ReceiptClass>,
     dialogStates: DialogStates,
     selectedIndices: SelectedIndices,
-    receipt: Receipt
+    onEvent: (ReceiptEvent) -> Unit
 ) {
     val expandedStates = remember { mutableStateListOf<Boolean>() }
 
@@ -206,33 +226,35 @@ private fun ReceiptList(
             .padding(top = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(receipts) { index, receipt ->
+        itemsIndexed(receipts) { receiptIndex, receipt ->
             expandedStates.add(false)
-            val expanded = expandedStates[index]
+            val isExpanded = expandedStates[receiptIndex]
             val totalReceiptCost = formatNumberWithCommas(
-                receipts[index].ProductPrice.zip(receipts[index].ProductQuantity) { price, quantity ->
+                receipts[receiptIndex].productPrice.zip(receipts[receiptIndex].productQuantity) { price, quantity ->
                     price.toInt() * quantity.toInt()
                 }.sum().toString()
             )
 
-            ReceiptCard(receipt = receipt,
-                expanded = expanded,
+            ReceiptCard(
+                receipt = receipt,
+                expanded = isExpanded,
                 totalReceiptCost = totalReceiptCost,
                 onNameClick = {
-                    selectedIndices.receiptIndex = index
+                    selectedIndices.selectedReceiptIndex = receiptIndex
                     dialogStates.nameDialog = true
                 },
-                onExpandClick = { expandedStates[index] = !expanded },
-                onItemClick = { iindex ->
-                    selectedIndices.receiptIndex = index
-                    selectedIndices.receiptIIndex = iindex
+                onExpandClick = { expandedStates[receiptIndex] = !isExpanded },
+                onItemClick = { itemIndex ->
+                    selectedIndices.selectedReceiptIndex = receiptIndex
+                    selectedIndices.selectedItemIndex = itemIndex
                     dialogStates.changeDialog = true
                 },
                 onAddClick = {
-                    selectedIndices.receiptIndex = index
-                    selectedIndices.receiptIIndex = receipts[index].ProductPrice.size - 1
+                    selectedIndices.selectedReceiptIndex = receiptIndex
+                    selectedIndices.selectedItemIndex = receipts[receiptIndex].productPrice.size - 1
                     dialogStates.addDialog = true
-                })
+                }
+            )
         }
 
         item {
@@ -276,7 +298,7 @@ private fun ReceiptCard(
                 .padding(16.dp)
         ) {
             ReceiptHeader(
-                placeName = receipt.PlaceName,
+                placeName = receipt.placeName,
                 totalCost = totalReceiptCost,
                 expanded = expanded,
                 onNameClick = onNameClick,
@@ -329,10 +351,10 @@ private fun ReceiptDetails(
         ReceiptColumnHeaders()
         Divider()
 
-        receipt.ProductPrice.indices.forEach { i ->
-            ReceiptItem(productName = receipt.ProductName[i],
-                price = receipt.ProductPrice[i],
-                quantity = receipt.ProductQuantity[i],
+        receipt.productPrice.indices.forEach { i ->
+            ReceiptItem(productName = receipt.productName[i],
+                price = receipt.productPrice[i],
+                quantity = receipt.productQuantity[i],
                 onClick = { onItemClick(i) })
         }
 
@@ -359,26 +381,17 @@ private fun ReceiptColumnHeaders() {
         Text(
             text = "상품명",
             modifier = Modifier.weight(1f),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 18.sp
+            style = Typography.ReceiptColumnHeaderTextStyle
         )
         Text(
             text = "단가 (수량)",
             modifier = Modifier.weight(2f),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 18.sp
+            style = Typography.ReceiptColumnHeaderTextStyle
         )
         Text(
             text = "금액",
             modifier = Modifier.weight(1f),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 18.sp
+            style = Typography.ReceiptColumnHeaderTextStyle
         )
     }
 }
@@ -425,12 +438,4 @@ private fun ReceiptItem(
             )
         }
     }
-}
-
-@Composable
-private fun NextButton(onClick: () -> Unit) {
-    SubmitButton(
-        text = "정산 시작",
-        onClick = onClick,
-    )
 }

@@ -1,26 +1,29 @@
 package com.example.standardofsplit.presentation.activity
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.standardofsplit.presentation.ui.navigator.Navigator
 import com.example.standardofsplit.presentation.ui.screen.*
 import com.example.standardofsplit.presentation.ui.theme.StandardOfSplitTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
         setContent {
             StandardOfSplitTheme {
-                AppNavigation()
+                Navigation()
             }
         }
     }
@@ -32,30 +35,32 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun AppNavigation() {
+private fun Navigation() {
     val navController = rememberNavController()
+    val navigator = remember { Navigator(navController) }
 
     NavHost(navController = navController, startDestination = Screen.Start.route) {
         composable(Screen.Start.route) {
             StartScreen(
-                onNext = { navController.navigate(Screen.Receipt.route) }
+                onNext = { navigator.navigateToReceipt() },
+                modifier = Modifier
             )
         }
         composable(Screen.Receipt.route) {
             ReceiptScreen(
-                onNext = { navController.navigate(Screen.Calculator.route) },
-                onBack = { navController.navigate(Screen.Start.route) }
+                onNext = { navigator.navigateToCalculator() },
+                onBack = { navigator.navigateToStart() }
             )
         }
         composable(Screen.Calculator.route) {
             CalculatorScreen(
-                onNext = { navController.navigate(Screen.Result.route) },
-                onBack = { navController.navigate(Screen.Receipt.route) }
+                onNext = { navigator.navigateToResult() },
+                onBack = { navigator.navigateToReceipt() }
             )
         }
         composable(Screen.Result.route) {
             ResultScreen(
-                onBack = { navController.navigate(Screen.Calculator.route) }
+                onBack = { navigator.navigateToCalculator() }
             )
         }
     }

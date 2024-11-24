@@ -41,33 +41,33 @@ import com.example.standardofsplit.presentation.ui.component.PersonSelectButton
 import com.example.standardofsplit.presentation.ui.component.NameChangeToggleButton
 import com.example.standardofsplit.presentation.ui.component.formatNumberWithCommas
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
-import com.example.standardofsplit.presentation.viewModel.Calculator
-import com.example.standardofsplit.presentation.viewModel.Receipt
-import com.example.standardofsplit.presentation.viewModel.Start
+import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
+import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
+import com.example.standardofsplit.presentation.viewModel.StartViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun CalculatorScreen(
-    calculator: Calculator, start: Start, receipt: Receipt, onNext: () -> Unit, onBack: () -> Unit
+    calculator: CalculatorViewModel, startViewModel: StartViewModel, receiptViewModel: ReceiptViewModel, onNext: () -> Unit, onBack: () -> Unit
 ) {
 
     val isToggled by calculator.changeMode.observeAsState()
     val nameChangeDialog = remember { mutableStateOf(false) }
 
-    val ps by start.personCount.observeAsState(2)
+    val ps by startViewModel.personCount.observeAsState(2)
 
     val buttonPermission by calculator.buttonPermissions.observeAsState(emptyMap())
     val buttonName by calculator.buttonNames.observeAsState(emptyMap())
 
-    val receipts by receipt.receipts.observeAsState(emptyList<ReceiptClass>())
+    val receipts by receiptViewModel.receipts.observeAsState(emptyList<ReceiptClass>())
 
     val Key by calculator.Key.observeAsState(0)
     val KeyKey by calculator.KeyKey.observeAsState(0)
     var total by remember {
         mutableStateOf(
-            formatNumberWithCommas((receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
+            formatNumberWithCommas((receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())
         )
     }
 
@@ -95,16 +95,16 @@ fun CalculatorScreen(
         calculator.updateButtonNamesBasedOnPermissions()
         
         if (receipts.isNotEmpty() && Key < receipts.size) {
-            calculator.updateCurrentReceiptSize(receipts[Key].ProductPrice.size)
+            calculator.updateCurrentReceiptSize(receipts[Key].productPrice.size)
             
             if (Key > 0) {
-                calculator.updatePreviousReceiptSize(receipts[Key - 1].ProductPrice.size)
+                calculator.updatePreviousReceiptSize(receipts[Key - 1].productPrice.size)
             }
             
-            if (KeyKey < receipts[Key].ProductPrice.size) {
+            if (KeyKey < receipts[Key].productPrice.size) {
                 total = formatNumberWithCommas(
-                    (receipts[Key].ProductQuantity[KeyKey].toInt() *
-                            receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                    (receipts[Key].productQuantity[KeyKey].toInt() *
+                            receipts[Key].productPrice[KeyKey].toInt()).toString()
                 )
             }
         }
@@ -160,7 +160,7 @@ fun CalculatorScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = receipts[Key].PlaceName,
+                    text = receipts[Key].placeName,
                     fontSize = 20.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
@@ -168,7 +168,7 @@ fun CalculatorScreen(
                 )
 
                 Text(
-                    text = receipts[Key].ProductName[KeyKey],
+                    text = receipts[Key].productName[KeyKey],
                     fontSize = 48.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
@@ -350,10 +350,10 @@ fun CalculatorScreen(
                             calculator.reDo()
                             if (receipts.isNotEmpty()) {
                                 calculator.setKey(receipts.size - 1)
-                                calculator.setKeyKey(receipts.last().ProductPrice.size - 1)
+                                calculator.setKeyKey(receipts.last().productPrice.size - 1)
                                 total = formatNumberWithCommas(
-                                    (receipts[Key].ProductQuantity[KeyKey].toInt() *
-                                     receipts[Key].ProductPrice[KeyKey].toInt()).toString()
+                                    (receipts[Key].productQuantity[KeyKey].toInt() *
+                                     receipts[Key].productPrice[KeyKey].toInt()).toString()
                                 )
                             }
                         } else {
@@ -524,23 +524,23 @@ fun CalculatorScreen(
                                 calculator.resetButtonStates()
                                 calculator.updatePersonPay(
                                     payList,
-                                    receipts[Key].PlaceName,
-                                    receipts[Key].ProductName[KeyKey],
-                                    receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()
+                                    receipts[Key].placeName,
+                                    receipts[Key].productName[KeyKey],
+                                    receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()
                                 )
                                 payList.clear()
 
-                                if (Key == receipts.size - 1 && KeyKey == receipts[Key].ProductPrice.size - 1) {
+                                if (Key == receipts.size - 1 && KeyKey == receipts[Key].productPrice.size - 1) {
                                     isLastProduct.value = true
                                     showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
                                 } else {
                                     calculator.incrementKeyKey()
-                                    if (KeyKey >= receipts[Key].ProductPrice.size) {
+                                    if (KeyKey >= receipts[Key].productPrice.size) {
                                         calculator.resetKeyKey()
                                         calculator.incrementKey()
                                     }
                                     total = formatNumberWithCommas(
-                                        (receipts[Key].ProductQuantity[KeyKey].toInt() * receipts[Key].ProductPrice[KeyKey].toInt()).toString())
+                                        (receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())
                                 }
                             } else {
                                 showToastIfNotShowing("최소 1명 이상을 선택해주세요.")

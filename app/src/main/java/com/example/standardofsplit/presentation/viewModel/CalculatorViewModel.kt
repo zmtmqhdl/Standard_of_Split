@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.math.ceil
 
-class Calculator : ViewModel() {
+class CalculatorViewModel : ViewModel() {
 
     private val _buttonStates = MutableLiveData(List(9) { false })
     val buttonStates: LiveData<List<Boolean>> = _buttonStates

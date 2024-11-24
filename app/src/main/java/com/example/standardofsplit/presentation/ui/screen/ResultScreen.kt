@@ -24,13 +24,13 @@ import androidx.compose.ui.unit.sp
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
 import com.example.standardofsplit.presentation.ui.component.Receipt_Detail_Dialog
 import com.example.standardofsplit.presentation.ui.component.Reset_Confirm_Dialog
-import com.example.standardofsplit.presentation.viewModel.Calculator
-import com.example.standardofsplit.presentation.viewModel.Start
+import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
+import com.example.standardofsplit.presentation.viewModel.StartViewModel
 
 @Composable
 fun ResultScreen(
-    start: Start,
-    calculator: Calculator,
+    startViewModel: StartViewModel,
+    calculator: CalculatorViewModel,
     onBack: () -> Unit
 ) {
     var showResetDialog by remember { mutableStateOf(false) }
@@ -45,7 +45,7 @@ fun ResultScreen(
         showResetDialog = true
     }
 
-    val personCount by start.personCount.observeAsState(2)
+    val personCount by startViewModel.personCount.observeAsState(2)
     val personPayMap by calculator.personPay.observeAsState(mutableMapOf())
     val buttonNames by calculator.buttonNames.observeAsState(emptyMap())
 
