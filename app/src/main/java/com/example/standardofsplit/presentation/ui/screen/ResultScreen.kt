@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
 import com.example.standardofsplit.presentation.ui.component.Receipt_Detail_Dialog
 import com.example.standardofsplit.presentation.ui.component.Reset_Confirm_Dialog
@@ -29,25 +31,26 @@ import com.example.standardofsplit.presentation.viewModel.StartViewModel
 
 @Composable
 fun ResultScreen(
-    startViewModel: StartViewModel,
-    calculator: CalculatorViewModel,
     onBack: () -> Unit
 ) {
+    val startViewModel: StartViewModel = hiltViewModel()
+    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
+
     var showResetDialog by remember { mutableStateOf(false) }
     var showDetailDialog by remember { mutableStateOf(false) }
     var selectedPerson by remember { mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null) }
     
     LaunchedEffect(Unit) {
-        calculator.updatePersonPay()
+        calculatorViewModel.updatePersonPay()
     }
     
     BackHandler {
         showResetDialog = true
     }
 
-    val personCount by startViewModel.personCount.observeAsState(2)
-    val personPayMap by calculator.personPay.observeAsState(mutableMapOf())
-    val buttonNames by calculator.buttonNames.observeAsState(emptyMap())
+    val personCount by startViewModel.personCount.collectAsState(2)
+    val personPayMap by calculatorViewModel.personPay.observeAsState(mutableMapOf())
+    val buttonNames by calculatorViewModel.buttonNames.observeAsState(emptyMap())
 
     Log.d("로그", personPayMap.values.toString())
     val personTotals = (1..personCount).map { personIndex ->
@@ -135,7 +138,7 @@ fun ResultScreen(
         Reset_Confirm_Dialog(
             onDismiss = { showResetDialog = false },
             onConfirm = {
-                calculator.resetPersonPay()
+                calculatorViewModel.resetPersonPay()
                 showResetDialog = false
                 onBack()
             }

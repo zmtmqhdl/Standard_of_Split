@@ -1,6 +1,8 @@
 package com.example.standardofsplit.presentation.ui.theme
 
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -81,7 +83,7 @@ object Typography {
     val firstTitleTextStyle = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 70.sp,
-        color = Color.White
+        color = Color.Orange
     )
 
     val secondTitleTextStyle = TextStyle(
@@ -100,5 +102,18 @@ object Typography {
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
         color = androidx.compose.ui.graphics.Color.White,
+    )
+
+    // 연구
+    private val BodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    )
+
+    val typography = Typography(
+        bodyLarge = BodyLarge,
     )
 }

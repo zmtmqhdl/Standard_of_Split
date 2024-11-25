@@ -66,8 +66,8 @@ private fun Navigation() {
 }
 
 sealed class Screen(val route: String) {
-    object Start : Screen("StartScreen")
-    object Receipt : Screen("ReceiptScreen")
-    object Calculator : Screen("CalculatorScreen")
-    object Result : Screen("ResultScreen")
+    data object Start : Screen("StartScreen")
+    data object Receipt : Screen("ReceiptScreen")
+    data object Calculator : Screen("CalculatorScreen")
+    data object Result : Screen("ResultScreen")
 }

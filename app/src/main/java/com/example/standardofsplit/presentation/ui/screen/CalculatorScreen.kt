@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.ui.component.Button_Name_Dialog
 import com.example.standardofsplit.presentation.ui.component.FunctionButton
@@ -50,21 +52,26 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CalculatorScreen(
-    calculator: CalculatorViewModel, startViewModel: StartViewModel, receiptViewModel: ReceiptViewModel, onNext: () -> Unit, onBack: () -> Unit
+    onNext: () -> Unit,
+    onBack: () -> Unit
 ) {
 
-    val isToggled by calculator.changeMode.observeAsState()
+    val startViewModel: StartViewModel = hiltViewModel()
+    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
+    val receiptViewModel: ReceiptViewModel = hiltViewModel()
+
+    val isToggled by calculatorViewModel.changeMode.observeAsState()
     val nameChangeDialog = remember { mutableStateOf(false) }
 
-    val ps by startViewModel.personCount.observeAsState(2)
+    val ps by startViewModel.personCount.collectAsState()
 
-    val buttonPermission by calculator.buttonPermissions.observeAsState(emptyMap())
-    val buttonName by calculator.buttonNames.observeAsState(emptyMap())
+    val buttonPermission by calculatorViewModel.buttonPermissions.observeAsState(emptyMap())
+    val buttonName by calculatorViewModel.buttonNames.observeAsState(emptyMap())
 
-    val receipts by receiptViewModel.receipts.observeAsState(emptyList<ReceiptClass>())
+    val receipts by receiptViewModel.receipts.collectAsState(emptyList<ReceiptClass>())
 
-    val Key by calculator.Key.observeAsState(0)
-    val KeyKey by calculator.KeyKey.observeAsState(0)
+    val Key by calculatorViewModel.Key.observeAsState(0)
+    val KeyKey by calculatorViewModel.KeyKey.observeAsState(0)
     var total by remember {
         mutableStateOf(
             formatNumberWithCommas((receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())
@@ -73,7 +80,7 @@ fun CalculatorScreen(
 
     val context = LocalContext.current
     var isToastShowing by remember { mutableStateOf(false) }
-    val showToast by calculator.showToastEvent.observeAsState()
+    val showToast by calculatorViewModel.showToastEvent.observeAsState()
 
     fun showToastIfNotShowing(message: String) {
         if (!isToastShowing) {
@@ -91,14 +98,14 @@ fun CalculatorScreen(
     }
 
     LaunchedEffect(ps, Key, KeyKey, showToast, receipts) {
-        calculator.updateButtonPermissions(ps)
-        calculator.updateButtonNamesBasedOnPermissions()
+        calculatorViewModel.updateButtonPermissions(ps)
+        calculatorViewModel.updateButtonNamesBasedOnPermissions()
         
         if (receipts.isNotEmpty() && Key < receipts.size) {
-            calculator.updateCurrentReceiptSize(receipts[Key].productPrice.size)
+            calculatorViewModel.updateCurrentReceiptSize(receipts[Key].productPrice.size)
             
             if (Key > 0) {
-                calculator.updatePreviousReceiptSize(receipts[Key - 1].productPrice.size)
+                calculatorViewModel.updatePreviousReceiptSize(receipts[Key - 1].productPrice.size)
             }
             
             if (KeyKey < receipts[Key].productPrice.size) {
@@ -111,7 +118,7 @@ fun CalculatorScreen(
         
         if (showToast == true) {
             showToastIfNotShowing("되돌릴 항목이 존재하지 않습니다.")
-            calculator._showToastEvent.value = false
+            calculatorViewModel._showToastEvent.value = false
         }
     }
 
@@ -119,17 +126,17 @@ fun CalculatorScreen(
 
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
-    val buttonStates by calculator.buttonStates.observeAsState(emptyList())
+    val buttonStates by calculatorViewModel.buttonStates.observeAsState(emptyList())
 
     val isLastProduct = remember { mutableStateOf(false) }
 
-    val isResetFromResult by calculator.isResetFromResult.observeAsState(false)
+    val isResetFromResult by calculatorViewModel.isResetFromResult.observeAsState(false)
 
     LaunchedEffect(Key, KeyKey, isResetFromResult) {
         if (Key == 0 && KeyKey == 0 && isResetFromResult) {
             payList.clear()
-            calculator.setChangeMode(false)
-            calculator.setResetFromResult(false)
+            calculatorViewModel.setChangeMode(false)
+            calculatorViewModel.setResetFromResult(false)
         }
     }
 
@@ -140,7 +147,7 @@ fun CalculatorScreen(
             onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.intValue = index
-                calculator.updateButtonName(selectedIndex.intValue.toString(), newName)
+                calculatorViewModel.updateButtonName(selectedIndex.intValue.toString(), newName)
                 nameChangeDialog.value = false
             },
             name = currentName,
@@ -228,7 +235,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 1
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(1)
+                                calculatorViewModel.toggleButtonState(1)
                                 if (1 !in payList) {
                                     payList.add(1)
                                 } else {
@@ -256,7 +263,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 2
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(2)
+                                calculatorViewModel.toggleButtonState(2)
                                 if (2 !in payList) {
                                     payList.add(2)
                                 } else {
@@ -272,7 +279,7 @@ fun CalculatorScreen(
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    NameChangeToggleButton(text1 = "OFF", text2 = "ON", onClick = {}, viewModel = calculator)
+                    NameChangeToggleButton(text1 = "OFF", text2 = "ON", onClick = {}, viewModel = calculatorViewModel)
                 }
             }
 
@@ -301,7 +308,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 3
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(3)
+                                calculatorViewModel.toggleButtonState(3)
                                 if (3 !in payList) {
                                     payList.add(3)
                                 } else {
@@ -328,7 +335,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 4
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(4)
+                                calculatorViewModel.toggleButtonState(4)
                                 if (4 !in payList) {
                                     payList.add(4)
                                 } else {
@@ -347,17 +354,17 @@ fun CalculatorScreen(
                     FunctionButton(text = "되돌리기", onClick = {
                         if (isLastProduct.value) {
                             isLastProduct.value = false
-                            calculator.reDo()
+                            calculatorViewModel.reDo()
                             if (receipts.isNotEmpty()) {
-                                calculator.setKey(receipts.size - 1)
-                                calculator.setKeyKey(receipts.last().productPrice.size - 1)
+                                calculatorViewModel.setKey(receipts.size - 1)
+                                calculatorViewModel.setKeyKey(receipts.last().productPrice.size - 1)
                                 total = formatNumberWithCommas(
                                     (receipts[Key].productQuantity[KeyKey].toInt() *
                                      receipts[Key].productPrice[KeyKey].toInt()).toString()
                                 )
                             }
                         } else {
-                            calculator.reDo()
+                            calculatorViewModel.reDo()
                         }
                     })
                 }
@@ -388,7 +395,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 5
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(5)
+                                calculatorViewModel.toggleButtonState(5)
                                 if (5 !in payList) {
                                     payList.add(5)
                                 } else {
@@ -415,7 +422,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 6
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(6)
+                                calculatorViewModel.toggleButtonState(6)
                                 if (6 !in payList) {
                                     payList.add(6)
                                 } else {
@@ -441,7 +448,7 @@ fun CalculatorScreen(
                                     if (i <= ps) {
                                         payList.add(i)
                                         if (!buttonStates[i]) {
-                                            calculator.toggleButtonState(i)
+                                            calculatorViewModel.toggleButtonState(i)
                                         }
                                     }
                                 }
@@ -476,7 +483,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 7
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(7)
+                                calculatorViewModel.toggleButtonState(7)
                                 if (7 !in payList) {
                                     payList.add(7)
                                 } else {
@@ -503,7 +510,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 8
                             }
                             if (isToggled == false) {
-                                calculator.toggleButtonState(8)
+                                calculatorViewModel.toggleButtonState(8)
                                 if (8 !in payList) {
                                     payList.add(8)
                                 } else {
@@ -521,8 +528,8 @@ fun CalculatorScreen(
                             onNext()
                         } else {
                             if (payList.isNotEmpty()) {
-                                calculator.resetButtonStates()
-                                calculator.updatePersonPay(
+                                calculatorViewModel.resetButtonStates()
+                                calculatorViewModel.updatePersonPay(
                                     payList,
                                     receipts[Key].placeName,
                                     receipts[Key].productName[KeyKey],
@@ -534,10 +541,10 @@ fun CalculatorScreen(
                                     isLastProduct.value = true
                                     showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
                                 } else {
-                                    calculator.incrementKeyKey()
+                                    calculatorViewModel.incrementKeyKey()
                                     if (KeyKey >= receipts[Key].productPrice.size) {
-                                        calculator.resetKeyKey()
-                                        calculator.incrementKey()
+                                        calculatorViewModel.resetKeyKey()
+                                        calculatorViewModel.incrementKey()
                                     }
                                     total = formatNumberWithCommas(
                                         (receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())

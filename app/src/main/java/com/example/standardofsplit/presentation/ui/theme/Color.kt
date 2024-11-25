@@ -10,4 +10,5 @@ object Color {
     val Yellow = Color(0xFFFFCC00)
     val Red = Color(0xFFFF3B30)
     val Green = Color(0xFF4BC759)
+    val Orange = Color(0xFFFF9500)
 }

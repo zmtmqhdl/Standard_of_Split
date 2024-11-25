@@ -31,7 +31,7 @@ fun SubmitButton(
             .width(223.dp)
             .height(53.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(Color.Yellow),
+        colors = ButtonDefaults.buttonColors(Color.Orange),
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
@@ -72,7 +72,7 @@ fun CircleButton(
         onClick = onClick,
         modifier = modifier.size(50.dp),
         shape = Shape.Circle,
-        colors = ButtonDefaults.buttonColors(Color.Gray1),
+        colors = ButtonDefaults.buttonColors(Color.Gray2),
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
