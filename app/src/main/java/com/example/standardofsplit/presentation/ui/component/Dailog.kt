@@ -21,9 +21,10 @@ import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import com.example.standardofsplit.presentation.ui.theme.Color
+import com.example.standardofsplit.presentation.ui.theme.Shape
+import com.example.standardofsplit.presentation.ui.theme.Typography
 
 private object DialogDefaults {
-    val shape = RoundedCornerShape(10.dp)
     val backgroundColor = Color.White
     val dialogSize = Modifier.wrapContentSize()
     val contentPadding = 20.dp
@@ -32,10 +33,30 @@ private object DialogDefaults {
 }
 
 @Composable
-private fun getTextFieldColors() = TextFieldDefaults.colors(
-    unfocusedIndicatorColor = Color.White,
-    focusedIndicatorColor = Color.White
-)
+fun InputField(
+    text: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Text(
+        text = text,
+        style = Typography.inputFieldHeadTextStyle
+    )
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .height(60.dp)
+            .fillMaxHeight(),
+        shape = Shape.RoundedCRectangle,
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.White,
+            focusedIndicatorColor = Color.White
+        ),
+        textStyle = Typography.inputFieldTextStyle
+    )
+    Spacer(modifier = Modifier.padding(0.5.dp))
+}
 
 @Composable
 fun Receipt_New_Dialog(
@@ -76,7 +97,7 @@ private fun DialogContainer(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = DialogDefaults.shape,
+            shape = Shape.RoundedCRectangle,
             color = DialogDefaults.backgroundColor,
             modifier = DialogDefaults.dialogSize
         ) {
@@ -118,31 +139,6 @@ private fun DialogButtons(
     }
 }
 
-@Composable
-fun InputField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Text(
-        text = label,
-        fontWeight = FontWeight.Bold,
-        color = Color.White,
-        fontSize = 18.sp
-    )
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        shape = DialogDefaults.shape,
-        modifier = Modifier
-            .height(60.dp)
-            .fillMaxHeight(),
-        colors = getTextFieldColors(),
-        textStyle = TextStyle(fontSize = 18.sp)
-    )
-    Spacer(modifier = Modifier.padding(0.5.dp))
-}
-
 @SuppressLint("DefaultLocale")
 fun formatNumberWithCommas(number: String): String {
     if (number.isEmpty()) return ""
@@ -161,7 +157,7 @@ fun Reset_Confirm_Dialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = DialogDefaults.shape,
+            shape = Shape.RoundedCRectangle,
             color = DialogDefaults.backgroundColor,
             modifier = DialogDefaults.dialogSize
         ) {
@@ -399,7 +395,7 @@ fun Receipt_Detail_Dialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = DialogDefaults.shape,
+            shape = Shape.RoundedCRectangle,
             color = DialogDefaults.backgroundColor,
             modifier = Modifier
                 .fillMaxWidth()

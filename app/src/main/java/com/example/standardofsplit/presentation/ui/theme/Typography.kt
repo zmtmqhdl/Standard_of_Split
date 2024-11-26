@@ -1,8 +1,6 @@
 package com.example.standardofsplit.presentation.ui.theme
 
-import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -38,10 +36,16 @@ object Typography {
         color = Color.White
     )
 
-    val receiptAddButtonTextStyle = TextStyle(
+    val addButtonTextStyle = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         color = Color.White
+    )
+
+    val receiptHeadTextStyle = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        color = Color.White,
     )
 
     val receiptOpenCloseButtonTextStyle = TextStyle(
@@ -76,8 +80,8 @@ object Typography {
 
     val defaultTextStyle = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
-        color = Color.White
+        fontSize = 16.sp,
+        color = Color.Gray2
     )
 
     val firstTitleTextStyle = TextStyle(
@@ -104,16 +108,13 @@ object Typography {
         color = androidx.compose.ui.graphics.Color.White,
     )
 
-    // 연구
-    private val BodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+    val inputFieldHeadTextStyle = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        color = Color.White
     )
 
-    val typography = Typography(
-        bodyLarge = BodyLarge,
+    val inputFieldTextStyle = TextStyle(
+        fontSize = 18.sp,
     )
 }

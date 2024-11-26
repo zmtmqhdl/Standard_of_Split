@@ -49,10 +49,10 @@ fun ProductAddButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .width(20.dp)
-            .height(10.dp),
+            .width(80.dp)
+            .height(30.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(Color.Yellow),
+        colors = ButtonDefaults.buttonColors(Color.Gray2),
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
@@ -61,7 +61,6 @@ fun ProductAddButton(
     }
 }
 
-// 글씨 중앙 맞추기 고쳐야함
 @Composable
 fun CircleButton(
     text: String,
@@ -147,7 +146,7 @@ fun PersonSelectButton(
 }
 
 @Composable
-fun ReceiptAddButton(
+fun AddButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -155,14 +154,15 @@ fun ReceiptAddButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .width(50.dp)
-            .height(25.dp),
+            .width(110.dp)
+            .height(30.dp),
         shape = Shape.RoundedCRectangle,
+        colors = ButtonDefaults.buttonColors(Color.Gray2),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
             text = text,
-            style = Typography.receiptAddButtonTextStyle,
+            style = Typography.addButtonTextStyle,
         )
     }
 }
@@ -173,8 +173,11 @@ fun ReceiptOpenCloseButton(
 ) {
     ElevatedButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .width(130.dp)
+            .height(40.dp),
         shape = Shape.RoundedCRectangle,
+        colors = ButtonDefaults.buttonColors(Color.Gray2),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
@@ -280,7 +283,7 @@ fun Preview_PersonSelectButton() {
 @Preview
 @Composable
 fun Preview_ReceiptAddButton() {
-    ReceiptAddButton(text = "영수증 추가", onClick = {})
+    AddButton(text = "영수증 추가", onClick = {})
 }
 
 @Preview

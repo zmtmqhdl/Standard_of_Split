@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,24 +28,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.R
-import com.example.standardofsplit.presentation.event.StartEvent
 import com.example.standardofsplit.presentation.preview.Pixel8ProPreview
 import com.example.standardofsplit.presentation.ui.component.CircleButton
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 private fun PersonCountSelector(
-    onEvent: (StartEvent) -> Unit,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
     personCount: Int,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         CircleButton(
             text = "-",
-            onClick = { onEvent(StartEvent.OnDecrement) }
+            onClick = onDecrement
         )
         Text(
             text = "$personCount",
@@ -56,15 +53,16 @@ private fun PersonCountSelector(
         )
         CircleButton(
             text = "+",
-            onClick = { onEvent(StartEvent.OnIncrement) }
+            onClick = onIncrement
         )
     }
 }
 
 @Composable
 private fun StartScreenContent(
-    onEvent: (StartEvent) -> Unit,
     onNext: () -> Unit,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
     personCount: Int,
 ) {
     Column(
@@ -80,11 +78,17 @@ private fun StartScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PersonCountSelector(
-                onEvent = onEvent,
+                onIncrement = onIncrement,
+                onDecrement = onDecrement,
                 personCount = personCount,
             )
             Text(
                 text = "※ 인원 수를 선택해주세요 ※",
+                modifier = Modifier.padding(top = 5.dp),
+                style = Typography.defaultTextStyle
+            )
+            Text(
+                text = "2 ~ 8명",
                 style = Typography.defaultTextStyle
             )
         }
@@ -101,12 +105,10 @@ private fun StartScreenContent(
 fun StartScreen(
     onNext: () -> Unit,
 ) {
-    val startViewModel: StartViewModel = hiltViewModel()
-
-    val personCount by startViewModel.personCount.collectAsState()
+    val viewModel: StartViewModel = hiltViewModel()
+    val personCount by viewModel.personCount.collectAsState()
 
     val context = LocalContext.current
-    var isToastShowing by remember { mutableStateOf(false) }
     var backPressedTime by remember { mutableLongStateOf(0L) }
 
     BackHandler {
@@ -116,15 +118,6 @@ fun StartScreen(
             showCustomToast(context, "뒤로가기 키를 누르면 종료됩니다.")
         } else {
             (context as? AppCompatActivity)?.finish()
-        }
-    }
-
-    if (personCount !in 2..8 && !isToastShowing) {
-        isToastShowing = true
-        showCustomToast(context, "인원은 2 ~ 8명으로 설정 가능합니다.")
-        LaunchedEffect(Unit) {
-            delay(2000)
-            isToastShowing = false
         }
     }
 
@@ -157,9 +150,10 @@ fun StartScreen(
         }
     }
     StartScreenContent(
-        onEvent = startViewModel::onEvent,
-        onNext = onNext,
-        personCount = personCount
+        personCount = personCount,
+        onIncrement = viewModel::incrementCount,
+        onDecrement = viewModel::decrementCount,
+        onNext = onNext
     )
 }
 
@@ -168,7 +162,8 @@ fun StartScreen(
 @Composable
 fun Preview_PersonCountSelector() {
     PersonCountSelector(
-        onEvent = { },
+        onIncrement = { },
+        onDecrement = { },
         personCount = 5
     )
 }
@@ -177,7 +172,8 @@ fun Preview_PersonCountSelector() {
 @Composable
 fun Preview_StartScreenContent() {
     StartScreenContent(
-        onEvent = { },
+        onIncrement = { },
+        onDecrement = { },
         onNext = { },
         personCount = 5
     )

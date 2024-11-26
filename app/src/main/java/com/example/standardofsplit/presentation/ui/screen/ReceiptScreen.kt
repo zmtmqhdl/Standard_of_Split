@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,17 +39,20 @@ private fun ReceiptColumnHeaders() {
         Text(
             text = "상품명",
             modifier = Modifier.weight(1f),
-            style = Typography.receiptColumnHeaderTextStyle
+            style = Typography.receiptColumnHeaderTextStyle,
+            textAlign = TextAlign.Left
         )
         Text(
             text = "단가 (수량)",
-            modifier = Modifier.weight(2f),
-            style = Typography.receiptColumnHeaderTextStyle
+            modifier = Modifier.weight(1f),
+            style = Typography.receiptColumnHeaderTextStyle,
+            textAlign = TextAlign.Center
         )
         Text(
             text = "금액",
             modifier = Modifier.weight(1f),
-            style = Typography.receiptColumnHeaderTextStyle
+            style = Typography.receiptColumnHeaderTextStyle,
+            textAlign = TextAlign.Right
         )
     }
 }
@@ -78,17 +82,20 @@ private fun ReceiptItem(
             Text(
                 text = productName,
                 modifier = Modifier.weight(1f),
-                style = Typography.receiptItemTextStyle
+                style = Typography.receiptItemTextStyle,
+                textAlign = TextAlign.Left
             )
             Text(
                 text = "$formattedPrice ($quantity)",
-                modifier = Modifier.weight(2f),
-                style = Typography.receiptItemTextStyle
+                modifier = Modifier.weight(1f),
+                style = Typography.receiptItemTextStyle,
+                textAlign = TextAlign.Center
             )
             Text(
                 text = formattedTotalCost,
                 modifier = Modifier.weight(1f),
-                style = Typography.receiptItemTextStyle
+                style = Typography.receiptItemTextStyle,
+                textAlign = TextAlign.Right
             )
         }
     }
@@ -242,8 +249,7 @@ fun ReceiptScreen(
                             Text(
                                 text = "${receipt.placeName} (${totalCost}원)",
                                 modifier = Modifier.clickable { onNameClick(index) },
-                                color = Color.White,
-                                fontSize = 18.sp
+                                style = Typography.receiptHeadTextStyle
                             )
                             ReceiptOpenCloseButton(
                                 text1 = "영수증 접기",
@@ -271,7 +277,7 @@ fun ReceiptScreen(
                                         .padding(top = 10.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    ProductAddButton(
+                                    AddButton(
                                         text = "상품 추가",
                                         onClick = { onAddClick(index) }
                                     )
@@ -288,7 +294,7 @@ fun ReceiptScreen(
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    ReceiptAddButton(
+                    AddButton(
                         text = "영수증 추가",
                         onClick = onNewClick
                     )

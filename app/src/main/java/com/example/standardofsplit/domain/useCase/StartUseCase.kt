@@ -3,7 +3,6 @@ package com.example.standardofsplit.domain.useCase
 import javax.inject.Inject
 
 class StartUseCase @Inject constructor() {
-
     fun incrementPersonCount(currentCount: Int): Int {
         return if (currentCount < MAX_PERSON_COUNT) {
             currentCount + 1
