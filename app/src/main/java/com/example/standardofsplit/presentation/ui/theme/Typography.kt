@@ -68,7 +68,7 @@ object Typography {
 
     val dialogButtonTextStyle = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 13.sp,
+        fontSize = 17.sp,
         color = Color.White
     )
 

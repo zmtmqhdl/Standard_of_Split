@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -23,14 +23,6 @@ import kotlinx.coroutines.launch
 import com.example.standardofsplit.presentation.ui.theme.Color
 import com.example.standardofsplit.presentation.ui.theme.Shape
 import com.example.standardofsplit.presentation.ui.theme.Typography
-
-private object DialogDefaults {
-    val backgroundColor = Color.White
-    val dialogSize = Modifier.wrapContentSize()
-    val contentPadding = 20.dp
-    val buttonSpacing = 8.dp
-    val topPadding = 0.dp
-}
 
 @Composable
 fun InputField(
@@ -47,96 +39,15 @@ fun InputField(
         onValueChange = onValueChange,
         modifier = Modifier
             .height(60.dp)
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .padding(bottom = 0.5.dp),
         shape = Shape.RoundedCRectangle,
         colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = Color.White,
-            focusedIndicatorColor = Color.White
+            unfocusedIndicatorColor = Color.Gray2,
+            focusedIndicatorColor = Color.Gray2
         ),
         textStyle = Typography.inputFieldTextStyle
     )
-    Spacer(modifier = Modifier.padding(0.5.dp))
-}
-
-@Composable
-fun Receipt_New_Dialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var newName by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    var isToastShowing by remember { mutableStateOf(false) }
-
-    DialogContainer(onDismiss = onDismiss) {
-        InputField("영수증 이름", newName) { newName = it }
-        DialogButtons(
-            onDismiss = onDismiss,
-            onConfirm = {
-                if (newName.length != 0) {
-                    onConfirm(newName)
-                } else if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(
-                        context = context,
-                        message = "영수증 이름을 작성해주세요."
-                    )
-                    MainScope().launch {
-                        kotlinx.coroutines.delay(2000)
-                        isToastShowing = false
-                    }
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun DialogContainer(
-    onDismiss: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = Shape.RoundedCRectangle,
-            color = DialogDefaults.backgroundColor,
-            modifier = DialogDefaults.dialogSize
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(DialogDefaults.contentPadding)
-            ) {
-                content()
-            }
-        }
-    }
-}
-
-@Composable
-private fun DialogButtons(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    onDelete: (() -> Unit)? = null
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = DialogDefaults.topPadding),
-        horizontalArrangement = Arrangement.End
-    ) {
-        if (onDelete != null) {
-            DialogButton(
-                text = "삭제",
-                onClick = onDelete,
-            )
-            Spacer(modifier = Modifier.width(50.dp))
-        }
-        DialogButton("취소", onClick = onDismiss)
-        Spacer(modifier = Modifier.width(DialogDefaults.buttonSpacing))
-        DialogButton(
-            text = "확인",
-            onClick = onConfirm,
-        )
-    }
 }
 
 @SuppressLint("DefaultLocale")
@@ -151,6 +62,152 @@ fun formatNumberWithCommas(number: String): String {
 }
 
 @Composable
+private fun DialogContainer(
+    onDismiss: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            modifier = Modifier.wrapContentSize(),
+            shape = Shape.RoundedCRectangle,
+            color = Color.Gray2,
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun DialogButtons(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    onDelete: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween  // 변경
+    ) {
+        Box(modifier = Modifier.weight(1f)) {
+            if (onDelete != null) {
+                DialogDeleteButton(
+                    text = "삭제",
+                    onClick = onDelete,
+                )
+            }
+        }
+        Row {
+            DialogButton(
+                text = "취소",
+                onClick = onDismiss
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            DialogButton(
+                text = "확인",
+                onClick = onConfirm
+            )
+        }
+    }
+}
+
+@Composable
+fun ReceiptAddDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    onShowToast: (String) -> Unit
+) {
+    var newName by remember { mutableStateOf("") }
+    
+    DialogContainer(onDismiss = onDismiss) {
+        InputField(text = "영수증 이름", value = newName, onValueChange = { newName = it })
+        DialogButtons(
+            onDismiss = onDismiss,
+            onConfirm = {
+                if (newName.isNotEmpty()) {
+                    onConfirm(newName)
+                } else {
+                    onShowToast("영수증 이름을 작성해주세요.")
+                }
+            }
+        )
+    }
+}
+
+// istoastshowing 지워야함
+@Composable
+fun ProductAddDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, String, String) -> Unit,
+    onShowToast: (String) -> Unit
+) {
+    var newName by remember { mutableStateOf("") }
+    var newPrice by remember { mutableStateOf("") }
+    var newQuantity by remember { mutableStateOf("") }
+
+    DialogContainer(onDismiss = onDismiss) {
+        InputField("상품명", newName) { newName = it }
+        InputField("단가", formatNumberWithCommas(newPrice)) { input ->
+            newPrice = input.replace(",", "").filter { it.isDigit() }
+        }
+        InputField("수량", newQuantity) { input ->
+            newQuantity = input.filter { it.isDigit() }
+        }
+        DialogButtons(
+            onDismiss = onDismiss,
+            onConfirm = {
+                if (newName.isNotEmpty() && newPrice.isNotEmpty() && newQuantity.isNotEmpty()) {
+                    onConfirm(newName, newPrice, newQuantity)
+                } else {
+                    onShowToast("모든 항목을 작성해주세요.")
+                }
+            }
+        )
+    }
+}
+
+// Preview
+
+@Preview
+@Composable
+fun Preview_InputField() {
+    var newName by remember { mutableStateOf("") }
+
+    InputField(text = "테스트", value = newName, onValueChange = { newName = it})
+}
+
+@Preview
+@Composable
+fun Preview_DialogContainer() {
+    DialogContainer(
+        onDismiss = { },
+        content = { }
+    )
+}
+
+@Preview
+@Composable
+fun Preview_DialogButtons() {
+    DialogButtons(
+        onDismiss = { },
+        onConfirm = { },
+        onDelete = { }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+@Composable
 fun Reset_Confirm_Dialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
@@ -158,8 +215,8 @@ fun Reset_Confirm_Dialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,
-            color = DialogDefaults.backgroundColor,
-            modifier = DialogDefaults.dialogSize
+            color = Color.White,
+            modifier = Modifier.wrapContentSize()
         ) {
             Column(
                 modifier = Modifier.width(280.dp),
@@ -241,46 +298,6 @@ fun Reset_Confirm_Dialog(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Receipt_Add_Dialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String, String, String) -> Unit,
-) {
-    var newproductname by remember { mutableStateOf("") }
-    var newprice by remember { mutableStateOf("") }
-    var newquantity by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    var isToastShowing by remember { mutableStateOf(false) }
-
-    DialogContainer(onDismiss = onDismiss) {
-        InputField("상품명", newproductname) { newproductname = it }
-        InputField("단가", formatNumberWithCommas(newprice)) { input ->
-            newprice = input.replace(",", "").filter { it.isDigit() }
-        }
-        InputField("수량", newquantity) { input ->
-            newquantity = input.filter { it.isDigit() }
-        }
-        DialogButtons(
-            onDismiss = onDismiss,
-            onConfirm = {
-                if (newproductname.isNotEmpty() && newprice.isNotEmpty() && newquantity.isNotEmpty()) {
-                    onConfirm(newproductname, newprice, newquantity)
-                } else if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(
-                        context = context,
-                        message = "모든 항목을 작성해주세요."
-                    )
-                    MainScope().launch {
-                        kotlinx.coroutines.delay(2000)
-                        isToastShowing = false
-                    }
-                }
-            }
-        )
     }
 }
 
@@ -396,7 +413,7 @@ fun Receipt_Detail_Dialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,
-            color = DialogDefaults.backgroundColor,
+            color = Color.White,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(600.dp)

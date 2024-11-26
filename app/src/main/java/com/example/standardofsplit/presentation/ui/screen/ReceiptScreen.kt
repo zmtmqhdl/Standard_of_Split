@@ -17,11 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
-import com.example.standardofsplit.presentation.event.ReceiptEvent
-import com.example.standardofsplit.presentation.state.ReceiptState
 import com.example.standardofsplit.presentation.ui.component.*
 import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
@@ -112,103 +109,105 @@ fun ReceiptScreen(
     val context = LocalContext.current
     val expandedStates = remember { mutableStateListOf<Boolean>() }
     var isToastShowing by remember { mutableStateOf(false) }
-    var dialogState by remember { mutableStateOf<ReceiptState>(ReceiptState.None) }
+    var showAddDialog by remember { mutableStateOf<Int?>(null) }
+    var showNameDialog by remember { mutableStateOf<Int?>(null) }
+    var showChangeDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var showNewDialog by remember { mutableStateOf(false) }
 
     BackHandler { onBack() }
 
-    when (dialogState) {
-        is ReceiptState.Add -> {
-            val state = dialogState as ReceiptState.Add
-            Receipt_Add_Dialog(
-                onDismiss = { dialogState = ReceiptState.None },
-                onConfirm = { productName, price, quantity ->
-                    viewModel.onEvent(ReceiptEvent.AddReceiptItem(
-                        index = state.receiptIndex,
-                        productName = productName,
-                        productQuantity = quantity,
-                        productPrice = price
-                    ))
-                    dialogState = ReceiptState.None
+    // 상품 추가 다이얼로그
+    showAddDialog?.let { index ->
+        ProductAddDialog(
+            onDismiss = { showAddDialog = null },
+            onConfirm = { productName, price, quantity ->
+                viewModel.addReceiptItem(
+                    index = index,
+                    productName = productName,
+                    productQuantity = quantity,
+                    productPrice = price
+                )
+                showAddDialog = null
+            },
+            onShowToast = { message ->
+                if (!isToastShowing) {
+                    isToastShowing = true
+                    showCustomToast(context, message)
+                    MainScope().launch {
+                        delay(2000)
+                        isToastShowing = false
+                    }
                 }
-            )
-        }
-        is ReceiptState.Name -> {
-            val state = dialogState as ReceiptState.Name
-            Receipt_Name_Dialog(
-                onDismiss = { dialogState = ReceiptState.None },
-                onConfirm = { newName ->
-                    viewModel.onEvent(ReceiptEvent.UpdateReceiptName(
-                        index = state.receiptIndex,
-                        newName = newName
-                    ))
-                    dialogState = ReceiptState.None
-                },
-                onDelete = {
-                    viewModel.onEvent(ReceiptEvent.DeleteReceipt(state.receiptIndex))
-                    dialogState = ReceiptState.None
-                },
-                name = receipts[state.receiptIndex].placeName
-            )
-        }
-        is ReceiptState.Change -> {
-            val state = dialogState as ReceiptState.Change
-            Receipt_Change_Dialog(
-                onDismiss = { dialogState = ReceiptState.None },
-                onConfirm = { productName, price, quantity ->
-                    viewModel.onEvent(ReceiptEvent.UpdateReceiptDetail(
-                        index = state.receiptIndex,
-                        itemIndex = state.itemIndex,
-                        productName = productName,
-                        productQuantity = quantity,
-                        productPrice = price
-                    ))
-                    dialogState = ReceiptState.None
-                },
-                onDelete = {
-                    viewModel.onEvent(ReceiptEvent.DeleteReceiptItem(
-                        receiptIndex = state.receiptIndex,
-                        itemIndex = state.itemIndex
-                    ))
-                    dialogState = ReceiptState.None
-                },
-                productName = receipts[state.receiptIndex].productName[state.itemIndex],
-                price = receipts[state.receiptIndex].productQuantity[state.itemIndex],
-                quantity = receipts[state.receiptIndex].productPrice[state.itemIndex]
-            )
-        }
-        is ReceiptState.New -> {
-            Receipt_New_Dialog(
-                onDismiss = { dialogState = ReceiptState.None },
-                onConfirm = { newName ->
-                    viewModel.onEvent(ReceiptEvent.AddReceipt(
-                        ReceiptClass(
-                            placeName = newName,
-                            productName = mutableListOf(),
-                            productPrice = mutableListOf(),
-                            productQuantity = mutableListOf()
-                        )
-                    ))
-                    dialogState = ReceiptState.None
+            }
+        )
+    }
+
+    // 영수증 이름 변경 다이얼로그
+    showNameDialog?.let { index ->
+        Receipt_Name_Dialog(
+            onDismiss = { showNameDialog = null },
+            onConfirm = { newName ->
+                viewModel.updateReceiptName(index, newName)
+                showNameDialog = null
+            },
+            onDelete = {
+                viewModel.deleteReceipt(index)
+                showNameDialog = null
+            },
+            name = receipts[index].placeName
+        )
+    }
+
+    // 상품 수정 다이얼로그
+    showChangeDialog?.let { (receiptIndex, itemIndex) ->
+        Receipt_Change_Dialog(
+            onDismiss = { showChangeDialog = null },
+            onConfirm = { productName, price, quantity ->
+                viewModel.updateReceiptDetail(
+                    index = receiptIndex,
+                    itemIndex = itemIndex,
+                    productName = productName,
+                    productQuantity = quantity,
+                    productPrice = price
+                )
+                showChangeDialog = null
+            },
+            onDelete = {
+                viewModel.deleteReceiptItem(receiptIndex, itemIndex)
+                showChangeDialog = null
+            },
+            productName = receipts[receiptIndex].productName[itemIndex],
+            price = receipts[receiptIndex].productQuantity[itemIndex],
+            quantity = receipts[receiptIndex].productPrice[itemIndex]
+        )
+    }
+
+    // 새 영수증 추가 다이얼로그
+    if (showNewDialog) {
+        ReceiptAddDialog(
+            onDismiss = { showNewDialog = false },
+            onConfirm = { newName ->
+                viewModel.addReceipt(
+                    ReceiptClass(
+                        placeName = newName,
+                        productName = mutableListOf(),
+                        productPrice = mutableListOf(),
+                        productQuantity = mutableListOf()
+                    )
+                )
+                showNewDialog = false
+            },
+            onShowToast = { message ->
+                if (!isToastShowing) {
+                    isToastShowing = true
+                    showCustomToast(context, message)
+                    MainScope().launch {
+                        delay(2000)
+                        isToastShowing = false
+                    }
                 }
-            )
-        }
-        ReceiptState.None -> { /* 다이얼로그 닫힘 */ }
-    }
-
-    val onNameClick = { index: Int ->
-        dialogState = ReceiptState.Name(index)
-    }
-
-    val onChangeClick = { receiptIndex: Int, itemIndex: Int ->
-        dialogState = ReceiptState.Change(receiptIndex, itemIndex)
-    }
-
-    val onAddClick = { index: Int ->
-        dialogState = ReceiptState.Add(index)
-    }
-
-    val onNewClick = {
-        dialogState = ReceiptState.New
+            }
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -248,7 +247,7 @@ fun ReceiptScreen(
                             )
                             Text(
                                 text = "${receipt.placeName} (${totalCost}원)",
-                                modifier = Modifier.clickable { onNameClick(index) },
+                                modifier = Modifier.clickable { showNameDialog = index },
                                 style = Typography.receiptHeadTextStyle
                             )
                             ReceiptOpenCloseButton(
@@ -265,7 +264,7 @@ fun ReceiptScreen(
                                 Divider()
                                 receipt.productPrice.indices.forEach { i ->
                                     ReceiptItem(
-                                        onClick = { onChangeClick(index, i) },
+                                        onClick = { showChangeDialog = Pair(index, i) },
                                         productName = receipt.productName[i],
                                         price = receipt.productPrice[i],
                                         quantity = receipt.productQuantity[i]
@@ -279,7 +278,7 @@ fun ReceiptScreen(
                                 ) {
                                     AddButton(
                                         text = "상품 추가",
-                                        onClick = { onAddClick(index) }
+                                        onClick = { showAddDialog = index }
                                     )
                                 }
                             }
@@ -296,7 +295,7 @@ fun ReceiptScreen(
                 ) {
                     AddButton(
                         text = "영수증 추가",
-                        onClick = onNewClick
+                        onClick = { showNewDialog = true }
                     )
                 }
             }
@@ -309,7 +308,6 @@ fun ReceiptScreen(
             SubmitButton(
                 text = "정산 시작",
                 onClick = {
-                    viewModel.onEvent(ReceiptEvent.CheckReceipts)
                     if (receipts.any { it.productName.isNotEmpty() }) {
                         onNext()
                     } else if (!isToastShowing) {

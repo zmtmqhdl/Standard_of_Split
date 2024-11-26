@@ -239,7 +239,27 @@ fun DialogButton(
             .width(73.dp),
         shape = Shape.RoundedCRectangle,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Yellow,
+            containerColor = Color.Orange,
+            contentColor = Color.White,
+        ),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(text = text, style = Typography.dialogButtonTextStyle)
+    }
+}
+
+@Composable
+fun DialogDeleteButton(
+    text: String, onClick: () -> Unit, modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .height(38.dp)
+            .width(73.dp),
+        shape = Shape.RoundedCRectangle,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Red,
             contentColor = Color.White,
         ),
         contentPadding = PaddingValues(0.dp)
@@ -308,4 +328,10 @@ fun Preview_CalculateButton() {
 @Composable
 fun Preview_DialogButton() {
     DialogButton(text = "확인", onClick = {})
+}
+
+@Preview
+@Composable
+fun Preview_DialogDeleteButton() {
+    DialogButton(text = "삭제", onClick = {})
 }
