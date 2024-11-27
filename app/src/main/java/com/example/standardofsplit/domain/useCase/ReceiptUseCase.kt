@@ -20,7 +20,7 @@ class ReceiptUseCase @Inject constructor() {
         }
     }
 
-    fun updateReceiptName(index: Int, newName: String) {
+    fun receiptNameUpdate(index: Int, newName: String) {
         _receipts.value = _receipts.value.toMutableList().apply {
             this[index].placeName = newName
         }
@@ -57,7 +57,7 @@ class ReceiptUseCase @Inject constructor() {
         }
     }
 
-    fun deleteReceipt(index: Int): Boolean {
+    fun receiptDelete(index: Int): Boolean {
         val currentList = _receipts.value.toMutableList()
         return if (index in currentList.indices) {
             currentList.removeAt(index)
@@ -90,7 +90,7 @@ class ReceiptUseCase @Inject constructor() {
             .sortedDescending()
         
         emptyReceiptIndices.forEach { index ->
-            deleteReceipt(index)
+            receiptDelete(index)
         }
         return true
     }

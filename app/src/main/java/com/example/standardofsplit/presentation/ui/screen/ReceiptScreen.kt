@@ -104,81 +104,36 @@ fun ReceiptScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val viewModel: ReceiptViewModel = hiltViewModel()
-    val receipts by viewModel.receipts.collectAsState()
+    val receiptViewModel: ReceiptViewModel = hiltViewModel()
+
+    val receipts by receiptViewModel.receipts.collectAsState()
+
     val context = LocalContext.current
     val expandedStates = remember { mutableStateListOf<Boolean>() }
     var isToastShowing by remember { mutableStateOf(false) }
-    var showAddDialog by remember { mutableStateOf<Int?>(null) }
-    var showNameDialog by remember { mutableStateOf<Int?>(null) }
+    var showReceiptItemAddDialog by remember { mutableStateOf<Int?>(null) }
+    var showReceiptNameUpdateDialog by remember { mutableStateOf<Int?>(null) }
     var showChangeDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
     var showNewDialog by remember { mutableStateOf(false) }
 
     BackHandler { onBack() }
 
     // 상품 추가 다이얼로그
-    showAddDialog?.let { index ->
+    showReceiptItemAddDialog?.let { index ->
         ProductAddDialog(
-            onDismiss = { showAddDialog = null },
+            onDismiss = { showReceiptItemAddDialog = null },
             onConfirm = { productName, price, quantity ->
-                viewModel.addReceiptItem(
+                receiptViewModel.addReceiptItem(
                     index = index,
                     productName = productName,
                     productQuantity = quantity,
                     productPrice = price
                 )
-                showAddDialog = null
+                showReceiptItemAddDialog = null
             },
             onShowToast = { message ->
-                if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(context, message)
-                    MainScope().launch {
-                        delay(2000)
-                        isToastShowing = false
-                    }
-                }
+                showCustomToast(context, message)
             }
-        )
-    }
-
-    // 영수증 이름 변경 다이얼로그
-    showNameDialog?.let { index ->
-        Receipt_Name_Dialog(
-            onDismiss = { showNameDialog = null },
-            onConfirm = { newName ->
-                viewModel.updateReceiptName(index, newName)
-                showNameDialog = null
-            },
-            onDelete = {
-                viewModel.deleteReceipt(index)
-                showNameDialog = null
-            },
-            name = receipts[index].placeName
-        )
-    }
-
-    // 상품 수정 다이얼로그
-    showChangeDialog?.let { (receiptIndex, itemIndex) ->
-        Receipt_Change_Dialog(
-            onDismiss = { showChangeDialog = null },
-            onConfirm = { productName, price, quantity ->
-                viewModel.updateReceiptDetail(
-                    index = receiptIndex,
-                    itemIndex = itemIndex,
-                    productName = productName,
-                    productQuantity = quantity,
-                    productPrice = price
-                )
-                showChangeDialog = null
-            },
-            onDelete = {
-                viewModel.deleteReceiptItem(receiptIndex, itemIndex)
-                showChangeDialog = null
-            },
-            productName = receipts[receiptIndex].productName[itemIndex],
-            price = receipts[receiptIndex].productQuantity[itemIndex],
-            quantity = receipts[receiptIndex].productPrice[itemIndex]
         )
     }
 
@@ -187,7 +142,7 @@ fun ReceiptScreen(
         ReceiptAddDialog(
             onDismiss = { showNewDialog = false },
             onConfirm = { newName ->
-                viewModel.addReceipt(
+                receiptViewModel.addReceipt(
                     ReceiptClass(
                         placeName = newName,
                         productName = mutableListOf(),
@@ -198,15 +153,51 @@ fun ReceiptScreen(
                 showNewDialog = false
             },
             onShowToast = { message ->
-                if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(context, message)
-                    MainScope().launch {
-                        delay(2000)
-                        isToastShowing = false
-                    }
-                }
+                showCustomToast(context, message)
             }
+        )
+    }
+
+    // 영수증 이름 변경 다이얼로그
+    showReceiptNameUpdateDialog?.let { index ->
+        ReceiptNameUpdateDialog(
+            onDismiss = { showReceiptNameUpdateDialog = null },
+            onConfirm = { newName ->
+                receiptViewModel.receiptNameUpdate(index, newName)
+                showReceiptNameUpdateDialog = null
+            },
+            onDelete = {
+                receiptViewModel.receiptDelete(index)
+                showReceiptNameUpdateDialog = null
+            },
+            onShowToast =  { message ->
+                showCustomToast(context, message)
+            },
+            name = receipts[index].placeName
+        )
+    }
+
+    // 상품 수정 다이얼로그
+    showChangeDialog?.let { (receiptIndex, itemIndex) ->
+        Receipt_Change_Dialog(
+            onDismiss = { showChangeDialog = null },
+            onConfirm = { productName, price, quantity ->
+                receiptViewModel.updateReceiptDetail(
+                    index = receiptIndex,
+                    itemIndex = itemIndex,
+                    productName = productName,
+                    productQuantity = quantity,
+                    productPrice = price
+                )
+                showChangeDialog = null
+            },
+            onDelete = {
+                receiptViewModel.deleteReceiptItem(receiptIndex, itemIndex)
+                showChangeDialog = null
+            },
+            productName = receipts[receiptIndex].productName[itemIndex],
+            price = receipts[receiptIndex].productQuantity[itemIndex],
+            quantity = receipts[receiptIndex].productPrice[itemIndex]
         )
     }
 
@@ -247,7 +238,7 @@ fun ReceiptScreen(
                             )
                             Text(
                                 text = "${receipt.placeName} (${totalCost}원)",
-                                modifier = Modifier.clickable { showNameDialog = index },
+                                modifier = Modifier.clickable { showReceiptNameUpdateDialog = index },
                                 style = Typography.receiptHeadTextStyle
                             )
                             ReceiptOpenCloseButton(
@@ -278,7 +269,7 @@ fun ReceiptScreen(
                                 ) {
                                     AddButton(
                                         text = "상품 추가",
-                                        onClick = { showAddDialog = index }
+                                        onClick = { showReceiptItemAddDialog = index }
                                     )
                                 }
                             }

@@ -18,8 +18,12 @@ class ReceiptViewModel @Inject constructor(
         receiptUseCase.addReceipt(receipt)
     }
 
-    fun updateReceiptName(index: Int, newName: String) {
-        receiptUseCase.updateReceiptName(index, newName)
+    fun receiptNameUpdate(index: Int, newName: String) {
+        receiptUseCase.receiptNameUpdate(index, newName)
+    }
+
+    fun receiptDelete(index: Int) {
+        receiptUseCase.receiptDelete(index)
     }
 
     fun updateReceiptDetail(
@@ -39,10 +43,6 @@ class ReceiptViewModel @Inject constructor(
         productPrice: String
     ) {
         receiptUseCase.addReceiptItem(index, productName, productQuantity, productPrice)
-    }
-
-    fun deleteReceipt(index: Int) {
-        receiptUseCase.deleteReceipt(index)
     }
 
     fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {

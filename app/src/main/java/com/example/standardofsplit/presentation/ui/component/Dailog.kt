@@ -89,7 +89,7 @@ private fun DialogButtons(
     onDelete: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween  // 변경
     ) {
         Box(modifier = Modifier.weight(1f)) {
@@ -123,7 +123,7 @@ fun ReceiptAddDialog(
     var newName by remember { mutableStateOf("") }
     
     DialogContainer(onDismiss = onDismiss) {
-        InputField(text = "영수증 이름", value = newName, onValueChange = { newName = it })
+        InputField(text = "신규 영수증 이름", value = newName, onValueChange = { newName = it })
         DialogButtons(
             onDismiss = onDismiss,
             onConfirm = {
@@ -133,6 +133,32 @@ fun ReceiptAddDialog(
                     onShowToast("영수증 이름을 작성해주세요.")
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun ReceiptNameUpdateDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    onDelete: () -> Unit,
+    onShowToast: (String) -> Unit,
+    name: String
+) {
+    var newName by remember { mutableStateOf(name) }
+
+    DialogContainer(onDismiss = onDismiss) {
+        InputField("영수증 변경", newName) { newName = it }
+        DialogButtons(
+            onDismiss = onDismiss,
+            onConfirm = {
+                if (newName.isNotBlank()) {
+                    onConfirm(newName)
+                } else {
+                    onShowToast("영수증 이름을 작성해주세요.")
+                }
+            },
+            onDelete = onDelete
         )
     }
 }
@@ -298,42 +324,6 @@ fun Reset_Confirm_Dialog(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Receipt_Name_Dialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    onDelete: () -> Unit,
-    name: String
-) {
-    var newName by remember { mutableStateOf(name) }
-    val isConfirmEnabled = newName.isNotBlank()
-    val context = LocalContext.current
-    var isToastShowing by remember { mutableStateOf(false) }
-
-    DialogContainer(onDismiss = onDismiss) {
-        InputField("영수증 이름", newName) { newName = it }
-        DialogButtons(
-            onDismiss = onDismiss,
-            onConfirm = {
-                if (newName.length != 0) {
-                    onConfirm(newName)
-                } else if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(
-                        context = context,
-                        message = "영수증 이름을 작성해주세요."
-                    )
-                    MainScope().launch {
-                        kotlinx.coroutines.delay(2000)
-                        isToastShowing = false
-                    }
-                }
-            },
-            onDelete = onDelete
-        )
     }
 }
 

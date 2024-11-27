@@ -235,8 +235,8 @@ fun DialogButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(38.dp)
-            .width(73.dp),
+            .height(35.dp)
+            .width(63.dp),
         shape = Shape.RoundedCRectangle,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Orange,
@@ -255,8 +255,8 @@ fun DialogDeleteButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(38.dp)
-            .width(73.dp),
+            .height(35.dp)
+            .width(63.dp),
         shape = Shape.RoundedCRectangle,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Red,
