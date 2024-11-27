@@ -14,8 +14,8 @@ class ReceiptViewModel @Inject constructor(
 
     val receipts: StateFlow<MutableList<ReceiptClass>> = receiptUseCase.receipts
 
-    fun addReceipt(receipt: ReceiptClass) {
-        receiptUseCase.addReceipt(receipt)
+    fun receiptAdd(receipt: ReceiptClass) {
+        receiptUseCase.receiptAdd(receipt)
     }
 
     fun receiptNameUpdate(index: Int, newName: String) {
@@ -26,30 +26,30 @@ class ReceiptViewModel @Inject constructor(
         receiptUseCase.receiptDelete(index)
     }
 
-    fun updateReceiptDetail(
-        index: Int,
-        itemIndex: Int,
-        productName: String,
-        productQuantity: String,
-        productPrice: String
-    ) {
-        receiptUseCase.updateReceiptDetail(index, itemIndex, productName, productQuantity, productPrice)
-    }
-
-    fun addReceiptItem(
-        index: Int,
-        productName: String,
-        productQuantity: String,
-        productPrice: String
-    ) {
-        receiptUseCase.addReceiptItem(index, productName, productQuantity, productPrice)
-    }
-
-    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
-        receiptUseCase.deleteReceiptItem(receiptIndex, itemIndex)
-    }
-
-    fun validateReceipts(): Boolean {
-        return receiptUseCase.validateAndCleanReceipts()
-    }
+//    fun updateReceiptDetail(
+//        index: Int,
+//        itemIndex: Int,
+//        productName: String,
+//        productQuantity: String,
+//        productPrice: String
+//    ) {
+//        receiptUseCase.updateReceiptDetail(index, itemIndex, productName, productQuantity, productPrice)
+//    }
+//
+//    fun addReceiptItem(
+//        index: Int,
+//        productName: String,
+//        productQuantity: String,
+//        productPrice: String
+//    ) {
+//        receiptUseCase.addReceiptItem(index, productName, productQuantity, productPrice)
+//    }
+//
+//    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
+//        receiptUseCase.deleteReceiptItem(receiptIndex, itemIndex)
+//    }
+//
+//    fun validateReceipts(): Boolean {
+//        return receiptUseCase.validateAndCleanReceipts()
+//    }
 }

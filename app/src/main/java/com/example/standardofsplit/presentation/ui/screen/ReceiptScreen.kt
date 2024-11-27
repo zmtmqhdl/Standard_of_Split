@@ -24,6 +24,9 @@ import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -98,7 +101,6 @@ private fun ReceiptItem(
     }
 }
 
-
 @Composable
 fun ReceiptScreen(
     onNext: () -> Unit,
@@ -107,58 +109,38 @@ fun ReceiptScreen(
     val receiptViewModel: ReceiptViewModel = hiltViewModel()
 
     val receipts by receiptViewModel.receipts.collectAsState()
-
     val context = LocalContext.current
+
+    var showReceiptAddDialog by remember { mutableStateOf(false) }
+    var showReceiptNameUpdateDialog by remember { mutableStateOf<Int?>(null) }
+
     val expandedStates = remember { mutableStateListOf<Boolean>() }
     var isToastShowing by remember { mutableStateOf(false) }
     var showReceiptItemAddDialog by remember { mutableStateOf<Int?>(null) }
-    var showReceiptNameUpdateDialog by remember { mutableStateOf<Int?>(null) }
     var showChangeDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
-    var showNewDialog by remember { mutableStateOf(false) }
 
     BackHandler { onBack() }
 
-    // 상품 추가 다이얼로그
-    showReceiptItemAddDialog?.let { index ->
-        ProductAddDialog(
-            onDismiss = { showReceiptItemAddDialog = null },
-            onConfirm = { productName, price, quantity ->
-                receiptViewModel.addReceiptItem(
-                    index = index,
-                    productName = productName,
-                    productQuantity = quantity,
-                    productPrice = price
-                )
-                showReceiptItemAddDialog = null
-            },
-            onShowToast = { message ->
-                showCustomToast(context, message)
-            }
-        )
-    }
-
-    // 새 영수증 추가 다이얼로그
-    if (showNewDialog) {
+    if (showReceiptAddDialog) {
         ReceiptAddDialog(
-            onDismiss = { showNewDialog = false },
+            onDismiss = { showReceiptAddDialog = false },
             onConfirm = { newName ->
-                receiptViewModel.addReceipt(
+                receiptViewModel.receiptAdd(
                     ReceiptClass(
                         placeName = newName,
-                        productName = mutableListOf(),
-                        productPrice = mutableListOf(),
-                        productQuantity = mutableListOf()
+                        productName = MutableStateFlow(mutableListOf()),
+                        productPrice = MutableStateFlow(mutableListOf()),
+                        productQuantity = MutableStateFlow(mutableListOf()),
                     )
                 )
-                showNewDialog = false
+                showReceiptAddDialog = false
             },
-            onShowToast = { message ->
+            toastMessage = { message ->
                 showCustomToast(context, message)
             }
         )
     }
 
-    // 영수증 이름 변경 다이얼로그
     showReceiptNameUpdateDialog?.let { index ->
         ReceiptNameUpdateDialog(
             onDismiss = { showReceiptNameUpdateDialog = null },
@@ -170,36 +152,59 @@ fun ReceiptScreen(
                 receiptViewModel.receiptDelete(index)
                 showReceiptNameUpdateDialog = null
             },
-            onShowToast =  { message ->
+            toastMessage = { message ->
                 showCustomToast(context, message)
             },
             name = receipts[index].placeName
         )
     }
 
-    // 상품 수정 다이얼로그
-    showChangeDialog?.let { (receiptIndex, itemIndex) ->
-        Receipt_Change_Dialog(
-            onDismiss = { showChangeDialog = null },
-            onConfirm = { productName, price, quantity ->
-                receiptViewModel.updateReceiptDetail(
-                    index = receiptIndex,
-                    itemIndex = itemIndex,
-                    productName = productName,
-                    productQuantity = quantity,
-                    productPrice = price
-                )
-                showChangeDialog = null
-            },
-            onDelete = {
-                receiptViewModel.deleteReceiptItem(receiptIndex, itemIndex)
-                showChangeDialog = null
-            },
-            productName = receipts[receiptIndex].productName[itemIndex],
-            price = receipts[receiptIndex].productQuantity[itemIndex],
-            quantity = receipts[receiptIndex].productPrice[itemIndex]
-        )
-    }
+//    // 상품 추가 다이얼로그
+//    showReceiptItemAddDialog?.let { index ->
+//        ProductAddDialog(
+//            onDismiss = { showReceiptItemAddDialog = null },
+//            onConfirm = { productName, price, quantity ->
+//                receiptViewModel.addReceiptItem(
+//                    index = index,
+//                    productName = productName,
+//                    productQuantity = quantity,
+//                    productPrice = price
+//                )
+//                showReceiptItemAddDialog = null
+//            },
+//            onShowToast = { message ->
+//                showCustomToast(context, message)
+//            }
+//        )
+//    }
+//
+//    // 상품 수정 다이얼로그
+//    showChangeDialog?.let { (receiptIndex, itemIndex) ->
+//        val productNames by receipts[receiptIndex].productName.collectAsState()
+//        val productQuantities by receipts[receiptIndex].productQuantity.collectAsState()
+//        val productPrices by receipts[receiptIndex].productPrice.collectAsState()
+//
+//        Receipt_Change_Dialog(
+//            onDismiss = { showChangeDialog = null },
+//            onConfirm = { productName, price, quantity ->
+//                receiptViewModel.updateReceiptDetail(
+//                    index = receiptIndex,
+//                    itemIndex = itemIndex,
+//                    productName = productName,
+//                    productQuantity = quantity,
+//                    productPrice = price
+//                )
+//                showChangeDialog = null
+//            },
+//            onDelete = {
+//                receiptViewModel.deleteReceiptItem(receiptIndex, itemIndex)
+//                showChangeDialog = null
+//            },
+//            productName = productNames[itemIndex],  // 상품명
+//            price = productPrices[itemIndex],        // 가격
+//            quantity = productQuantities[itemIndex]
+//        )
+//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -231,9 +236,14 @@ fun ReceiptScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
+                            val productPrices by receipt.productPrice.collectAsState()
+                            val productQuantities by receipt.productQuantity.collectAsState()
                             val totalCost = formatNumberWithCommas(
-                                receipt.productPrice.zip(receipt.productQuantity) { price, quantity ->
-                                    price.toInt() * quantity.toInt()
+                                productPrices.zip(productQuantities) { price, quantity ->
+                                    // 안전하게 변환하기
+                                    val priceInt = price.toIntOrNull() ?: 0  // 변환 실패 시 0으로 설정
+                                    val quantityInt = quantity.toIntOrNull() ?: 0  // 변환 실패 시 0으로 설정
+                                    priceInt * quantityInt
                                 }.sum().toString()
                             )
                             Text(
@@ -249,16 +259,20 @@ fun ReceiptScreen(
                             )
                         }
                         if (expandedStates[index]) {
+                            val productNames by receipt.productName.collectAsState()
+                            val productPrices by receipt.productPrice.collectAsState()
+                            val productQuantities by receipt.productQuantity.collectAsState()
+
                             Column {
                                 Divider(modifier = Modifier.padding(top = 15.dp))
                                 ReceiptColumnHeaders()
                                 Divider()
-                                receipt.productPrice.indices.forEach { i ->
+                                productPrices.indices.forEach { i ->
                                     ReceiptItem(
                                         onClick = { showChangeDialog = Pair(index, i) },
-                                        productName = receipt.productName[i],
-                                        price = receipt.productPrice[i],
-                                        quantity = receipt.productQuantity[i]
+                                        productName = productNames[i],
+                                        price = productPrices[i],
+                                        quantity = productQuantities[i]
                                     )
                                 }
                                 Box(
@@ -286,7 +300,7 @@ fun ReceiptScreen(
                 ) {
                     AddButton(
                         text = "영수증 추가",
-                        onClick = { showNewDialog = true }
+                        onClick = { showReceiptAddDialog = true }
                     )
                 }
             }
@@ -299,16 +313,20 @@ fun ReceiptScreen(
             SubmitButton(
                 text = "정산 시작",
                 onClick = {
-                    if (receipts.any { it.productName.isNotEmpty() }) {
-                        onNext()
-                    } else if (!isToastShowing) {
-                        isToastShowing = true
-                        showCustomToast(context, "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다.")
-                        MainScope().launch {
-                            delay(2000)
-                            isToastShowing = false
-                        }
-                    }
+                    // 유효한 영수증을 위한 상품 이름 수집
+//                    val hasValidReceipt = receipts.any { receipt ->
+//                        receipt.productName.collectAsState().value.isNotEmpty()
+//                    }
+//                    if (hasValidReceipt) {
+//                        onNext()
+//                    } else if (!isToastShowing) {
+//                        isToastShowing = true
+//                        showCustomToast(context, "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다.")
+//                        MainScope().launch {
+//                            delay(2000)
+//                            isToastShowing = false
+//                        }
+//                    }
                 }
             )
         }

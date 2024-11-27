@@ -118,7 +118,7 @@ private fun DialogButtons(
 fun ReceiptAddDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    onShowToast: (String) -> Unit
+    toastMessage: (String) -> Unit
 ) {
     var newName by remember { mutableStateOf("") }
     
@@ -130,7 +130,7 @@ fun ReceiptAddDialog(
                 if (newName.isNotEmpty()) {
                     onConfirm(newName)
                 } else {
-                    onShowToast("영수증 이름을 작성해주세요.")
+                    toastMessage("영수증 이름을 작성해주세요.")
                 }
             }
         )
@@ -142,7 +142,7 @@ fun ReceiptNameUpdateDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     onDelete: () -> Unit,
-    onShowToast: (String) -> Unit,
+    toastMessage: (String) -> Unit,
     name: String
 ) {
     var newName by remember { mutableStateOf(name) }
@@ -155,7 +155,7 @@ fun ReceiptNameUpdateDialog(
                 if (newName.isNotBlank()) {
                     onConfirm(newName)
                 } else {
-                    onShowToast("영수증 이름을 작성해주세요.")
+                    toastMessage("영수증 이름을 작성해주세요.")
                 }
             },
             onDelete = onDelete

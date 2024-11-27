@@ -51,12 +51,12 @@ private fun Navigation() {
                 onBack = { navigator.navigateToStart() }
             )
         }
-        composable(Screen.Calculator.route) {
-            CalculatorScreen(
-                onNext = { navigator.navigateToResult() },
-                onBack = { navigator.navigateToReceipt() }
-            )
-        }
+//        composable(Screen.Calculator.route) {
+//            CalculatorScreen(
+//                onNext = { navigator.navigateToResult() },
+//                onBack = { navigator.navigateToReceipt() }
+//            )
+//        }
         composable(Screen.Result.route) {
             ResultScreen(
                 onBack = { navigator.navigateToCalculator() }
