@@ -168,27 +168,27 @@ fun ReceiptNameUpdateDialog(
 fun ProductAddDialog(
     onDismiss: () -> Unit,
     onConfirm: (String, String, String) -> Unit,
-    onShowToast: (String) -> Unit
+    toastMessage: (String) -> Unit
 ) {
-    var newName by remember { mutableStateOf("") }
-    var newPrice by remember { mutableStateOf("") }
-    var newQuantity by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var quantity by remember { mutableStateOf("") }
 
     DialogContainer(onDismiss = onDismiss) {
-        InputField("상품명", newName) { newName = it }
-        InputField("단가", formatNumberWithCommas(newPrice)) { input ->
-            newPrice = input.replace(",", "").filter { it.isDigit() }
+        InputField("상품명", name) { name = it }
+        InputField("단가", formatNumberWithCommas(price)) { input ->
+            price = input.replace(",", "").filter { it.isDigit() }
         }
-        InputField("수량", newQuantity) { input ->
-            newQuantity = input.filter { it.isDigit() }
+        InputField("수량", quantity) { input ->
+            quantity = input.filter { it.isDigit() }
         }
         DialogButtons(
             onDismiss = onDismiss,
             onConfirm = {
-                if (newName.isNotEmpty() && newPrice.isNotEmpty() && newQuantity.isNotEmpty()) {
-                    onConfirm(newName, newPrice, newQuantity)
+                if (name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()) {
+                    onConfirm(name, price, quantity)
                 } else {
-                    onShowToast("모든 항목을 작성해주세요.")
+                    toastMessage("모든 항목을 작성해주세요.")
                 }
             }
         )
@@ -328,7 +328,7 @@ fun Reset_Confirm_Dialog(
 }
 
 @Composable
-fun Receipt_Change_Dialog(
+fun ProductUpdateDialog(
     onDismiss: () -> Unit,
     onConfirm: (String, String, String) -> Unit,
     onDelete: () -> Unit,

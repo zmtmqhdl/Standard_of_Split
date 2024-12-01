@@ -18,36 +18,36 @@ class ReceiptViewModel @Inject constructor(
         receiptUseCase.receiptAdd(receipt)
     }
 
-    fun receiptNameUpdate(index: Int, newName: String) {
-        receiptUseCase.receiptNameUpdate(index, newName)
+    fun receiptUpdate(index: Int, newName: String) {
+        receiptUseCase.receiptUpdate(index, newName)
     }
 
     fun receiptDelete(index: Int) {
         receiptUseCase.receiptDelete(index)
     }
 
-//    fun updateReceiptDetail(
-//        index: Int,
-//        itemIndex: Int,
-//        productName: String,
-//        productQuantity: String,
-//        productPrice: String
-//    ) {
-//        receiptUseCase.updateReceiptDetail(index, itemIndex, productName, productQuantity, productPrice)
-//    }
-//
-//    fun addReceiptItem(
-//        index: Int,
-//        productName: String,
-//        productQuantity: String,
-//        productPrice: String
-//    ) {
-//        receiptUseCase.addReceiptItem(index, productName, productQuantity, productPrice)
-//    }
-//
-//    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
-//        receiptUseCase.deleteReceiptItem(receiptIndex, itemIndex)
-//    }
+    fun productAdd(
+        index: Int,
+        productName: String,
+        productQuantity: String,
+        productPrice: String
+    ) {
+        receiptUseCase.productAdd(index, productName, productQuantity, productPrice)
+    }
+
+    fun productUpdate(
+        index: Int,
+        productIndex: Int,
+        productName: String,
+        productQuantity: String,
+        productPrice: String
+    ) {
+        receiptUseCase.productUpdate(index, productIndex, productName, productQuantity, productPrice)
+    }
+
+    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
+        receiptUseCase.productDelete(receiptIndex, itemIndex)
+    }
 //
 //    fun validateReceipts(): Boolean {
 //        return receiptUseCase.validateAndCleanReceipts()
