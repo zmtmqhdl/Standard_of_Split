@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setupWindow() {
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, true)
@@ -51,12 +50,12 @@ private fun Navigation() {
                 onBack = { navigator.navigateToStart() }
             )
         }
-//        composable(Screen.Calculator.route) {
-//            CalculatorScreen(
-//                onNext = { navigator.navigateToResult() },
-//                onBack = { navigator.navigateToReceipt() }
-//            )
-//        }
+        composable(Screen.Calculator.route) {
+            CalculatorScreen(
+                onNext = { navigator.navigateToResult() },
+                onBack = { navigator.navigateToReceipt() }
+            )
+        }
         composable(Screen.Result.route) {
             ResultScreen(
                 onBack = { navigator.navigateToCalculator() }

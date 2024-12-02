@@ -48,8 +48,8 @@ class ReceiptViewModel @Inject constructor(
     fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
         receiptUseCase.productDelete(receiptIndex, itemIndex)
     }
-//
-//    fun validateReceipts(): Boolean {
-//        return receiptUseCase.validateAndCleanReceipts()
-//    }
+
+    fun validateReceipts(): Boolean {
+        return receiptUseCase.validateAndCleanReceipts()
+    }
 }

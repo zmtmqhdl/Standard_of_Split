@@ -93,24 +93,22 @@ class ReceiptUseCase @Inject constructor() {
         } else false
     }
 
-    //
-//    fun validateAndCleanReceipts(): Boolean {
-//        val currentList = _receipts.value.toMutableList()
-//        val hasValidReceipt = currentList.any { receipt ->
-//            receipt.productName.isNotEmpty()
-//        }
-//        if (!hasValidReceipt) return false
-//
-//        val emptyReceiptIndices = currentList.indices
-//            .filter { index -> currentList[index].productName.isEmpty() }
-//            .sortedDescending()
-//
-//        emptyReceiptIndices.forEach { index ->
-//            receiptDelete(index)
-//        }
-//        return true
-//    }
-//
+    fun validateAndCleanReceipts(): Boolean {
+        val currentList = _receipts.value.toMutableList()
+        val hasValidReceipt = currentList.any { receipt ->
+            receipt.productName.value.isNotEmpty()
+        }
+        if (hasValidReceipt) {
+            val emptyReceiptIndices = currentList.indices
+                .filter { index -> currentList[index].productName.value.isEmpty() }
+                .sortedDescending()
+            emptyReceiptIndices.forEach { index ->
+                receiptDelete(index)
+            }
+        }
+        return hasValidReceipt
+    }
+
     companion object {
         private val DEFAULT_RECEIPT = ReceiptClass(
             placeName = "영수증",

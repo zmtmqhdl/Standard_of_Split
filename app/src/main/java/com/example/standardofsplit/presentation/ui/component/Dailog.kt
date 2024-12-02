@@ -163,7 +163,6 @@ fun ReceiptNameUpdateDialog(
     }
 }
 
-// istoastshowing 지워야함
 @Composable
 fun ProductAddDialog(
     onDismiss: () -> Unit,
@@ -223,15 +222,6 @@ fun Preview_DialogButtons() {
         onDelete = { }
     )
 }
-
-
-
-
-
-
-
-
-
 
 @Composable
 fun Reset_Confirm_Dialog(
@@ -460,10 +450,10 @@ fun Receipt_Detail_Dialog(
                             }
                             
                             if (index < entries.size - 1) {
-                                Divider(
-                                    color = Color.White,
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = 8.dp),
                                     thickness = 1.dp,
-                                    modifier = Modifier.padding(vertical = 8.dp)
+                                    color = Color.White
                                 )
                             }
                         }
