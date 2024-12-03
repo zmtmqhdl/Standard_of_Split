@@ -529,7 +529,7 @@ fun CalculatorScreen(
                         } else {
                             if (payList.isNotEmpty()) {
                                 calculatorViewModel.resetButtonStates()
-                                calculatorViewModel.updatePersonPay(
+                                calculatorViewModel.updateTotalPay(
                                     payList,
                                     receipts[Key].placeName,
                                     receipts[Key].productName[KeyKey],
@@ -543,7 +543,7 @@ fun CalculatorScreen(
                                 } else {
                                     calculatorViewModel.incrementProductKey()
                                     if (KeyKey >= receipts[Key].productPrice.size) {
-                                        calculatorViewModel.resetKeyKey()
+                                        calculatorViewModel.resetProductKey()
                                         calculatorViewModel.incrementReceiptKey()
                                     }
                                     total = formatNumberWithCommas(

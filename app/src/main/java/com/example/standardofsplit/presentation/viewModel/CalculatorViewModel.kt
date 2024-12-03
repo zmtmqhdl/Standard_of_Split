@@ -17,59 +17,52 @@ class CalculatorViewModel @Inject constructor(
     private val calculatorUseCase: CalculatorUseCase
 ): ViewModel() {
 
-    private val _buttonState = MutableStateFlow(List(9) { false })
-    val buttonState: StateFlow<List<Boolean>> = _buttonState.asStateFlow()
-
     private val _changeMode = MutableStateFlow(false)
     val changeMode: StateFlow<Boolean> = _changeMode.asStateFlow()
 
     private val _totalPay = MutableStateFlow(TotalPay())
     val totalPay: StateFlow<TotalPay> = _totalPay
 
-    private val _receiptKey = MutableStateFlow(0)
-    val receiptKey: StateFlow<Int> = _receiptKey
-
-    private val _productKey = MutableStateFlow(0)
-    val productKey: StateFlow<Int> = _productKey
-
     fun buttonPush(index: Int) {
         calculatorUseCase.buttonPush(index)
     }
 
     fun resetButtonStates() {
-        _buttonState.value = List(9) { false }
+        calculatorUseCase.resetButtonStates()
     }
 
-    fun initializePersonPay() {
-        val initialMap = (1..8).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
-        _totalPay.value = TotalPay(initialMap.toMutableMap())
+    fun initializeTotalPay() {
+        val initialTotalPay = (1..8).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
+        _totalPay.value = TotalPay(initialTotalPay.toMutableMap())
+    }
+
+    fun updateTotalPay() {
+        _totalPay.value = calculatorUseCase.updateTotalPay(totalPay.value)
     }
 
     fun incrementReceiptKey() {
-        _receiptKey.value = (_receiptKey.value ?: 0) + 1
+        calculatorUseCase.incrementReceiptKey()
     }
 
     fun decrementReceiptKey() {
-        _receiptKey.value = (_receiptKey.value ?: 0) - 1
+        calculatorUseCase.decrementReceiptKey()
     }
 
     fun incrementProductKey() {
-        _productKey.value = (_productKey.value ?: 0) + 1
+        calculatorUseCase.incrementProductKey()
     }
 
     fun decrementProductKey() {
-        _productKey.value = (_productKey.value ?: 0) - 1
+        calculatorUseCase.decrementProductKey()
     }
 
-    fun resetKeyKey() {
-        _productKey.value = 0
+    fun resetProductKey() {
+        calculatorUseCase.resetProductKey()
     }
 
 
 
-
-
-    fun updatePersonPay(lst: List<Int>, placeName: String, productName: String, productPrice: Int) {
+    fun updateTotalPay(lst: List<Int>, placeName: String, productName: String, productPrice: Int) {
         try {
             val dividedPrice = (ceil((productPrice.toDouble() / lst.size) / 10) * 10).toInt()
 
@@ -219,9 +212,5 @@ class CalculatorViewModel @Inject constructor(
 
     fun setChangeMode(value: Boolean) {
         _changeMode.value = value
-    }
-
-    fun updatePersonPay() {
-        _totalPay.value = _totalPay.value?.toMutableMap()
     }
 }

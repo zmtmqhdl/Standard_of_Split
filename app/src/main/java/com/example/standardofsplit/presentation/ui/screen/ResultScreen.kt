@@ -41,7 +41,7 @@ fun ResultScreen(
     var selectedPerson by remember { mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null) }
     
     LaunchedEffect(Unit) {
-        calculatorViewModel.updatePersonPay()
+        calculatorViewModel.updateTotalPay()
     }
     
     BackHandler {
