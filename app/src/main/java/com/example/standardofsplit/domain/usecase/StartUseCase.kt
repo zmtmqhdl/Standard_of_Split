@@ -1,4 +1,4 @@
-package com.example.standardofsplit.domain.useCase
+package com.example.standardofsplit.domain.usecase
 
 import javax.inject.Inject
 

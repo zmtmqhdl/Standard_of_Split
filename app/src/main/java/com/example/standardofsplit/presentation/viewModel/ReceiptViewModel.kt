@@ -2,8 +2,9 @@ package com.example.standardofsplit.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
-import com.example.standardofsplit.domain.useCase.ReceiptUseCase
+import com.example.standardofsplit.domain.usecase.ReceiptUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
@@ -12,18 +13,23 @@ class ReceiptViewModel @Inject constructor(
     private val receiptUseCase: ReceiptUseCase
 ) : ViewModel() {
 
-    val receipts: StateFlow<MutableList<ReceiptClass>> = receiptUseCase.receipts
+    private val _receipts = MutableStateFlow<MutableList<ReceiptClass>>(mutableListOf())
+    val receipts: StateFlow<MutableList<ReceiptClass>> = _receipts
+
+    init {
+        _receipts.value.add(DEFAULT_RECEIPT)
+    }
 
     fun receiptAdd(receipt: ReceiptClass) {
-        receiptUseCase.receiptAdd(receipt)
+        receiptUseCase.receiptAdd(_receipts.value, receipt)
     }
 
     fun receiptUpdate(index: Int, newName: String) {
-        receiptUseCase.receiptUpdate(index, newName)
+        receiptUseCase.receiptUpdate(_receipts.value, index, newName)
     }
 
     fun receiptDelete(index: Int) {
-        receiptUseCase.receiptDelete(index)
+        receiptUseCase.receiptDelete(_receipts.value, index)
     }
 
     fun productAdd(
@@ -32,7 +38,7 @@ class ReceiptViewModel @Inject constructor(
         productQuantity: String,
         productPrice: String
     ) {
-        receiptUseCase.productAdd(index, productName, productQuantity, productPrice)
+        receiptUseCase.productAdd(_receipts.value, index, productName, productQuantity, productPrice)
     }
 
     fun productUpdate(
@@ -42,14 +48,23 @@ class ReceiptViewModel @Inject constructor(
         productQuantity: String,
         productPrice: String
     ) {
-        receiptUseCase.productUpdate(index, productIndex, productName, productQuantity, productPrice)
+        receiptUseCase.productUpdate(_receipts.value, index, productIndex, productName, productQuantity, productPrice)
     }
 
     fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
-        receiptUseCase.productDelete(receiptIndex, itemIndex)
+        receiptUseCase.productDelete(_receipts.value, receiptIndex, itemIndex)
     }
 
     fun validateReceipts(): Boolean {
-        return receiptUseCase.validateAndCleanReceipts()
+        return receiptUseCase.validateAndCleanReceipts(_receipts.value)
+    }
+
+    companion object {
+        private val DEFAULT_RECEIPT = ReceiptClass(
+            placeName = "영수증",
+            productName = MutableStateFlow(mutableListOf()),
+            productPrice = MutableStateFlow(mutableListOf()),
+            productQuantity = MutableStateFlow(mutableListOf())
+        )
     }
 }

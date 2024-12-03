@@ -3,43 +3,77 @@ package com.example.standardofsplit.presentation.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.standardofsplit.data.model.TotalPay
+import com.example.standardofsplit.domain.usecase.CalculatorUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 import kotlin.math.ceil
 
-class CalculatorViewModel : ViewModel() {
+@HiltViewModel
+class CalculatorViewModel @Inject constructor(
+    private val calculatorUseCase: CalculatorUseCase
+): ViewModel() {
 
-    private val _buttonStates = MutableLiveData(List(9) { false })
-    val buttonStates: LiveData<List<Boolean>> = _buttonStates
+    private val _buttonState = MutableStateFlow(List(9) { false })
+    val buttonState: StateFlow<List<Boolean>> = _buttonState.asStateFlow()
 
-    fun toggleButtonState(index: Int) {
-        _buttonStates.value = _buttonStates.value?.toMutableList()?.apply {
-            this[index] = !this[index]
-        }
+    private val _changeMode = MutableStateFlow(false)
+    val changeMode: StateFlow<Boolean> = _changeMode.asStateFlow()
+
+    private val _totalPay = MutableStateFlow(TotalPay())
+    val totalPay: StateFlow<TotalPay> = _totalPay
+
+    private val _receiptKey = MutableStateFlow(0)
+    val receiptKey: StateFlow<Int> = _receiptKey
+
+    private val _productKey = MutableStateFlow(0)
+    val productKey: StateFlow<Int> = _productKey
+
+    fun buttonPush(index: Int) {
+        calculatorUseCase.buttonPush(index)
     }
 
     fun resetButtonStates() {
-        _buttonStates.value = List(9) { false }
+        _buttonState.value = List(9) { false }
     }
 
-    private val _changeMode = MutableLiveData(false)
-    val changeMode: LiveData<Boolean> = _changeMode
-
-    fun toggleChangeMode() {
-        _changeMode.value = _changeMode.value?.not()
+    fun initializePersonPay() {
+        val initialMap = (1..8).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
+        _totalPay.value = TotalPay(initialMap.toMutableMap())
     }
 
-    private val initialMap: MutableMap<Int, MutableMap<String, MutableMap<String, Int>>> =
-        (1..8).associate { it to mutableMapOf<String, MutableMap<String, Int>>() }.toMutableMap()
+    fun incrementReceiptKey() {
+        _receiptKey.value = (_receiptKey.value ?: 0) + 1
+    }
 
-    private val _personPay =
-        MutableLiveData<MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>>(initialMap)
-    val personPay: LiveData<MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>> =
-        _personPay
+    fun decrementReceiptKey() {
+        _receiptKey.value = (_receiptKey.value ?: 0) - 1
+    }
+
+    fun incrementProductKey() {
+        _productKey.value = (_productKey.value ?: 0) + 1
+    }
+
+    fun decrementProductKey() {
+        _productKey.value = (_productKey.value ?: 0) - 1
+    }
+
+    fun resetKeyKey() {
+        _productKey.value = 0
+    }
+
+
+
+
 
     fun updatePersonPay(lst: List<Int>, placeName: String, productName: String, productPrice: Int) {
         try {
             val dividedPrice = (ceil((productPrice.toDouble() / lst.size) / 10) * 10).toInt()
 
-            val updatedPersonPay = _personPay.value?.toMutableMap() ?: return
+            val updatedPersonPay = _totalPay.value?.toMutableMap() ?: return
 
             for (i in lst) {
                 val current = updatedPersonPay[i] ?: mutableMapOf()
@@ -49,7 +83,7 @@ class CalculatorViewModel : ViewModel() {
                 updatedPersonPay[i] = current
             }
 
-            _personPay.value = updatedPersonPay
+            _totalPay.value = updatedPersonPay
 
             _stack.value = (_stack.value ?: mutableListOf()).apply {
                 add(updatedPersonPay.toMutableMap())
@@ -62,32 +96,6 @@ class CalculatorViewModel : ViewModel() {
 
     private val _stack = MutableLiveData<MutableList<Any>>(mutableListOf())
     val stack: LiveData<MutableList<Any>> = _stack
-
-    private val _Key = MutableLiveData<Int>(0)
-    val Key: LiveData<Int> = _Key
-
-    private val _KeyKey = MutableLiveData<Int>(0)
-    val KeyKey: LiveData<Int> = _KeyKey
-
-    fun incrementKey() {
-        _Key.value = (_Key.value ?: 0) + 1
-    }
-
-    fun incrementKeyKey() {
-        _KeyKey.value = (_KeyKey.value ?: 0) + 1
-    }
-
-    fun decrementKey() {
-        _Key.value = (_Key.value ?: 0) - 1
-    }
-
-    fun decrementKeyKey() {
-        _KeyKey.value = (_KeyKey.value ?: 0) - 1
-    }
-
-    fun resetKeyKey() {
-        _KeyKey.value = 0
-    }
 
     val _showToastEvent = MutableLiveData<Boolean>()
     val showToastEvent: LiveData<Boolean> = _showToastEvent
@@ -107,18 +115,18 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun setKey(value: Int) {
-        _Key.value = value
+        _receiptKey.value = value
     }
 
     fun setKeyKey(value: Int) {
-        _KeyKey.value = value
+        _productKey.value = value
     }
 
     fun reDo() {
         val currentStack = _stack.value ?: mutableListOf()
         if (currentStack.isNotEmpty()) {
-            val currentKey = _Key.value ?: 0
-            val currentKeyKey = _KeyKey.value ?: 0
+            val currentKey = _receiptKey.value ?: 0
+            val currentKeyKey = _productKey.value ?: 0
 
             if (currentStack.isEmpty()) {
                 _showToastEvent.value = true
@@ -127,20 +135,20 @@ class CalculatorViewModel : ViewModel() {
 
             try {
                 val lastElement = currentStack.removeAt(currentStack.size - 1)
-                _personPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
+                _totalPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
                 _stack.value = currentStack
                 
                 if (currentKeyKey == 0) {
                     if (currentKey > 0) {
                         val prevSize = _previousReceiptSize.value ?: 0
-                        decrementKey()
-                        _KeyKey.value = prevSize - 1
+                        decrementReceiptKey()
+                        _productKey.value = prevSize - 1
                     } else {
-                        _KeyKey.value = 0
+                        _productKey.value = 0
                         _showToastEvent.value = true
                     }
                 } else {
-                    decrementKeyKey()
+                    decrementProductKey()
                 }
                 
             } catch (e: Exception) {
@@ -185,11 +193,11 @@ class CalculatorViewModel : ViewModel() {
         val newMap = (0..7).associate { index ->  // 0부터 7까지로 변경
             index to mutableMapOf<String, MutableMap<String, Int>>()
         }.toMutableMap()
-        
-        _personPay.value = newMap
+
+        _totalPay.value = newMap
         _stack.value = mutableListOf()
-        _Key.value = 0
-        _KeyKey.value = 0
+        _receiptKey.value = 0
+        _productKey.value = 0
     }
 
     fun updateButtonNamesBasedOnPermissions() {
@@ -214,6 +222,6 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun updatePersonPay() {
-        _personPay.value = _personPay.value?.toMutableMap()
+        _totalPay.value = _totalPay.value?.toMutableMap()
     }
 }

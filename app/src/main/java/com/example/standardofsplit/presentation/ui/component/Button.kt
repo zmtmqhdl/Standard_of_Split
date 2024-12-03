@@ -89,7 +89,7 @@ fun NameChangeToggleButton(
     modifier: Modifier = Modifier,
     viewModel: CalculatorViewModel,
 ) {
-    val isToggled by viewModel.changeMode.observeAsState()
+    val isToggled by viewModel.changeMode.value.observeAsState()
 //    viewModel.toggleChangeMode()
     Button(
         onClick = onClick,

@@ -70,8 +70,8 @@ fun CalculatorScreen(
 
     val receipts by receiptViewModel.receipts.collectAsState(emptyList<ReceiptClass>())
 
-    val Key by calculatorViewModel.Key.observeAsState(0)
-    val KeyKey by calculatorViewModel.KeyKey.observeAsState(0)
+    val Key by calculatorViewModel.receiptKey.observeAsState(0)
+    val KeyKey by calculatorViewModel.productKey.observeAsState(0)
     var total by remember {
         mutableStateOf(
             formatNumberWithCommas((receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())
@@ -126,7 +126,7 @@ fun CalculatorScreen(
 
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
-    val buttonStates by calculatorViewModel.buttonStates.observeAsState(emptyList())
+    val buttonStates by calculatorViewModel.buttonState.observeAsState(emptyList())
 
     val isLastProduct = remember { mutableStateOf(false) }
 
@@ -235,7 +235,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 1
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(1)
+                                calculatorViewModel.buttonPush(1)
                                 if (1 !in payList) {
                                     payList.add(1)
                                 } else {
@@ -263,7 +263,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 2
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(2)
+                                calculatorViewModel.buttonPush(2)
                                 if (2 !in payList) {
                                     payList.add(2)
                                 } else {
@@ -308,7 +308,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 3
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(3)
+                                calculatorViewModel.buttonPush(3)
                                 if (3 !in payList) {
                                     payList.add(3)
                                 } else {
@@ -335,7 +335,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 4
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(4)
+                                calculatorViewModel.buttonPush(4)
                                 if (4 !in payList) {
                                     payList.add(4)
                                 } else {
@@ -395,7 +395,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 5
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(5)
+                                calculatorViewModel.buttonPush(5)
                                 if (5 !in payList) {
                                     payList.add(5)
                                 } else {
@@ -422,7 +422,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 6
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(6)
+                                calculatorViewModel.buttonPush(6)
                                 if (6 !in payList) {
                                     payList.add(6)
                                 } else {
@@ -448,7 +448,7 @@ fun CalculatorScreen(
                                     if (i <= ps) {
                                         payList.add(i)
                                         if (!buttonStates[i]) {
-                                            calculatorViewModel.toggleButtonState(i)
+                                            calculatorViewModel.buttonPush(i)
                                         }
                                     }
                                 }
@@ -483,7 +483,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 7
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(7)
+                                calculatorViewModel.buttonPush(7)
                                 if (7 !in payList) {
                                     payList.add(7)
                                 } else {
@@ -510,7 +510,7 @@ fun CalculatorScreen(
                                 selectedIndex.intValue = 8
                             }
                             if (isToggled == false) {
-                                calculatorViewModel.toggleButtonState(8)
+                                calculatorViewModel.buttonPush(8)
                                 if (8 !in payList) {
                                     payList.add(8)
                                 } else {
@@ -541,10 +541,10 @@ fun CalculatorScreen(
                                     isLastProduct.value = true
                                     showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
                                 } else {
-                                    calculatorViewModel.incrementKeyKey()
+                                    calculatorViewModel.incrementProductKey()
                                     if (KeyKey >= receipts[Key].productPrice.size) {
                                         calculatorViewModel.resetKeyKey()
-                                        calculatorViewModel.incrementKey()
+                                        calculatorViewModel.incrementReceiptKey()
                                     }
                                     total = formatNumberWithCommas(
                                         (receipts[Key].productQuantity[KeyKey].toInt() * receipts[Key].productPrice[KeyKey].toInt()).toString())
