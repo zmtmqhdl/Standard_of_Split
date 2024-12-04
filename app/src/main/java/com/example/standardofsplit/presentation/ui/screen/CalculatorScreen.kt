@@ -99,7 +99,7 @@ fun CalculatorScreen(
 
     LaunchedEffect(ps, Key, KeyKey, showToast, receipts) {
         calculatorViewModel.updateButtonPermissions(ps)
-        calculatorViewModel.updateButtonNamesBasedOnPermissions()
+        calculatorViewModel.initializeButtonNames()
 
         if (receipts.isNotEmpty() && Key < receipts.size) {
             calculatorViewModel.updateCurrentReceiptSize(receipts[Key].productPrice.size)
@@ -147,7 +147,7 @@ fun CalculatorScreen(
             onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.intValue = index
-                calculatorViewModel.updateButtonName(selectedIndex.intValue.toString(), newName)
+                calculatorViewModel.updateButtonNames(selectedIndex.intValue.toString(), newName)
                 nameChangeDialog.value = false
             },
             name = currentName,
@@ -356,8 +356,8 @@ fun CalculatorScreen(
                             isLastProduct.value = false
                             calculatorViewModel.reDo()
                             if (receipts.isNotEmpty()) {
-                                calculatorViewModel.setKey(receipts.size - 1)
-                                calculatorViewModel.setKeyKey(receipts.last().productPrice.size - 1)
+                                calculatorViewModel.setReceiptKey(receipts.size - 1)
+                                calculatorViewModel.setProductKey(receipts.last().productPrice.size - 1)
                                 total = formatNumberWithCommas(
                                     (receipts[Key].productQuantity[KeyKey].toInt() *
                                      receipts[Key].productPrice[KeyKey].toInt()).toString()
