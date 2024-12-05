@@ -32,21 +32,12 @@ class ReceiptViewModel @Inject constructor(
         receiptUseCase.receiptDelete(_receipts.value, index)
     }
 
-    fun productAdd(
-        index: Int,
-        productName: String,
-        productQuantity: String,
-        productPrice: String
+    fun productAdd(index: Int, productName: String, productQuantity: String, productPrice: String
     ) {
         receiptUseCase.productAdd(_receipts.value, index, productName, productQuantity, productPrice)
     }
 
-    fun productUpdate(
-        index: Int,
-        productIndex: Int,
-        productName: String,
-        productQuantity: String,
-        productPrice: String
+    fun productUpdate(index: Int, productIndex: Int, productName: String, productQuantity: String, productPrice: String
     ) {
         receiptUseCase.productUpdate(_receipts.value, index, productIndex, productName, productQuantity, productPrice)
     }

@@ -17,10 +17,10 @@ class StartViewModel @Inject constructor(
     val personCount: StateFlow<Int> = _personCount.asStateFlow()
 
     fun incrementCount() {
-        _personCount.value = startUseCase.incrementPersonCount(_personCount.value)
+        startUseCase.incrementPersonCount(_personCount.value)
     }
 
     fun decrementCount() {
-        _personCount.value = startUseCase.decrementPersonCount(_personCount.value)
+        startUseCase.decrementPersonCount(_personCount.value)
     }
 }

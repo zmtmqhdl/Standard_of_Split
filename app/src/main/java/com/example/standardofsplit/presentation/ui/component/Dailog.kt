@@ -223,6 +223,16 @@ fun Preview_DialogButtons() {
     )
 }
 
+
+
+
+
+
+
+
+
+
+
 @Composable
 fun Reset_Confirm_Dialog(
     onDismiss: () -> Unit,
@@ -351,10 +361,6 @@ fun ProductUpdateDialog(
                         context = context,
                         message = "모든 항목을 작성해주세요."
                     )
-                    MainScope().launch {
-                        kotlinx.coroutines.delay(2000)
-                        isToastShowing = false
-                    }
                 }
             },
             onDelete = onDelete

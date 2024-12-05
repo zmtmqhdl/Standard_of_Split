@@ -138,7 +138,7 @@ fun ResultScreen(
         Reset_Confirm_Dialog(
             onDismiss = { showResetDialog = false },
             onConfirm = {
-                calculatorViewModel.resetPersonPay()
+                calculatorViewModel.resetTotalPay()
                 showResetDialog = false
                 onBack()
             }

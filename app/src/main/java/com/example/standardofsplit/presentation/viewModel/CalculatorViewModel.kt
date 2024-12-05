@@ -10,8 +10,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
-    private val calculatorUseCase: CalculatorUseCase
+    private val calculatorUseCase: CalculatorUseCase,
+    private val startViewModel: StartViewModel
 ): ViewModel() {
+
+    private val personCount: StateFlow<Int> = startViewModel.personCount
 
     private val _totalPay = MutableStateFlow(TotalPay())
     val totalPay: StateFlow<TotalPay> = _totalPay
@@ -19,10 +22,8 @@ class CalculatorViewModel @Inject constructor(
     private val _stack = MutableStateFlow<MutableList<Any>>(mutableListOf())
     val stack: StateFlow<MutableList<Any>> = _stack
 
-    val buttonPermissions: StateFlow<Map<String, Boolean>> = calculatorUseCase.buttonPermissions
-
-    private val _buttonNames = MutableStateFlow<Map<String, String>>(emptyMap())
-    val buttonNames: StateFlow<Map<String, String>> = _buttonNames
+    private val _buttonNames = MutableStateFlow<Map<Int, String>>(emptyMap())
+    val buttonNames: StateFlow<Map<Int, String>> = _buttonNames
 
     fun setChangeMode(value: Boolean) {
         calculatorUseCase.setChangeMode(value)
@@ -37,12 +38,13 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun initializeTotalPay() {
-        val initialTotalPay = (1..8).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
-        _totalPay.value = TotalPay(initialTotalPay.toMutableMap())
+        calculatorUseCase.initializeTotalPay(_totalPay.value)
+        calculatorUseCase.setReceiptKey(value = 0)
+        calculatorUseCase.setProductKey(value = 0)
     }
 
-    fun updateTotalPay() {
-        _totalPay.value = calculatorUseCase.updateTotalPay(totalPay.value)
+    fun updateTotalPay(payList: List<Int>, productPrice: Int, placeName: String, productName: String) {
+        calculatorUseCase.updateTotalPay(totalPay.value, payList, productPrice, placeName, productName)
     }
 
     fun setReceiptKey(value: Int) {
@@ -61,10 +63,6 @@ class CalculatorViewModel @Inject constructor(
         calculatorUseCase.setProductKey(value)
     }
 
-    fun resetProductKey() {
-        calculatorUseCase.resetProductKey()
-    }
-
     fun incrementProductKey() {
         calculatorUseCase.incrementProductKey()
     }
@@ -74,72 +72,16 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun initializeButtonNames() {
-        val updatedNames = calculatorUseCase.initializeButtonNames(buttonPermissions.value)
-        _buttonNames.value = updatedNames
+        calculatorUseCase.initializeButtonNames(personCount.value)
     }
 
-    fun updateButtonNames(index: String, newName: String) {
-        val updatedNames = calculatorUseCase.updateButtonNames(index, newName, _buttonNames.value)
-        _buttonNames.value = updatedNames
+    fun updateButtonNames(index: Int, newName: String) {
+        calculatorUseCase.updateButtonNames(index, newName, _buttonNames.value)
     }
 
-    //    fun updateButtonPermissions(personCount: Int) {
-//        _buttonPermissions.value = (1..8).associate { i ->
-//            i.toString() to (i <= personCount)
-//        }
-//    }
-
-
-
-
-
-
-
-
-    
-
-
-//    fun updateTotalPay(lst: List<Int>, placeName: String, productName: String, productPrice: Int) {
-//        try {
-//            val dividedPrice = (ceil((productPrice.toDouble() / lst.size) / 10) * 10).toInt()
-//
-//            val updatedPersonPay = _totalPay.value?.toMutableMap() ?: return
-//
-//            for (i in lst) {
-//                val current = updatedPersonPay[i] ?: mutableMapOf()
-//                val updatedProducts = current[placeName]?.toMutableMap() ?: mutableMapOf()
-//                updatedProducts[productName] = dividedPrice
-//                current[placeName] = updatedProducts
-//                updatedPersonPay[i] = current
-//            }
-//
-//            _totalPay.value = updatedPersonPay
-//
-//            _stack.value = (_stack.value ?: mutableListOf()).apply {
-//                add(updatedPersonPay.toMutableMap())
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            _showToastEvent.value = true
-//        }
-//    }
 //
 //    val _showToastEvent = MutableLiveData<Boolean>()
 //    val showToastEvent: LiveData<Boolean> = _showToastEvent
-//
-//    private val _currentReceiptSize = MutableLiveData(0)
-//    val currentReceiptSize: LiveData<Int> = _currentReceiptSize
-//
-//    fun updateCurrentReceiptSize(size: Int) {
-//        _currentReceiptSize.value = size
-//    }
-//
-//    private val _previousReceiptSize = MutableLiveData<Int>(0)
-//    val previousReceiptSize: LiveData<Int> = _previousReceiptSize
-//
-//    fun updatePreviousReceiptSize(size: Int) {
-//        _previousReceiptSize.value = size
-//    }
 //
 //    fun reDo() {
 //        val currentStack = _stack.value ?: mutableListOf()
@@ -188,14 +130,4 @@ class CalculatorViewModel @Inject constructor(
 //        _isResetFromResult.value = value
 //    }
 //
-//    fun resetPersonPay() {
-//        val newMap = (0..7).associate { index ->  // 0부터 7까지로 변경
-//            index to mutableMapOf<String, MutableMap<String, Int>>()
-//        }.toMutableMap()
-//
-//        _totalPay.value = newMap
-//        _stack.value = mutableListOf()
-//        _receiptKey.value = 0
-//        _productKey.value = 0
-//    }
 }

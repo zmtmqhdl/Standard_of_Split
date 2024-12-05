@@ -3,19 +3,15 @@ package com.example.standardofsplit.domain.usecase
 import javax.inject.Inject
 
 class StartUseCase @Inject constructor() {
-    fun incrementPersonCount(currentCount: Int): Int {
-        return if (currentCount < MAX_PERSON_COUNT) {
+    fun incrementPersonCount(currentCount: Int) {
+        if (currentCount < MAX_PERSON_COUNT) {
             currentCount + 1
-        } else {
-            currentCount
         }
     }
 
-    fun decrementPersonCount(currentCount: Int): Int {
-        return if (currentCount > MIN_PERSON_COUNT) {
+    fun decrementPersonCount(currentCount: Int) {
+        if (currentCount > MIN_PERSON_COUNT) {
             currentCount - 1
-        } else {
-            currentCount
         }
     }
 

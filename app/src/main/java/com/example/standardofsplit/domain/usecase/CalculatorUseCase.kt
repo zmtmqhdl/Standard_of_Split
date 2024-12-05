@@ -5,13 +5,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class CalculatorUseCase @Inject constructor() {
 
     private val _changeMode = MutableStateFlow(false)
     val changeMode: StateFlow<Boolean> = _changeMode.asStateFlow()
 
-    private val _buttonState = MutableStateFlow(List(9) { false })
+    private val _buttonState = MutableStateFlow(List(8) { false })
     val buttonState: StateFlow<List<Boolean>> = _buttonState
 
     private val _receiptKey = MutableStateFlow(0)
@@ -19,11 +20,6 @@ class CalculatorUseCase @Inject constructor() {
 
     private val _productKey = MutableStateFlow(0)
     val productKey: StateFlow<Int> = _productKey
-
-    private val _buttonPermission = MutableStateFlow(
-        (1..8).associate { it.toString() to false }
-    )
-    val buttonPermissions: StateFlow<Map<String, Boolean>> = _buttonPermission
 
     fun setChangeMode(value: Boolean) {
         _changeMode.value = value
@@ -35,11 +31,25 @@ class CalculatorUseCase @Inject constructor() {
         }
     }
 
-    fun updateTotalPay(currentTotalPay: TotalPay): TotalPay {
-        val updatedPayments = currentTotalPay.payments.mapValues { entry ->
-            entry.value.toMutableMap()
-        }.toMutableMap()
-        return TotalPay(updatedPayments)
+    fun initializeTotalPay(currentTotalPay: TotalPay) {
+        val initialTotalPay = (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
+        currentTotalPay.payment.value = initialTotalPay.toMutableMap()
+    }
+
+    fun updateTotalPay(currentTotalPay: TotalPay, payList: List<Int>, productPrice: Int, placeName: String, productName: String) {
+        try {
+            val dividedPrice: Int = (ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+            val current = currentTotalPay.payment.value
+
+            for (i in payList) {
+                val updatedProducts = current[i]?.get(placeName) ?: mutableMapOf()
+                updatedProducts[productName] = dividedPrice
+                current[i] = current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(placeName to updatedProducts)
+            }
+            currentTotalPay.payment.value = current
+        } catch (e: Exception) {
+            // 토스트메시지
+        }
     }
 
     fun resetButtonStates() {
@@ -62,10 +72,6 @@ class CalculatorUseCase @Inject constructor() {
         _productKey.value = value
     }
 
-    fun resetProductKey() {
-        _productKey.value = 0
-    }
-
     fun incrementProductKey() {
         _productKey.value += 1
     }
@@ -74,23 +80,19 @@ class CalculatorUseCase @Inject constructor() {
         _productKey.value -= 1
     }
 
-    fun initializeButtonNames(currentPermissions: Map<String, Boolean>): Map<String, String> {
-        val currentNames = mutableMapOf<String, String>()
-        for (i in 1..8) {
-            val key = i.toString()
-            if (currentPermissions[key] == false) {
-                currentNames[key] = "X"
+    fun initializeButtonNames(personCount: Int) {
+        val currentNames = mutableMapOf<Int, String>()
+        for (i in 0..7) {
+            if (i <= personCount) {
+                currentNames[i] = "X"
             } else {
-                currentNames[key] = "인원$i"
+                currentNames[i] = "인원$i"
             }
         }
-        return currentNames
     }
 
-    fun updateButtonNames(index: String, newName: String, beforeNames: Map<String, String>): Map<String, String> {
-        val currentNames = beforeNames.toMutableMap()
-        currentNames[index] = newName
-        return currentNames
+    fun updateButtonNames(index: Int, newName: String, beforeNames: Map<Int, String>) {
+        beforeNames.toMutableMap()[index] = newName
     }
 
 }

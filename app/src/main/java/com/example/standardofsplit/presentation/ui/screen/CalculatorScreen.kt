@@ -110,7 +110,7 @@ fun CalculatorScreen(
 
             if (KeyKey < receipts[Key].productPrice.size) {
                 total = formatNumberWithCommas(
-                    (receipts[Key].productQuantity[KeyKey].toInt() *
+                    (receipts[Key].productupdateTotalPayQuantity[KeyKey].toInt() *
                             receipts[Key].productPrice[KeyKey].toInt()).toString()
                 )
             }
