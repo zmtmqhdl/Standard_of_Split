@@ -57,10 +57,15 @@ fun CalculatorScreen(
 ) {
 
     val startViewModel: StartViewModel = hiltViewModel()
-    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
     val receiptViewModel: ReceiptViewModel = hiltViewModel()
+    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
-    val isToggled by calculatorViewModel.changeMode.observeAsState()
+    val changeMode by calculatorViewModel.changeMode.collectAsState()
+
+
+
+
+
     val nameChangeDialog = remember { mutableStateOf(false) }
 
     val ps by startViewModel.personCount.collectAsState()
@@ -223,18 +228,18 @@ fun CalculatorScreen(
                     flag = buttonStates[1],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["1"] == true) {
+                            if (changeMode == true && buttonPermission["1"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 1
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["1"] == true) {
+                            if (changeMode == true && buttonPermission["1"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 1
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(1)
                                 if (1 !in payList) {
                                     payList.add(1)
@@ -251,18 +256,18 @@ fun CalculatorScreen(
                     flag = buttonStates[2],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["2"] == true) {
+                            if (changeMode == true && buttonPermission["2"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 2
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["2"] == true) {
+                            if (changeMode == true && buttonPermission["2"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 2
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(2)
                                 if (2 !in payList) {
                                     payList.add(2)
@@ -296,18 +301,18 @@ fun CalculatorScreen(
                     flag = buttonStates[3],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["3"] == true) {
+                            if (changeMode == true && buttonPermission["3"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 3
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["3"] == true) {
+                            if (changeMode == true && buttonPermission["3"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 3
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(3)
                                 if (3 !in payList) {
                                     payList.add(3)
@@ -323,18 +328,18 @@ fun CalculatorScreen(
                     flag = buttonStates[4],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["4"] == true) {
+                            if (changeMode == true && buttonPermission["4"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 4
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["4"] == true) {
+                            if (changeMode == true && buttonPermission["4"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 4
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(4)
                                 if (4 !in payList) {
                                     payList.add(4)
@@ -354,7 +359,7 @@ fun CalculatorScreen(
                     FunctionButton(text = "되돌리기", onClick = {
                         if (isLastProduct.value) {
                             isLastProduct.value = false
-                            calculatorViewModel.reDo()
+                            calculatorViewModel.rollback()
                             if (receipts.isNotEmpty()) {
                                 calculatorViewModel.setReceiptKey(receipts.size - 1)
                                 calculatorViewModel.setProductKey(receipts.last().productPrice.size - 1)
@@ -364,7 +369,7 @@ fun CalculatorScreen(
                                 )
                             }
                         } else {
-                            calculatorViewModel.reDo()
+                            calculatorViewModel.rollback()
                         }
                     })
                 }
@@ -383,18 +388,18 @@ fun CalculatorScreen(
                     flag = buttonStates[5],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["5"] == true) {
+                            if (changeMode == true && buttonPermission["5"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 5
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["5"] == true) {
+                            if (changeMode == true && buttonPermission["5"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 5
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(5)
                                 if (5 !in payList) {
                                     payList.add(5)
@@ -410,18 +415,18 @@ fun CalculatorScreen(
                     flag = buttonStates[6],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["6"] == true) {
+                            if (changeMode == true && buttonPermission["6"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 6
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["6"] == true) {
+                            if (changeMode == true && buttonPermission["6"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 6
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(6)
                                 if (6 !in payList) {
                                     payList.add(6)
@@ -471,18 +476,18 @@ fun CalculatorScreen(
                     flag = buttonStates[7],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["7"] == true) {
+                            if (changeMode == true && buttonPermission["7"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 7
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["7"] == true) {
+                            if (changeMode == true && buttonPermission["7"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 7
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(7)
                                 if (7 !in payList) {
                                     payList.add(7)
@@ -498,18 +503,18 @@ fun CalculatorScreen(
                     flag = buttonStates[8],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (isToggled == true && buttonPermission["8"] == true) {
+                            if (changeMode == true && buttonPermission["8"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 8
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (isToggled == true && buttonPermission["8"] == true) {
+                            if (changeMode == true && buttonPermission["8"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 8
                             }
-                            if (isToggled == false) {
+                            if (changeMode == false) {
                                 calculatorViewModel.buttonPush(8)
                                 if (8 !in payList) {
                                     payList.add(8)

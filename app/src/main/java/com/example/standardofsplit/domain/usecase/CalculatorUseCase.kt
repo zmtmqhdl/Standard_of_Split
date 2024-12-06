@@ -32,19 +32,30 @@ class CalculatorUseCase @Inject constructor() {
     }
 
     fun initializeTotalPay(currentTotalPay: TotalPay) {
-        val initialTotalPay = (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
+        val initialTotalPay =
+            (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
         currentTotalPay.payment.value = initialTotalPay.toMutableMap()
     }
 
-    fun updateTotalPay(currentTotalPay: TotalPay, payList: List<Int>, productPrice: Int, placeName: String, productName: String) {
+    fun updateTotalPay(
+        currentTotalPay: TotalPay,
+        payList: List<Int>,
+        productPrice: Int,
+        placeName: String,
+        productName: String
+    ) {
         try {
-            val dividedPrice: Int = (ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+            val dividedPrice: Int =
+                (ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
             val current = currentTotalPay.payment.value
 
             for (i in payList) {
                 val updatedProducts = current[i]?.get(placeName) ?: mutableMapOf()
                 updatedProducts[productName] = dividedPrice
-                current[i] = current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(placeName to updatedProducts)
+                current[i] =
+                    current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(
+                        placeName to updatedProducts
+                    )
             }
             currentTotalPay.payment.value = current
         } catch (e: Exception) {
@@ -95,8 +106,10 @@ class CalculatorUseCase @Inject constructor() {
         beforeNames.toMutableMap()[index] = newName
     }
 
-    fun rollback(stack: MutableStateFlow<MutableList<Any>>, totalPay:
-    MutableStateFlow<TotalPay>) {
+    fun rollback(
+        stack: MutableStateFlow<MutableList<Any>>,
+        totalPay: MutableStateFlow<TotalPay>
+    ) {
         val currentStack = stack.value
         if (currentStack.isNotEmpty()) {
             val lastElement = currentStack.removeAt(currentStack.size - 1)
@@ -105,48 +118,15 @@ class CalculatorUseCase @Inject constructor() {
             if (_productKey.value == 0) {
                 if (_receiptKey.value > 0) {
                     decrementReceiptKey()
-                    setProductKey(_receiptKey.value)
+                    setProductKey(lastElement.payment.value.size - 1)
+                } else {
+                    // 되돌릴게 없어요
                 }
+            } else {
+                decrementProductKey()
             }
         } else {
             // 되돌릴게 없어요 토스트메시지
         }
     }
-
 }
-
-//val _showToastEvent = MutableLiveData<Boolean>()
-//val showToastEvent: LiveData<Boolean> = _showToastEvent
-//
-//fun reDo() {
-//    val currentStack = _stack.value ?: mutableListOf()
-//    if (currentStack.isNotEmpty()) {
-//        val currentKey = _receiptKey.value ?: 0
-//        val currentKeyKey = _productKey.value ?: 0
-//
-//        try {
-//            val lastElement = currentStack.removeAt(currentStack.size - 1)
-//            _totalPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
-//            _stack.value = currentStack
-//
-//            if (currentKeyKey == 0) {
-//                if (currentKey > 0) {
-//                    val prevSize = _previousReceiptSize.value ?: 0
-//                    decrementReceiptKey()
-//                    _productKey.value = prevSize - 1
-//                } else {
-//                    _productKey.value = 0
-//                    _showToastEvent.value = true
-//                }
-//            } else {
-//                decrementProductKey()
-//            }
-//
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            _showToastEvent.value = true
-//        }
-//    } else {
-//        _showToastEvent.value = true
-//    }
-//}

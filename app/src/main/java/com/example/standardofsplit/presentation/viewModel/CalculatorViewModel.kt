@@ -6,6 +6,7 @@ import com.example.standardofsplit.domain.usecase.CalculatorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,6 +14,8 @@ class CalculatorViewModel @Inject constructor(
     private val calculatorUseCase: CalculatorUseCase,
     private val startViewModel: StartViewModel
 ): ViewModel() {
+
+    val changeMode: StateFlow<Boolean> = calculatorUseCase.changeMode
 
     private val personCount: StateFlow<Int> = startViewModel.personCount
 
@@ -79,7 +82,7 @@ class CalculatorViewModel @Inject constructor(
         calculatorUseCase.updateButtonNames(index, newName, _buttonNames.value)
     }
 
-    fun reDo() {
+    fun rollback() {
         calculatorUseCase.rollback(_stack, _totalPay)
     }
 }

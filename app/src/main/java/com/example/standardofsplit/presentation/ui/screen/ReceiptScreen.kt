@@ -135,7 +135,6 @@ fun ReceiptScreen(
     var showReceiptNameUpdateDialog by remember { mutableStateOf<Int?>(null) }
 
     val expandedStates = remember { mutableStateListOf<Boolean>() }
-    var isToastShowing by remember { mutableStateOf(false) }
     var showProductAddDialog by remember { mutableStateOf<Int?>(null) }
     var showProductUpdateDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
@@ -335,7 +334,6 @@ fun ReceiptScreen(
                         showCustomToast(context, message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다.")
                         MainScope().launch {
                             delay(2000)
-                            isToastShowing = false
                         }
                     }
                 }
