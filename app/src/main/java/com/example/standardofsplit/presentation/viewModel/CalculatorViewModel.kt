@@ -79,55 +79,7 @@ class CalculatorViewModel @Inject constructor(
         calculatorUseCase.updateButtonNames(index, newName, _buttonNames.value)
     }
 
-//
-//    val _showToastEvent = MutableLiveData<Boolean>()
-//    val showToastEvent: LiveData<Boolean> = _showToastEvent
-//
-//    fun reDo() {
-//        val currentStack = _stack.value ?: mutableListOf()
-//        if (currentStack.isNotEmpty()) {
-//            val currentKey = _receiptKey.value ?: 0
-//            val currentKeyKey = _productKey.value ?: 0
-//
-//            if (currentStack.isEmpty()) {
-//                _showToastEvent.value = true
-//                return
-//            }
-//
-//            try {
-//                val lastElement = currentStack.removeAt(currentStack.size - 1)
-//                _totalPay.value = lastElement as? MutableMap<Int, MutableMap<String, MutableMap<String, Int>>>
-//                _stack.value = currentStack
-//
-//                if (currentKeyKey == 0) {
-//                    if (currentKey > 0) {
-//                        val prevSize = _previousReceiptSize.value ?: 0
-//                        decrementReceiptKey()
-//                        _productKey.value = prevSize - 1
-//                    } else {
-//                        _productKey.value = 0
-//                        _showToastEvent.value = true
-//                    }
-//                } else {
-//                    decrementProductKey()
-//                }
-//
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                _showToastEvent.value = true
-//            }
-//        } else {
-//            _showToastEvent.value = true
-//        }
-//    }
-//
-
-//
-//    private val _isResetFromResult = MutableLiveData<Boolean>(false)
-//    val isResetFromResult: LiveData<Boolean> = _isResetFromResult
-//
-//    fun setResetFromResult(value: Boolean) {
-//        _isResetFromResult.value = value
-//    }
-//
+    fun reDo() {
+        calculatorUseCase.rollback(_stack, _totalPay)
+    }
 }
