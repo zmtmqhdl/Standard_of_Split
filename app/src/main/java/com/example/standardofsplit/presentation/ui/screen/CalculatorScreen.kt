@@ -60,6 +60,8 @@ fun CalculatorScreen(
     val receiptViewModel: ReceiptViewModel = hiltViewModel()
     val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
+    val personCount by startViewModel.personCount.collectAsState()
+
     val changeMode by calculatorViewModel.changeMode.collectAsState()
 
 
@@ -68,7 +70,6 @@ fun CalculatorScreen(
 
     val nameChangeDialog = remember { mutableStateOf(false) }
 
-    val ps by startViewModel.personCount.collectAsState()
 
     val buttonPermission by calculatorViewModel.buttonPermissions.observeAsState(emptyMap())
     val buttonName by calculatorViewModel.buttonNames.observeAsState(emptyMap())
@@ -102,8 +103,8 @@ fun CalculatorScreen(
         onBack()
     }
 
-    LaunchedEffect(ps, Key, KeyKey, showToast, receipts) {
-        calculatorViewModel.updateButtonPermissions(ps)
+    LaunchedEffect(personCount, Key, KeyKey, showToast, receipts) {
+        calculatorViewModel.updateButtonPermissions(personCount)
         calculatorViewModel.initializeButtonNames()
 
         if (receipts.isNotEmpty() && Key < receipts.size) {
@@ -450,7 +451,7 @@ fun CalculatorScreen(
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             } else {
                                 for (i in 1..8) {
-                                    if (i <= ps) {
+                                    if (i <= personCount) {
                                         payList.add(i)
                                         if (!buttonStates[i]) {
                                             calculatorViewModel.buttonPush(i)
