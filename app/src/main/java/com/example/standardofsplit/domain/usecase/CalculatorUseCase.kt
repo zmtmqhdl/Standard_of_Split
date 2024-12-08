@@ -1,9 +1,11 @@
 package com.example.standardofsplit.domain.usecase
 
 import com.example.standardofsplit.data.model.TotalPay
+import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.lang.Thread.State
 import javax.inject.Inject
 import kotlin.math.ceil
 
@@ -14,12 +16,6 @@ class CalculatorUseCase @Inject constructor() {
 
     private val _buttonState = MutableStateFlow(List(8) { false })
     val buttonState: StateFlow<List<Boolean>> = _buttonState
-
-    private val _receiptKey = MutableStateFlow(0)
-    val receiptKey: StateFlow<Int> = _receiptKey
-
-    private val _productKey = MutableStateFlow(0)
-    val productKey: StateFlow<Int> = _productKey
 
     fun setChangeMode(value: Boolean) {
         _changeMode.value = value
@@ -65,30 +61,6 @@ class CalculatorUseCase @Inject constructor() {
 
     fun resetButtonStates() {
         _buttonState.value = List(9) { false }
-    }
-
-    fun setReceiptKey(value: Int) {
-        _receiptKey.value = value
-    }
-
-    fun incrementReceiptKey() {
-        _receiptKey.value += 1
-    }
-
-    fun decrementReceiptKey() {
-        _receiptKey.value -= 1
-    }
-
-    fun setProductKey(value: Int) {
-        _productKey.value = value
-    }
-
-    fun incrementProductKey() {
-        _productKey.value += 1
-    }
-
-    fun decrementProductKey() {
-        _productKey.value -= 1
     }
 
     fun initializeButtonNames(personCount: Int) {

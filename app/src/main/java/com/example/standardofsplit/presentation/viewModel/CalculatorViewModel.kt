@@ -28,6 +28,12 @@ class CalculatorViewModel @Inject constructor(
     private val _buttonNames = MutableStateFlow<Map<Int, String>>(emptyMap())
     val buttonNames: StateFlow<Map<Int, String>> = _buttonNames
 
+    private val _receiptKey = MutableStateFlow(0)
+    val receiptKey: StateFlow<Int> = _receiptKey
+
+    private val _productKey = MutableStateFlow(0)
+    val productKey: StateFlow<Int> = _productKey
+
     fun setChangeMode(value: Boolean) {
         calculatorUseCase.setChangeMode(value)
     }
@@ -42,8 +48,8 @@ class CalculatorViewModel @Inject constructor(
 
     fun initializeTotalPay() {
         calculatorUseCase.initializeTotalPay(_totalPay.value)
-        calculatorUseCase.setReceiptKey(value = 0)
-        calculatorUseCase.setProductKey(value = 0)
+        setReceiptKey(value = 0)
+        setProductKey(value = 0)
     }
 
     fun updateTotalPay(payList: List<Int>, productPrice: Int, placeName: String, productName: String) {
@@ -51,27 +57,27 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun setReceiptKey(value: Int) {
-        calculatorUseCase.setProductKey(value)
+        _receiptKey.value = value
     }
 
     fun incrementReceiptKey() {
-        calculatorUseCase.incrementReceiptKey()
+        _receiptKey.value += 1
     }
 
     fun decrementReceiptKey() {
-        calculatorUseCase.decrementReceiptKey()
+        _receiptKey.value -= 1
     }
 
     fun setProductKey(value: Int) {
-        calculatorUseCase.setProductKey(value)
+        _productKey.value = value
     }
 
     fun incrementProductKey() {
-        calculatorUseCase.incrementProductKey()
+        _productKey.value += 1
     }
 
     fun decrementProductKey() {
-        calculatorUseCase.decrementProductKey()
+        _productKey.value -= 1
     }
 
     fun initializeButtonNames() {
