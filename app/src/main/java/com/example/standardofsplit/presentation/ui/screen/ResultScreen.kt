@@ -1,5 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import com.example.standardofsplit.presentation.ui.component.Receipt_Detail_Dial
 import com.example.standardofsplit.presentation.ui.component.Reset_Confirm_Dialog
 import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
+import java.lang.String.format
 
 @Composable
 fun ResultScreen(
@@ -192,8 +194,4 @@ private fun ResultCard(
             }
         }
     }
-}
-
-private fun formatNumberWithCommas(number: Int): String {
-    return String.format("%,d", number)
 }

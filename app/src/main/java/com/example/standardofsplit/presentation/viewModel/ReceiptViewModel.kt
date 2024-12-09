@@ -25,14 +25,13 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
         _receipts.value[index].placeName = newName
     }
 
-    fun receiptDelete(index: Int): Boolean {
-        return if (index in _receipts.value.indices) {
+    fun receiptDelete(index: Int){
+        if (index in _receipts.value.indices) {
             _receipts.value.removeAt(index)
-            true
-        } else false
+        }
     }
 
-    fun productAdd(index: Int, productName: String, productQuantity: String, productPrice: String) {
+    fun productAdd(index: Int, productName: String, productQuantity: Int, productPrice: Int) {
         _receipts.value[index].apply {
             val currentProductName = this.productName.value.toMutableList()
             val currentProductQuantity = this.productQuantity.value.toMutableList()
@@ -46,7 +45,7 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun productUpdate(index: Int, productIndex: Int, productName: String, productQuantity: String, productPrice: String) {
+    fun productUpdate(index: Int, productIndex: Int, productName: String, productQuantity: Int, productPrice: Int) {
         _receipts.value[index].apply {
             val currentProductName = this.productName.value.toMutableList()
             val currentProductQuantity = this.productQuantity.value.toMutableList()

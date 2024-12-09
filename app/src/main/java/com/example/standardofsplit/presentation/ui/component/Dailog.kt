@@ -18,8 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import com.example.standardofsplit.presentation.ui.theme.Color
 import com.example.standardofsplit.presentation.ui.theme.Shape
 import com.example.standardofsplit.presentation.ui.theme.Typography
@@ -166,7 +164,7 @@ fun ReceiptNameUpdateDialog(
 @Composable
 fun ProductAddDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, String, String) -> Unit,
+    onConfirm: (String, Int, Int) -> Unit,
     toastMessage: (String) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -185,7 +183,9 @@ fun ProductAddDialog(
             onDismiss = onDismiss,
             onConfirm = {
                 if (name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()) {
-                    onConfirm(name, price, quantity)
+                    val priceInt = price.toInt()
+                    val quantityInt = quantity.toInt()
+                    onConfirm(name, priceInt, quantityInt)
                 } else {
                     toastMessage("모든 항목을 작성해주세요.")
                 }
@@ -194,35 +194,43 @@ fun ProductAddDialog(
     }
 }
 
-// Preview
-
-@Preview
 @Composable
-fun Preview_InputField() {
-    var newName by remember { mutableStateOf("") }
-
-    InputField(text = "테스트", value = newName, onValueChange = { newName = it})
+fun ProductUpdateDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, Int, Int) -> Unit,
+    onDelete: () -> Unit,
+    productName: String,
+    price: Int,
+    quantity: Int,
+) {
+    var newProductName by remember { mutableStateOf(productName) }
+    var newPrice by remember { mutableIntStateOf(price) }
+    var newQuantity by remember { mutableIntStateOf(quantity) }
+    val context = LocalContext.current
+    DialogContainer(onDismiss = onDismiss) {
+        InputField("상품명", newProductName) { newProductName = it }
+        InputField("단가", formatNumberWithCommas(newPrice.toString())) { input ->
+            newPrice = input.replace(",", "").filter { it.isDigit() }.toIntOrNull() ?: 0
+        }
+        InputField("수량", newQuantity.toString()) { input ->
+            newQuantity = input.filter { it.isDigit() }.toIntOrNull() ?: 0
+        }
+        DialogButtons(
+            onDismiss = onDismiss,
+            onConfirm = {
+                if (newProductName.isNotEmpty() && newPrice > 0 && newQuantity > 0) {
+                    onConfirm(newProductName, newPrice, newQuantity)
+                } else {
+                    showCustomToast(
+                        context = context,
+                        message = "모든 항목을 작성해주세요."
+                    )
+                }
+            },
+            onDelete = onDelete
+        )
+    }
 }
-
-@Preview
-@Composable
-fun Preview_DialogContainer() {
-    DialogContainer(
-        onDismiss = { },
-        content = { }
-    )
-}
-
-@Preview
-@Composable
-fun Preview_DialogButtons() {
-    DialogButtons(
-        onDismiss = { },
-        onConfirm = { },
-        onDelete = { }
-    )
-}
-
 
 
 
@@ -328,47 +336,6 @@ fun Reset_Confirm_Dialog(
 }
 
 @Composable
-fun ProductUpdateDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String, String, String) -> Unit,
-    onDelete: () -> Unit,
-    productName: String,
-    price: String,
-    quantity: String,
-) {
-    var newproductname by remember { mutableStateOf(productName) }
-    var newprice by remember { mutableStateOf(price) }
-    var newquantity by remember { mutableStateOf(quantity) }
-    val context = LocalContext.current
-    var isToastShowing by remember { mutableStateOf(false) }
-
-    DialogContainer(onDismiss = onDismiss) {
-        InputField("상품명", newproductname) { newproductname = it }
-        InputField("단가", formatNumberWithCommas(newprice)) { input ->
-            newprice = input.replace(",", "").filter { it.isDigit() }
-        }
-        InputField("수량", newquantity) { input ->
-            newquantity = input.filter { it.isDigit() }
-        }
-        DialogButtons(
-            onDismiss = onDismiss,
-            onConfirm = {
-                if (newproductname.isNotEmpty() && newprice.isNotEmpty() && newquantity.isNotEmpty()) {
-                    onConfirm(newproductname, newprice, newquantity)
-                } else if (!isToastShowing) {
-                    isToastShowing = true
-                    showCustomToast(
-                        context = context,
-                        message = "모든 항목을 작성해주세요."
-                    )
-                }
-            },
-            onDelete = onDelete
-        )
-    }
-}
-
-@Composable
 fun Button_Name_Dialog(
     onDismiss: () -> Unit,
     onConfirm: (Int, String) -> Unit,
@@ -395,7 +362,6 @@ fun Receipt_Detail_Dialog(
     val total = receiptDetails.values.sumOf { products -> 
         products.values.sum() 
     }
-
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,

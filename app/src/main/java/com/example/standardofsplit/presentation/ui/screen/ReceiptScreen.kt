@@ -1,5 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.lang.String.format
 
 @Composable
 private fun ReceiptColumnHeaders() {
@@ -81,10 +83,10 @@ private fun ReceiptColumnHeaders() {
 private fun ProductList(
     onClick: () -> Unit,
     productName: String,
-    price: String,
-    quantity: String,
+    price: Int,
+    quantity: Int,
 ) {
-    val totalCost = (price.toInt() * quantity.toInt()).toString()
+    val totalCost = (price * quantity).toString()
     val formattedPrice = formatNumberWithCommas(price)
     val formattedTotalCost = formatNumberWithCommas(totalCost)
 
@@ -257,9 +259,7 @@ fun ReceiptScreen(
                             val productQuantities by receipt.productQuantity.collectAsState()
                             val totalCost = formatNumberWithCommas(
                                 productPrices.zip(productQuantities) { price, quantity ->
-                                    val priceInt = price.toIntOrNull() ?: 0
-                                    val quantityInt = quantity.toIntOrNull() ?: 0
-                                    priceInt * quantityInt
+                                    price * quantity
                                 }.sum().toString()
                             )
                             Text(
@@ -340,4 +340,9 @@ fun ReceiptScreen(
             )
         }
     }
+}
+
+@SuppressLint("DefaultLocale")
+private fun formatNumberWithCommas(number: Int): Int {
+    return format("%,d", number).toInt()
 }

@@ -22,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,25 +34,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.ui.component.Button_Name_Dialog
 import com.example.standardofsplit.presentation.ui.component.FunctionButton
 import com.example.standardofsplit.presentation.ui.component.CalculateButton
 import com.example.standardofsplit.presentation.ui.component.PersonSelectButton
-import com.example.standardofsplit.presentation.ui.component.NameChangeToggleButton
 import com.example.standardofsplit.presentation.ui.component.formatNumberWithCommas
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun CalculatorScreen(
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    onNext: () -> Unit, onBack: () -> Unit
 ) {
 
     val startViewModel: StartViewModel = hiltViewModel()
@@ -62,15 +55,19 @@ fun CalculatorScreen(
 
     val personCount by startViewModel.personCount.collectAsState()
 
-    val receipts by receiptViewModel.receipts.collectAsState(emptyList<ReceiptClass>())
+    val receipts by receiptViewModel.receipts.collectAsState(emptyList())
+
+    val receiptKey by calculatorViewModel.receiptKey.collectAsState(0)
+    val productKey by calculatorViewModel.productKey.collectAsState(0)
+    val buttonNames by calculatorViewModel.buttonNames.collectAsState(mutableListOf())
+    val buttonStates by calculatorViewModel.buttonState.collectAsState(List(8) { false })
+    val buttonPermissions by calculatorViewModel.buttonPermissions.collectAsState(List(8) { false})
 
     val context = LocalContext.current
 
-    val nameChangeDialog = remember { mutableStateOf(false) }
-
     var total by remember {
         mutableStateOf(
-            formatNumberWithCommas((receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()).toString())
+            formatNumberWithCommas((receipts[receiptKey].productQuantity.value[productKey] * receipts[receiptKey].productPrice.value[productKey]).toString())
         )
     }
 
@@ -80,22 +77,10 @@ fun CalculatorScreen(
 
     ///
 
-    var isToastShowing by remember { mutableStateOf(false) }
-    val showToast by calculatorViewModel.showToastEvent.observeAsState()
 
-    fun showToastIfNotShowing(message: String) {
-        if (!isToastShowing) {
-            isToastShowing = true
-            showCustomToast(context, message)
-            MainScope().launch {
-                delay(2000)
-                isToastShowing = false
-            }
-        }
-    }
+    val nameChangeDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(personCount, receiptKey, productKey, showToast, receipts) {
-        calculatorViewModel.updateButtonPermissions(personCount)
         calculatorViewModel.initializeButtonNames()
 
         if (receipts.isNotEmpty() && receiptKey < receipts.size) {
@@ -107,23 +92,17 @@ fun CalculatorScreen(
 
             if (productKey < receipts[receiptKey].productPrice.size) {
                 total = formatNumberWithCommas(
-                    (receipts[receiptKey].productupdateTotalPayQuantity[productKey].toInt() *
-                            receipts[receiptKey].productPrice[productKey].toInt()).toString()
+                    (receipts[receiptKey].productupdateTotalPayQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()).toString()
                 )
             }
         }
 
         if (showToast == true) {
-            showToastIfNotShowing("되돌릴 항목이 존재하지 않습니다.")
-            calculatorViewModel._showToastEvent.value = false
+            showCustomToast(message = "되돌릴 항목이 존재하지 않습니다.", context = context)
         }
     }
 
-    val payList = remember { mutableStateListOf<Int>() }
-
     val selectedIndex = remember { mutableIntStateOf(-1) }
-
-    val buttonStates by calculatorViewModel.buttonState.observeAsState(emptyList())
 
     val isLastProduct = remember { mutableStateOf(false) }
 
@@ -131,17 +110,16 @@ fun CalculatorScreen(
 
     LaunchedEffect(receiptKey, productKey, isResetFromResult) {
         if (receiptKey == 0 && productKey == 0 && isResetFromResult) {
-            payList.clear()
+            selectedPerson.clear()
             calculatorViewModel.setChangeMode(false)
             calculatorViewModel.setResetFromResult(false)
         }
     }
 
     if (nameChangeDialog.value) {
-        val currentName = buttonName[selectedIndex.intValue.toString()] ?: ""
+        val currentName = buttonNames[selectedIndex.intValue.toString()] ?: ""
 
-        Button_Name_Dialog(
-            onDismiss = { nameChangeDialog.value = false },
+        Button_Name_Dialog(onDismiss = { nameChangeDialog.value = false },
             onConfirm = { index, newName ->
                 selectedIndex.intValue = index
                 calculatorViewModel.updateButtonNames(selectedIndex.intValue.toString(), newName)
@@ -174,8 +152,10 @@ fun CalculatorScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // text = receipts[receiptKey].productName.value[productKey],
+                //연구
                 Text(
-                    text = receipts[receiptKey].productName[productKey],
+                    text = receipts[receiptKey].productName.value[productKey],
                     fontSize = 48.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
@@ -185,13 +165,14 @@ fun CalculatorScreen(
                 Box(
                     modifier = Modifier
                         .border(
-                            width = 2.dp, color = Color(0xFFDCD0FF), shape = RoundedCornerShape(10.dp)
+                            width = 2.dp,
+                            color = Color(0xFFDCD0FF),
+                            shape = RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
                         .padding(16.dp)
                         .height(50.dp)
-                        .width(350.dp),
-                    contentAlignment = Alignment.Center
+                        .width(350.dp), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "${total}원",
@@ -219,43 +200,36 @@ fun CalculatorScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 PersonSelectButton(
-                    text = buttonName["1"] ?: "X",
-                    flag = buttonStates[1],
+                    text = buttonNames[0],
+                    state = buttonStates[0],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (changeMode == true && buttonPermission["1"] == true) {
+                            if (changeMode == true && buttonPermissions[0] == true) {
                                 nameChangeDialog.value = true
-                                selectedIndex.intValue = 1
+                                selectedIndex.intValue = 0
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (changeMode == true && buttonPermission["1"] == true) {
+                            if (changeMode == true && buttonPermissions[0] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 1
                             }
                             if (changeMode == false) {
-                                calculatorViewModel.buttonPush(1)
-                                if (1 !in payList) {
-                                    payList.add(1)
-                                } else {
-                                    payList.remove(1)
-                                }
+                                calculatorViewModel.buttonPush(0)
                             }
                         }
-                    }
-                )
+                    })
 
-                PersonSelectButton(
-                    text = buttonName["2"] ?: "X",
-                    flag = buttonStates[2],
+                PersonSelectButton(text = buttonNames["2"] ?: "X",
+                    state = buttonStates[2],
                     onClick = {
                         if (isLastProduct.value) {
                             if (changeMode == true && buttonPermission["2"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 2
                             } else {
-                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                                showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
                             }
                         } else {
                             if (changeMode == true && buttonPermission["2"] == true) {
@@ -264,22 +238,18 @@ fun CalculatorScreen(
                             }
                             if (changeMode == false) {
                                 calculatorViewModel.buttonPush(2)
-                                if (2 !in payList) {
-                                    payList.add(2)
-                                } else {
-                                    payList.remove(2)
-                                }
                             }
                         }
-                    }
-                )
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    NameChangeToggleButton(text1 = "OFF", text2 = "ON", onClick = {}, viewModel = calculatorViewModel)
+                    NameChangeToggleButton(
+                        text1 = "OFF", text2 = "ON", onClick = {}, viewModel = calculatorViewModel
+                    )
                 }
             }
 
@@ -291,16 +261,15 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(
-                    text = buttonName["3"] ?: "X",
-                    flag = buttonStates[3],
+                PersonSelectButton(text = buttonNames["3"] ?: "X",
+                    state = buttonStates[3],
                     onClick = {
                         if (isLastProduct.value) {
                             if (changeMode == true && buttonPermission["3"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 3
                             } else {
-                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                                showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
                             }
                         } else {
                             if (changeMode == true && buttonPermission["3"] == true) {
@@ -309,25 +278,18 @@ fun CalculatorScreen(
                             }
                             if (changeMode == false) {
                                 calculatorViewModel.buttonPush(3)
-                                if (3 !in payList) {
-                                    payList.add(3)
-                                } else {
-                                    payList.remove(3)
-                                }
                             }
                         }
-                    }
-                )
-                PersonSelectButton(
-                    text = buttonName["4"] ?: "X",
-                    flag = buttonStates[4],
+                    })
+                PersonSelectButton(text = buttonNames["4"] ?: "X",
+                    state = buttonStates[4],
                     onClick = {
                         if (isLastProduct.value) {
                             if (changeMode == true && buttonPermission["4"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 4
                             } else {
-                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                                showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
                             }
                         } else {
                             if (changeMode == true && buttonPermission["4"] == true) {
@@ -336,15 +298,9 @@ fun CalculatorScreen(
                             }
                             if (changeMode == false) {
                                 calculatorViewModel.buttonPush(4)
-                                if (4 !in payList) {
-                                    payList.add(4)
-                                } else {
-                                    payList.remove(4)
-                                }
                             }
                         }
-                    }
-                )
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -359,8 +315,7 @@ fun CalculatorScreen(
                                 calculatorViewModel.setReceiptKey(receipts.size - 1)
                                 calculatorViewModel.setProductKey(receipts.last().productPrice.size - 1)
                                 total = formatNumberWithCommas(
-                                    (receipts[receiptKey].productQuantity[productKey].toInt() *
-                                     receipts[receiptKey].productPrice[productKey].toInt()).toString()
+                                    (receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()).toString()
                                 )
                             }
                         } else {
@@ -378,83 +333,67 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(
-                    text = buttonName["5"] ?: "X",
-                    flag = buttonStates[5],
+                PersonSelectButton(text = buttonNames["5"] ?: "X",
+                    state = buttonStates[5],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (changeMode == true && buttonPermission["5"] == true) {
+                            if (changeMode.value == true && buttonPermission["5"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 5
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (changeMode == true && buttonPermission["5"] == true) {
+                            if (changeMode.value == true && buttonPermission["5"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 5
                             }
-                            if (changeMode == false) {
+                            if (changeMode.value == false) {
                                 calculatorViewModel.buttonPush(5)
-                                if (5 !in payList) {
-                                    payList.add(5)
-                                } else {
-                                    payList.remove(5)
-                                }
                             }
                         }
-                    }
-                )
-                PersonSelectButton(
-                    text = buttonName["6"] ?: "X",
-                    flag = buttonStates[6],
+                    })
+                PersonSelectButton(text = buttonNames["6"] ?: "X",
+                    state = buttonStates[6],
                     onClick = {
                         if (isLastProduct.value) {
-                            if (changeMode == true && buttonPermission["6"] == true) {
+                            if (changeMode.value == true && buttonPermission["6"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 6
                             } else {
                                 showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
                             }
                         } else {
-                            if (changeMode == true && buttonPermission["6"] == true) {
+                            if (changeMode.value == true && buttonPermission["6"] == true) {
                                 nameChangeDialog.value = true
                                 selectedIndex.intValue = 6
                             }
-                            if (changeMode == false) {
+                            if (changeMode.value == false) {
                                 calculatorViewModel.buttonPush(6)
-                                if (6 !in payList) {
-                                    payList.add(6)
-                                } else {
-                                    payList.remove(6)
-                                }
+
                             }
                         }
-                    }
-                )
+                    })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    FunctionButton(
-                        text = "전체 선택",
-                        onClick = {
-                            if (isLastProduct.value) {
-                                showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
-                            } else {
-                                for (i in 1..8) {
-                                    if (i <= personCount) {
-                                        payList.add(i)
-                                        if (!buttonStates[i]) {
-                                            calculatorViewModel.buttonPush(i)
-                                        }
+                    FunctionButton(text = "전체 선택", onClick = {
+                        if (isLastProduct.value) {
+                            showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+                        } else {
+                            for (i in 1..8) {
+                                if (i <= personCount) {
+                                    selectedPerson.add(i)
+                                    if (!buttonStates[i]) {
+                                        calculatorViewModel.buttonPush(i)
                                     }
                                 }
                             }
                         }
-                    )
+                    })
                 }
             }
 
@@ -466,9 +405,8 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(
-                    text = buttonName["7"] ?: "X",
-                    flag = buttonStates[7],
+                PersonSelectButton(text = buttonNames["7"] ?: "X",
+                    state = buttonStates[7],
                     onClick = {
                         if (isLastProduct.value) {
                             if (changeMode == true && buttonPermission["7"] == true) {
@@ -484,18 +422,16 @@ fun CalculatorScreen(
                             }
                             if (changeMode == false) {
                                 calculatorViewModel.buttonPush(7)
-                                if (7 !in payList) {
-                                    payList.add(7)
+                                if (7 !in selectedPerson) {
+                                    selectedPerson.add(7)
                                 } else {
-                                    payList.remove(7)
+                                    selectedPerson.remove(7)
                                 }
                             }
                         }
-                    }
-                )
-                PersonSelectButton(
-                    text = buttonName["8"] ?: "X",
-                    flag = buttonStates[8],
+                    })
+                PersonSelectButton(text = buttonNames["8"] ?: "X",
+                    state = buttonStates[8],
                     onClick = {
                         if (isLastProduct.value) {
                             if (changeMode == true && buttonPermission["8"] == true) {
@@ -511,50 +447,47 @@ fun CalculatorScreen(
                             }
                             if (changeMode == false) {
                                 calculatorViewModel.buttonPush(8)
-                                if (8 !in payList) {
-                                    payList.add(8)
+                                if (8 !in selectedPerson) {
+                                    selectedPerson.add(8)
                                 } else {
-                                    payList.remove(8)
+                                    selectedPerson.remove(8)
                                 }
                             }
                         }
-                    }
-                )
+                    })
 
-                CalculateButton(
-                    text = if (isLastProduct.value) "정산 확인" else "적용",
-                    onClick = {
-                        if (isLastProduct.value) {
-                            onNext()
-                        } else {
-                            if (payList.isNotEmpty()) {
-                                calculatorViewModel.resetButtonStates()
-                                calculatorViewModel.updateTotalPay(
-                                    payList,
-                                    receipts[receiptKey].placeName,
-                                    receipts[receiptKey].productName[productKey],
-                                    receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()
-                                )
-                                payList.clear()
+                CalculateButton(text = if (isLastProduct.value) "정산 확인" else "적용", onClick = {
+                    if (isLastProduct.value) {
+                        onNext()
+                    } else {
+                        if (selectedPerson.isNotEmpty()) {
+                            calculatorViewModel.resetButtonStates()
+                            calculatorViewModel.updateTotalPay(
+                                selectedPerson,
+                                receipts[receiptKey].placeName,
+                                receipts[receiptKey].productName[productKey],
+                                receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()
+                            )
+                            selectedPerson.clear()
 
-                                if (receiptKey == receipts.size - 1 && productKey == receipts[receiptKey].productPrice.size - 1) {
-                                    isLastProduct.value = true
-                                    showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
-                                } else {
-                                    calculatorViewModel.incrementProductKey()
-                                    if (productKey >= receipts[receiptKey].productPrice.size) {
-                                        calculatorViewModel.resetProductKey()
-                                        calculatorViewModel.incrementReceiptKey()
-                                    }
-                                    total = formatNumberWithCommas(
-                                        (receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()).toString())
-                                }
+                            if (receiptKey == receipts.size - 1 && productKey == receipts[receiptKey].productPrice.size - 1) {
+                                isLastProduct.value = true
+                                showCustomToast(context, "정산이 완료되었습니다. 정산을 확인해주세요.")
                             } else {
-                                showToastIfNotShowing("최소 1명 이상을 선택해주세요.")
+                                calculatorViewModel.incrementProductKey()
+                                if (productKey >= receipts[receiptKey].productPrice.size) {
+                                    calculatorViewModel.setProductKey(0)
+                                    calculatorViewModel.incrementReceiptKey()
+                                }
+                                total = formatNumberWithCommas(
+                                    (receipts[receiptKey].productQuantity[productKey].toInt() * receipts[receiptKey].productPrice[productKey].toInt()).toString()
+                                )
                             }
+                        } else {
+                            showToastIfNotShowing("최소 1명 이상을 선택해주세요.")
                         }
                     }
-                )
+                })
             }
             Spacer(modifier = Modifier.height(30.dp))
         }

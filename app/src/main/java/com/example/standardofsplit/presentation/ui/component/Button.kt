@@ -9,15 +9,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.standardofsplit.presentation.ui.theme.Color
 import com.example.standardofsplit.presentation.ui.theme.Shape
 import com.example.standardofsplit.presentation.ui.theme.Typography
-import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 
 @Composable
 fun SubmitButton(
@@ -112,9 +108,9 @@ fun CircleButton(
 @Composable
 fun PersonSelectButton(
     text: String,
+    state: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    flag: Boolean,
 ) {
     val isDisabled = text == "X"
     Button(
@@ -126,7 +122,7 @@ fun PersonSelectButton(
             buttonColors(
                 containerColor = when {
                     isDisabled -> Color.Black
-                    flag -> Color.Gray1
+                    state -> Color.Gray1
                     else -> Color.Gray1
                 },
                 contentColor = if (isDisabled) Color.Black else Color.White,
@@ -266,72 +262,4 @@ fun DialogDeleteButton(
     ) {
         Text(text = text, style = Typography.dialogButtonTextStyle)
     }
-}
-
-// Preview
-
-@Preview
-@Composable
-fun Preview_SubmitButton() {
-    SubmitButton(text = "제출", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_ProductAddButton() {
-    ProductAddButton(text = "제출", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_CircleButton() {
-    CircleButton(text = "+", onClick = {})
-}
-
-//@Preview
-//@Composable
-//fun Preview_NameChangeToggleButton() {
-//    ChangeButton(text1 = "변화 전", text2 = "변화 후", onClick = {})
-//}
-
-@Preview
-@Composable
-fun Preview_PersonSelectButton() {
-    PersonSelectButton(text = "인원", onClick = {}, flag = false)
-}
-
-@Preview
-@Composable
-fun Preview_ReceiptAddButton() {
-    AddButton(text = "영수증 추가", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_ReceiptOpenCloseButton() {
-    ReceiptOpenCloseButton(text1 = "열기", text2 = "접기", onClick = {}, flag = false)
-}
-
-@Preview
-@Composable
-fun Preview_FunctionButton() {
-    FunctionButton(text = "기능", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_CalculateButton() {
-    CalculateButton(text = "정산 완료", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_DialogButton() {
-    DialogButton(text = "확인", onClick = {})
-}
-
-@Preview
-@Composable
-fun Preview_DialogDeleteButton() {
-    DialogButton(text = "삭제", onClick = {})
 }

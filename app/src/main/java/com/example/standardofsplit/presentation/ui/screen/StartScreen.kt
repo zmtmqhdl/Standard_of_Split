@@ -24,11 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.R
-import com.example.standardofsplit.presentation.preview.Pixel8ProPreview
 import com.example.standardofsplit.presentation.ui.component.CircleButton
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
@@ -155,43 +153,4 @@ fun StartScreen(
         onDecrement = viewModel::decrementCount,
         onNext = onNext
     )
-}
-
-// Preview
-@Preview
-@Composable
-fun Preview_PersonCountSelector() {
-    PersonCountSelector(
-        onIncrement = { },
-        onDecrement = { },
-        personCount = 5
-    )
-}
-
-@Preview
-@Composable
-fun Preview_StartScreenContent() {
-    StartScreenContent(
-        onIncrement = { },
-        onDecrement = { },
-        onNext = { },
-        personCount = 5
-    )
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = Pixel8ProPreview.WIDTH,
-    heightDp = Pixel8ProPreview.HEIGHT
-)
-@Composable
-fun Preview_StartScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopStart
-    ) {
-        StartScreen(
-            onNext = { },
-        )
-    }
 }
