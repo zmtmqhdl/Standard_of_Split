@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,10 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
-    private val startViewModel: StartViewModel
+    private val startViewModel: StartViewModel,
+    private val receiptViewModel: ReceiptViewModel
 ): ViewModel() {
 
     private val personCount: StateFlow<Int> = startViewModel.personCount
+
+    private val receipts: StateFlow<List<ReceiptClass>> = receiptViewModel.receipts
 
     private val _totalPay = MutableStateFlow(TotalPay())
 
@@ -126,8 +130,17 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    fun personSelect(index: Int) {
-
+    fun lastCheck(): Boolean {
+        val receiptCount = receipts.value.size
+        val productCount = receipts.value[receiptCount - 1].productName.value.size
+        return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
     }
 
+    fun personSelect(index: Int) {
+        if (lastCheck()) {
+
+        } else {
+
+        }
+    }
 }
