@@ -77,33 +77,31 @@ fun CircleButton(
     }
 }
 
-//@Composable
-//fun NameChangeToggleButton(
-//    text1: String,
-//    text2: String,
-//    onClick: () -> Unit,
-//    modifier: Modifier = Modifier,
-//    viewModel: CalculatorViewModel,
-//) {
-//    val isToggled by viewModel.changeMode.value.observeAsState()
-////    viewModel.toggleChangeMode()
-//    Button(
-//        onClick = onClick,
-//        modifier = modifier
-//            .width(353.dp)
-//            .height(50.dp),
-//        shape = Shape.RoundedCRectangle,
-//        colors = ButtonDefaults.buttonColors(
-//            if (isToggled == true) Color.Green else Color.Red
-//        ),
-//        contentPadding = PaddingValues(0.dp)
-//    ) {
-//        Text(
-//            text = if (isToggled == true) text2 else text1,
-//            style = Typography.nameChangeToggleButtonStyle,
-//        )
-//    }
-//}
+@Composable
+fun NameChangeToggleButton(
+    text1: String,
+    text2: String,
+    onClick: () -> Unit,
+    changeMode: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .width(353.dp)
+            .height(50.dp),
+        shape = Shape.RoundedCRectangle,
+        colors = ButtonDefaults.buttonColors(
+            if (changeMode) Color.Green else Color.Red
+        ),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(
+            text = if (changeMode) text2 else text1,
+            style = Typography.nameChangeToggleButtonStyle,
+        )
+    }
+}
 
 @Composable
 fun PersonSelectButton(
@@ -194,9 +192,7 @@ fun FunctionButton(
             .width(353.dp)
             .height(53.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Gray1, contentColor = Color.White
-        ),
+        colors = ButtonDefaults.buttonColors(Color.Gray1),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(text = text, style = Typography.functionButtonTextStyle)

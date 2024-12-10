@@ -1,8 +1,11 @@
 package com.example.standardofsplit.presentation.viewModel
 
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
+import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +15,7 @@ import javax.inject.Inject
 class CalculatorViewModel @Inject constructor(
     startViewModel: StartViewModel,
     receiptViewModel: ReceiptViewModel
-): ViewModel() {
+) : ViewModel() {
 
     private val personCount: StateFlow<Int> = startViewModel.personCount
 
@@ -29,7 +32,6 @@ class CalculatorViewModel @Inject constructor(
     val buttonState: StateFlow<List<Boolean>> = _buttonState
 
     private val _buttonPermissions = MutableStateFlow(List(8) { false })
-    val buttonPermissions: StateFlow<List<Boolean>> = _buttonPermissions
 
     private val _receiptKey = MutableStateFlow(0)
     val receiptKey: StateFlow<Int> = _receiptKey
@@ -38,6 +40,7 @@ class CalculatorViewModel @Inject constructor(
     val productKey: StateFlow<Int> = _productKey
 
     private val _changeMode = MutableStateFlow(false)
+    val changeMode: StateFlow<Boolean> = _changeMode
 
     private val _buttonNameChangeDialog = MutableStateFlow(false)
 
@@ -45,7 +48,7 @@ class CalculatorViewModel @Inject constructor(
         _changeMode.value = !_changeMode.value
     }
 
-    fun buttonPush(index: Int) {
+    private fun buttonPush(index: Int) {
         _buttonState.value = _buttonState.value.toMutableList().apply { this[index] = !this[index] }
     }
 
@@ -53,22 +56,36 @@ class CalculatorViewModel @Inject constructor(
         _buttonState.value = List(8) { false }
     }
 
+    fun trueButtonStates() {
+        _buttonState.value = List(8) { true }
+    }
+
     fun initializeTotalPay() {
-        val initialTotalPay = (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
+        val initialTotalPay =
+            (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
         _totalPay.value.payment.value = initialTotalPay.toMutableMap()
         setReceiptKey(value = 0)
         setProductKey(value = 0)
     }
 
-    fun updateTotalPay(payList: List<Int>, productPrice: Int, placeName: String, productName: String) {
+    fun updateTotalPay(
+        payList: List<Int>,
+        productPrice: Int,
+        placeName: String,
+        productName: String
+    ) {
         try {
-            val dividedPrice: Int = (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+            val dividedPrice: Int =
+                (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
             val current = _totalPay.value.payment.value
 
             for (i in payList) {
                 val updatedProducts = current[i]?.get(placeName) ?: mutableMapOf()
                 updatedProducts[productName] = dividedPrice
-                current[i] = current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(placeName to updatedProducts)
+                current[i] =
+                    current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(
+                        placeName to updatedProducts
+                    )
             }
             _totalPay.value.payment.value = current
         } catch (_: Exception) {
@@ -104,7 +121,8 @@ class CalculatorViewModel @Inject constructor(
         for (i in 0..7) {
             if (i < personCount.value) {
                 _buttonNames.value.add("X")
-                _buttonPermissions.value = _buttonPermissions.value.toMutableList().apply { this[i] = true }
+                _buttonPermissions.value =
+                    _buttonPermissions.value.toMutableList().apply { this[i] = true }
             } else {
                 _buttonNames.value.add("인원$i")
             }
@@ -132,7 +150,7 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    private fun lastCheck(): Boolean {
+    fun lastCheck(): Boolean {
         val receiptCount = receipts.value.size
         val productCount = receipts.value[receiptCount - 1].productName.value.size
         return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
@@ -142,9 +160,19 @@ class CalculatorViewModel @Inject constructor(
         if (_changeMode.value && _buttonPermissions.value[index]) {
             _buttonNameChangeDialog.value = true
         } else if (!_changeMode.value && lastCheck()) {
-            // showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+            showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
         } else if (!_changeMode.value && !lastCheck()) {
             buttonPush(index)
+        }
+    }
+
+    fun endCheck(
+        context: Context,
+    ) {
+        if (lastCheck()) {
+            showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
+        } else {
+            trueButtonStates()
         }
     }
 }
