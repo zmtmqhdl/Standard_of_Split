@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
-    private val startViewModel: StartViewModel,
-    private val receiptViewModel: ReceiptViewModel
+    startViewModel: StartViewModel,
+    receiptViewModel: ReceiptViewModel
 ): ViewModel() {
 
     private val personCount: StateFlow<Int> = startViewModel.personCount
@@ -39,8 +39,10 @@ class CalculatorViewModel @Inject constructor(
 
     private val _changeMode = MutableStateFlow(false)
 
-    fun setChangeMode(value: Boolean) {
-        _changeMode.value = value
+    private val _buttonNameChangeDialog = MutableStateFlow(false)
+
+    fun setChangeMode() {
+        _changeMode.value = !_changeMode.value
     }
 
     fun buttonPush(index: Int) {
@@ -130,17 +132,19 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    fun lastCheck(): Boolean {
+    private fun lastCheck(): Boolean {
         val receiptCount = receipts.value.size
         val productCount = receipts.value[receiptCount - 1].productName.value.size
         return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
     }
 
     fun personSelect(index: Int) {
-        if (lastCheck()) {
-
-        } else {
-
+        if (_changeMode.value && _buttonPermissions.value[index]) {
+            _buttonNameChangeDialog.value = true
+        } else if (!_changeMode.value && lastCheck()) {
+            // showToastIfNotShowing("정산이 완료되었습니다. 정산을 확인해주세요.")
+        } else if (!_changeMode.value && !lastCheck()) {
+            buttonPush(index)
         }
     }
 }
