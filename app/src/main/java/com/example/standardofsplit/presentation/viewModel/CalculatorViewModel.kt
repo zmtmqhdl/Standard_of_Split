@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -28,8 +27,8 @@ class CalculatorViewModel @Inject constructor(
     private val _buttonNames = MutableStateFlow<MutableList<String>>(mutableListOf())
     val buttonNames: StateFlow<MutableList<String>> = _buttonNames
 
-    private val _buttonState = MutableStateFlow(List(8) { false })
-    val buttonState: StateFlow<List<Boolean>> = _buttonState
+    private val _buttonStates = MutableStateFlow(List(8) { false })
+    val buttonStates: StateFlow<List<Boolean>> = _buttonStates
 
     private val _buttonPermissions = MutableStateFlow(List(8) { false })
 
@@ -42,22 +41,22 @@ class CalculatorViewModel @Inject constructor(
     private val _changeMode = MutableStateFlow(false)
     val changeMode: StateFlow<Boolean> = _changeMode
 
-    private val _buttonNameChangeDialog = MutableStateFlow(false)
+    private val _showButtonNameChangeDialog = MutableStateFlow(false)
 
     fun setChangeMode() {
         _changeMode.value = !_changeMode.value
     }
 
     private fun buttonPush(index: Int) {
-        _buttonState.value = _buttonState.value.toMutableList().apply { this[index] = !this[index] }
+        _buttonStates.value = _buttonStates.value.toMutableList().apply { this[index] = !this[index] }
     }
 
-    fun resetButtonStates() {
-        _buttonState.value = List(8) { false }
+    private fun resetButtonStates() {
+        _buttonStates.value = List(8) { false }
     }
 
-    fun trueButtonStates() {
-        _buttonState.value = List(8) { true }
+    private fun trueButtonStates() {
+        _buttonStates.value = List(8) { true }
     }
 
     fun initializeTotalPay() {
@@ -70,9 +69,9 @@ class CalculatorViewModel @Inject constructor(
 
     fun updateTotalPay(
         payList: List<Int>,
-        productPrice: Int,
         placeName: String,
-        productName: String
+        productName: String,
+        productPrice: Int,
     ) {
         try {
             val dividedPrice: Int =
@@ -116,6 +115,14 @@ class CalculatorViewModel @Inject constructor(
         _productKey.value -= 1
     }
 
+    fun openButtonNameChangeDialog() {
+        _showButtonNameChangeDialog.value = true
+    }
+
+    fun closeButtonNameChangeDialog() {
+        _showButtonNameChangeDialog.value = false
+    }
+
     fun initializeButtonNames() {
         _buttonNames.value.clear()
         for (i in 0..7) {
@@ -150,15 +157,15 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    fun lastCheck(): Boolean {
+    private fun lastCheck(): Boolean {
         val receiptCount = receipts.value.size
         val productCount = receipts.value[receiptCount - 1].productName.value.size
         return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
     }
 
-    fun personSelect(index: Int) {
+    fun personSelect(index: Int, context: Context) {
         if (_changeMode.value && _buttonPermissions.value[index]) {
-            _buttonNameChangeDialog.value = true
+            _showButtonNameChangeDialog.value = true
         } else if (!_changeMode.value && lastCheck()) {
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
         } else if (!_changeMode.value && !lastCheck()) {
@@ -173,6 +180,38 @@ class CalculatorViewModel @Inject constructor(
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
         } else {
             trueButtonStates()
+        }
+    }
+
+    fun calculate(
+        onNext: () -> Unit,
+        context: Context
+    ) {
+        if (lastCheck()) {
+            onNext()
+        } else {
+            if (_buttonStates.value == List(8) { false }) {
+                updateTotalPay(
+                    payList = _buttonStates.value.mapIndexedNotNull { index, value ->
+                        if (value) index else null
+                    },
+                    placeName = receipts.value[receiptKey.value].placeName,
+                    productName = receipts.value[receiptKey.value].productName.value[productKey.value],
+                    productPrice =  receipts.value[receiptKey.value].productPrice.value[productKey.value],
+                )
+                resetButtonStates()
+                if (lastCheck()) {
+                    showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
+                } else {
+                    incrementProductKey()
+                    if (productKey.value == receipts.value[receiptKey.value].productPrice.value.size) {
+                        setProductKey(0)
+                        incrementReceiptKey()
+                    }
+                }
+            } else {
+                showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
+            }
         }
     }
 }

@@ -201,8 +201,8 @@ fun FunctionButton(
 
 @Composable
 fun CalculateButton(
-    text: String,
     onClick: () -> Unit,
+    check: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Button(
@@ -216,7 +216,10 @@ fun CalculateButton(
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Text(text = text, style = Typography.calculatorButtonTextStyle)
+        Text(
+            text = if (check) "정산 완료" else "적용",
+            style = Typography.calculatorButtonTextStyle
+        )
     }
 }
 

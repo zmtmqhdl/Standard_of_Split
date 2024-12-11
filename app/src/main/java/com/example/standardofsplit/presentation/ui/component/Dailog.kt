@@ -81,8 +81,8 @@ private fun DialogContainer(
 
 @Composable
 private fun DialogButtons(
-    onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
     Row(
@@ -113,8 +113,8 @@ private fun DialogButtons(
 
 @Composable
 fun ReceiptAddDialog(
-    onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
     toastMessage: (String) -> Unit
 ) {
     var newName by remember { mutableStateOf("") }
@@ -122,25 +122,25 @@ fun ReceiptAddDialog(
     DialogContainer(onDismiss = onDismiss) {
         InputField(text = "신규 영수증 이름", value = newName, onValueChange = { newName = it })
         DialogButtons(
-            onDismiss = onDismiss,
             onConfirm = {
                 if (newName.isNotEmpty()) {
                     onConfirm(newName)
                 } else {
                     toastMessage("영수증 이름을 작성해주세요.")
                 }
-            }
+            },
+            onDismiss = onDismiss,
         )
     }
 }
 
 @Composable
 fun ReceiptNameUpdateDialog(
-    onDismiss: () -> Unit,
+    name: String,
     onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
     onDelete: () -> Unit,
     toastMessage: (String) -> Unit,
-    name: String
 ) {
     var newName by remember { mutableStateOf(name) }
 
@@ -162,8 +162,8 @@ fun ReceiptNameUpdateDialog(
 
 @Composable
 fun ProductAddDialog(
-    onDismiss: () -> Unit,
     onConfirm: (String, Int, Int) -> Unit,
+    onDismiss: () -> Unit,
     toastMessage: (String) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -195,8 +195,8 @@ fun ProductAddDialog(
 
 @Composable
 fun ProductUpdateDialog(
-    onDismiss: () -> Unit,
     onConfirm: (String, Int, Int) -> Unit,
+    onDismiss: () -> Unit,
     onDelete: () -> Unit,
     productName: String,
     price: Int,
@@ -336,8 +336,8 @@ fun Reset_Confirm_Dialog(
 
 @Composable
 fun ButtonNameChangeDialog(
-    onDismiss: () -> Unit,
     onConfirm: (Int, String) -> Unit,
+    onDismiss: () -> Unit,
     name: String,
     index: Int
 ) {
@@ -354,8 +354,8 @@ fun ButtonNameChangeDialog(
 
 @Composable
 fun Receipt_Detail_Dialog(
-    onDismiss: () -> Unit,
     name: String,
+    onDismiss: () -> Unit,
     receiptDetails: Map<String, Map<String, Int>>
 ) {
     val total = receiptDetails.values.sumOf { products -> 
