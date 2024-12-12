@@ -87,7 +87,7 @@ private fun DialogButtons(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween  // 변경
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Box(modifier = Modifier.weight(1f)) {
             if (onDelete != null) {
@@ -231,6 +231,28 @@ fun ProductUpdateDialog(
     }
 }
 
+@Composable
+fun ButtonNameChangeDialog(
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+    name: String,
+) {
+    var newName by remember { mutableStateOf(name) }
+
+    DialogContainer(onDismiss = onDismiss) {
+        InputField("버튼 이름", newName) { newName = it }
+        DialogButtons(
+            onConfirm = { onConfirm(newName) },
+            onDismiss = onDismiss
+        )
+    }
+}
+
+
+
+
+
+
 
 
 
@@ -334,23 +356,6 @@ fun Reset_Confirm_Dialog(
     }
 }
 
-@Composable
-fun ButtonNameChangeDialog(
-    onConfirm: (Int, String) -> Unit,
-    onDismiss: () -> Unit,
-    name: String,
-    index: Int
-) {
-    var newName by remember { mutableStateOf(name) }
-
-    DialogContainer(onDismiss = onDismiss) {
-        InputField("버튼 이름", newName) { newName = it }
-        DialogButtons(
-            onDismiss = onDismiss,
-            onConfirm = { onConfirm(index, newName) }
-        )
-    }
-}
 
 @Composable
 fun Receipt_Detail_Dialog(

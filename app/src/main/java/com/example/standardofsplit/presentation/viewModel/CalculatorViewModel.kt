@@ -11,14 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class CalculatorViewModel @Inject constructor(
-    startViewModel: StartViewModel,
-    receiptViewModel: ReceiptViewModel
-) : ViewModel() {
-
-    private val personCount: StateFlow<Int> = startViewModel.personCount
-
-    private val receipts: StateFlow<List<ReceiptClass>> = receiptViewModel.receipts
+class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     private val _totalPay = MutableStateFlow(TotalPay())
 
@@ -43,6 +36,9 @@ class CalculatorViewModel @Inject constructor(
 
     private val _showButtonNameChangeDialog = MutableStateFlow(false)
 
+    private val _index = MutableStateFlow(0)
+    val index: StateFlow<Int> = _index
+
     fun setChangeMode() {
         _changeMode.value = !_changeMode.value
     }
@@ -63,11 +59,11 @@ class CalculatorViewModel @Inject constructor(
         val initialTotalPay =
             (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
         _totalPay.value.payment.value = initialTotalPay.toMutableMap()
-        setReceiptKey(value = 0)
+        setReceiptKey()
         setProductKey(value = 0)
     }
 
-    fun updateTotalPay(
+    private fun updateTotalPay(
         payList: List<Int>,
         placeName: String,
         productName: String,
@@ -91,42 +87,45 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    fun setReceiptKey(value: Int) {
-        _receiptKey.value = value
+    private fun setReceiptKey() {
+        _receiptKey.value = 0
     }
 
-    fun incrementReceiptKey() {
+    private fun incrementReceiptKey() {
         _receiptKey.value += 1
     }
 
-    fun decrementReceiptKey() {
+    private fun decrementReceiptKey() {
         _receiptKey.value -= 1
     }
 
-    fun setProductKey(value: Int) {
+    private fun setProductKey(value: Int) {
         _productKey.value = value
     }
 
-    fun incrementProductKey() {
+    private fun incrementProductKey() {
         _productKey.value += 1
     }
 
-    fun decrementProductKey() {
+    private fun decrementProductKey() {
         _productKey.value -= 1
     }
 
-    fun openButtonNameChangeDialog() {
+    fun openButtonNameChangeDialog(index: Int) {
         _showButtonNameChangeDialog.value = true
+        _index.value = index
     }
 
     fun closeButtonNameChangeDialog() {
         _showButtonNameChangeDialog.value = false
     }
 
-    fun initializeButtonNames() {
+    fun initializeButtonNames(
+        personCount: Int
+    ) {
         _buttonNames.value.clear()
         for (i in 0..7) {
-            if (i < personCount.value) {
+            if (i < personCount) {
                 _buttonNames.value.add("X")
                 _buttonPermissions.value =
                     _buttonPermissions.value.toMutableList().apply { this[i] = true }
@@ -157,26 +156,27 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    private fun lastCheck(): Boolean {
-        val receiptCount = receipts.value.size
-        val productCount = receipts.value[receiptCount - 1].productName.value.size
+    private fun lastCheck(receipts: List<ReceiptClass>): Boolean {
+        val receiptCount = receipts.size
+        val productCount = receipts[receiptCount - 1].productName.value.size
         return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
     }
 
-    fun personSelect(index: Int, context: Context) {
+    fun personSelect(receipts: List<ReceiptClass>, index: Int, context: Context) {
         if (_changeMode.value && _buttonPermissions.value[index]) {
             _showButtonNameChangeDialog.value = true
-        } else if (!_changeMode.value && lastCheck()) {
+        } else if (!_changeMode.value && lastCheck(receipts = receipts)) {
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
-        } else if (!_changeMode.value && !lastCheck()) {
+        } else if (!_changeMode.value && !lastCheck(receipts = receipts)) {
             buttonPush(index)
         }
     }
 
     fun endCheck(
+        receipts: List<ReceiptClass>,
         context: Context,
     ) {
-        if (lastCheck()) {
+        if (lastCheck(receipts = receipts)) {
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
         } else {
             trueButtonStates()
@@ -184,10 +184,11 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun calculate(
+        receipts: List<ReceiptClass>,
         onNext: () -> Unit,
         context: Context
     ) {
-        if (lastCheck()) {
+        if (lastCheck(receipts = receipts)) {
             onNext()
         } else {
             if (_buttonStates.value == List(8) { false }) {
@@ -195,16 +196,16 @@ class CalculatorViewModel @Inject constructor(
                     payList = _buttonStates.value.mapIndexedNotNull { index, value ->
                         if (value) index else null
                     },
-                    placeName = receipts.value[receiptKey.value].placeName,
-                    productName = receipts.value[receiptKey.value].productName.value[productKey.value],
-                    productPrice =  receipts.value[receiptKey.value].productPrice.value[productKey.value],
+                    placeName = receipts[receiptKey.value].placeName,
+                    productName = receipts[receiptKey.value].productName.value[productKey.value],
+                    productPrice =  receipts[receiptKey.value].productPrice.value[productKey.value],
                 )
                 resetButtonStates()
-                if (lastCheck()) {
+                if (lastCheck(receipts = receipts)) {
                     showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
                 } else {
                     incrementProductKey()
-                    if (productKey.value == receipts.value[receiptKey.value].productPrice.value.size) {
+                    if (productKey.value == receipts[receiptKey.value].productPrice.value.size) {
                         setProductKey(0)
                         incrementReceiptKey()
                     }
