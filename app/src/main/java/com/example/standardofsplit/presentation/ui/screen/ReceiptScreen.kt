@@ -198,16 +198,12 @@ fun ReceiptScreen(
         )
     }
 
-    showProductUpdateDialog?.let { (receiptIndex, itemIndex) ->
-        val productNames by receipts[receiptIndex].productName.collectAsState()
-        val productQuantities by receipts[receiptIndex].productQuantity.collectAsState()
-        val productPrices by receipts[receiptIndex].productPrice.collectAsState()
-
+    showProductUpdateDialog?.let { (index, itemIndex) ->
         ProductUpdateDialog(
             onDismiss = { showProductUpdateDialog = null },
             onConfirm = { productName, price, quantity ->
                 receiptViewModel.productUpdate(
-                    index = receiptIndex,
+                    index = index,
                     productIndex = itemIndex,
                     productName = productName,
                     productQuantity = quantity,
@@ -216,12 +212,12 @@ fun ReceiptScreen(
                 showProductUpdateDialog = null
             },
             onDelete = {
-                receiptViewModel.deleteReceiptItem(receiptIndex, itemIndex)
+                receiptViewModel.deleteReceiptItem(index, itemIndex)
                 showProductUpdateDialog = null
             },
-            productName = productNames[itemIndex],
-            price = productPrices[itemIndex],
-            quantity = productQuantities[itemIndex]
+            productName = receipts[index].productName.value[itemIndex],
+            price = receipts[index].productPrice.value[itemIndex],
+            quantity = receipts[index].productQuantity.value[itemIndex]
         )
     }
 
@@ -264,7 +260,9 @@ fun ReceiptScreen(
                             )
                             Text(
                                 text = "${receipt.placeName} (${totalCost}원)",
-                                modifier = Modifier.clickable { showReceiptNameUpdateDialog = index },
+                                modifier = Modifier.clickable {
+                                    showReceiptNameUpdateDialog = index
+                                },
                                 style = Typography.receiptHeadTextStyle
                             )
                             ReceiptOpenCloseButton(
@@ -328,14 +326,10 @@ fun ReceiptScreen(
             SubmitButton(
                 text = "정산 시작",
                 onClick = {
-                    if (receiptViewModel.validateReceipts()) {
-                        onNext()
-                    } else {
-                        showCustomToast(context, message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다.")
-                        MainScope().launch {
-                            delay(2000)
-                        }
-                    }
+                    receiptViewModel.receiptCheckAndNext(
+                        onNext = onNext,
+                        context = context
+                    )
                 }
             )
         }

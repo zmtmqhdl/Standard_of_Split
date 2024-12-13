@@ -1,7 +1,9 @@
 package com.example.standardofsplit.presentation.viewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
+import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,49 +20,43 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
     }
 
     fun receiptAdd(receipt: ReceiptClass) {
-        _receipts.value.add(receipt)
+        val currentReceipts = _receipts.value.toMutableList()
+        currentReceipts.add(receipt)
+        _receipts.value = currentReceipts
     }
 
     fun receiptUpdate(index: Int, newName: String) {
-        _receipts.value[index].placeName = newName
+        val currentReceipts = _receipts.value.toMutableList()
+        currentReceipts[index] = currentReceipts[index].copy(placeName = newName)
+        _receipts.value = currentReceipts
     }
 
-    fun receiptDelete(index: Int){
-        if (index in _receipts.value.indices) {
-            _receipts.value.removeAt(index)
-        }
+    fun receiptDelete(index: Int) {
+        val currentReceipts = _receipts.value.toMutableList()
+        currentReceipts.removeAt(index)
+        _receipts.value = currentReceipts
     }
 
     fun productAdd(index: Int, productName: String, productQuantity: Int, productPrice: Int) {
-        _receipts.value[index].apply {
-            val currentProductName = this.productName.value.toMutableList()
-            val currentProductQuantity = this.productQuantity.value.toMutableList()
-            val currentProductPrice = this.productPrice.value.toMutableList()
-            currentProductName.add(productName)
-            currentProductQuantity.add(productQuantity)
-            currentProductPrice.add(productPrice)
-            this.productName.value = currentProductName
-            this.productQuantity.value = currentProductQuantity
-            this.productPrice.value = currentProductPrice
-        }
+        _receipts.value[index].productName.value = _receipts.value[index].productName.value.toMutableList().apply { add(productName) }
+        _receipts.value[index].productQuantity.value = _receipts.value[index].productQuantity.value.toMutableList().apply { add(productQuantity) }
+        _receipts.value[index].productPrice.value = _receipts.value[index].productPrice.value.toMutableList().apply { add(productPrice) }
     }
 
     fun productUpdate(index: Int, productIndex: Int, productName: String, productQuantity: Int, productPrice: Int) {
-        _receipts.value[index].apply {
-            val currentProductName = this.productName.value.toMutableList()
-            val currentProductQuantity = this.productQuantity.value.toMutableList()
-            val currentProductPrice = this.productPrice.value.toMutableList()
-            currentProductName[productIndex] = productName
-            currentProductQuantity[productIndex] = productQuantity
-            currentProductPrice[productIndex] = productPrice
-            this.productName.value = currentProductName
-            this.productQuantity.value = currentProductQuantity
-            this.productPrice.value = currentProductPrice
-        }
+        val currentProductNames = _receipts.value[index].productName.value.toMutableList()
+        val currentProductQuantities = _receipts.value[index].productQuantity.value.toMutableList()
+        val currentProductPrices = _receipts.value[index].productPrice.value.toMutableList()
+        currentProductNames[productIndex] = productName
+        currentProductQuantities[productIndex] = productQuantity
+        currentProductPrices[productIndex] = productPrice
+        _receipts.value[index].productName.value = currentProductNames
+        _receipts.value[index].productQuantity.value = currentProductQuantities
+        _receipts.value[index].productPrice.value = currentProductPrices
     }
 
-    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int): Boolean {
-        return if (receiptIndex in _receipts.value.indices) {
+    fun deleteReceiptItem(receiptIndex: Int, itemIndex: Int) {
+        if (receiptIndex in _receipts.value.indices) {
             val receipt = _receipts.value[receiptIndex]
             val currentProductName = receipt.productName.value.toMutableList()
             val currentProductQuantity = receipt.productQuantity.value.toMutableList()
@@ -71,11 +67,10 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
             receipt.productName.value = currentProductName
             receipt.productQuantity.value = currentProductQuantity
             receipt.productPrice.value = currentProductPrice
-            true
-        } else false
+        }
     }
 
-    fun validateReceipts(): Boolean {
+    private fun validateReceipts(): Boolean {
         val hasValidReceipt = _receipts.value.any { receipt ->
             receipt.productName.value.isNotEmpty()
         }
@@ -88,6 +83,17 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
             }
         }
         return hasValidReceipt
+    }
+
+    fun receiptCheckAndNext (
+        onNext: () -> Unit,
+        context: Context
+    ) {
+        if (validateReceipts()) {
+            onNext()
+        } else {
+            showCustomToast(message = "최소 1개 이상의 상품이 포함된 영수증이 1개 이상 필요합니다.", context = context)
+        }
     }
 
     companion object {
