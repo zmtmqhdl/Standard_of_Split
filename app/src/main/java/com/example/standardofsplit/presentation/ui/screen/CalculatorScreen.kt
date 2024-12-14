@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.presentation.ui.component.ButtonNameChangeDialog
-import com.example.standardofsplit.presentation.ui.component.FunctionButton
 import com.example.standardofsplit.presentation.ui.component.CalculateButton
+import com.example.standardofsplit.presentation.ui.component.FunctionButton
 import com.example.standardofsplit.presentation.ui.component.NameChangeToggleButton
 import com.example.standardofsplit.presentation.ui.component.PersonSelectButton
 import com.example.standardofsplit.presentation.ui.component.formatNumberWithCommas
@@ -49,7 +49,9 @@ fun CalculatorScreen(
     val receiptViewModel: ReceiptViewModel = hiltViewModel()
     val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
-    val receipts by receiptViewModel.receipts.collectAsState(emptyList())
+    val personCount by startViewModel.personCount.collectAsState(0)
+
+    val receipts by receiptViewModel.receipts.collectAsState()
 
     val receiptKey by calculatorViewModel.receiptKey.collectAsState(0)
     val productKey by calculatorViewModel.productKey.collectAsState(0)
@@ -61,7 +63,6 @@ fun CalculatorScreen(
     val context = LocalContext.current
     val showButtonNameChangeDialog = remember { mutableStateOf(false) }
 
-
     val total by remember {
         mutableStateOf(
             formatNumberWithCommas((receipts[receiptKey].productQuantity.value[productKey] * receipts[receiptKey].productPrice.value[productKey]).toString())
@@ -70,20 +71,17 @@ fun CalculatorScreen(
 
     LaunchedEffect(Unit) {
         calculatorViewModel.initializeTotalPay()
-        calculatorViewModel.initializeButtonNames(personCount = startViewModel.personCount.value)
+        calculatorViewModel.initializeButtonNames(personCount = personCount)
     }
 
-    BackHandler {
-        onBack()
-    }
+    BackHandler { onBack() }
 
     if (showButtonNameChangeDialog.value) {
         val currentName = buttonNames[index]
         ButtonNameChangeDialog(
             onConfirm = { newName ->
                 calculatorViewModel.updateButtonNames(
-                    index = index,
-                    newName = newName
+                    index = index, newName = newName
                 )
             },
             onDismiss = { calculatorViewModel.closeButtonNameChangeDialog() },
@@ -156,13 +154,17 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = buttonNames[0],
-                    state = buttonStates[0],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value,index = 0, context = context) })
+                PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 0, context = context
+                    )
+                })
 
-                PersonSelectButton(text = buttonNames[1],
-                    state = buttonStates[1],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 1, context = context) })
+                PersonSelectButton(text = buttonNames[1], state = buttonStates[1], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 1, context = context
+                    )
+                })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -183,12 +185,16 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = buttonNames[2],
-                    state = buttonStates[2],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 2, context = context) })
-                PersonSelectButton(text = buttonNames[3],
-                    state = buttonStates[3],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 3, context = context) })
+                PersonSelectButton(text = buttonNames[2], state = buttonStates[2], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 2, context = context
+                    )
+                })
+                PersonSelectButton(text = buttonNames[3], state = buttonStates[3], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 3, context = context
+                    )
+                })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -207,20 +213,27 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = buttonNames[4],
-                    state = buttonStates[4],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 4, context = context) })
-                PersonSelectButton(text = buttonNames[5],
-                    state = buttonStates[5],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 5, context = context) })
+                PersonSelectButton(text = buttonNames[4], state = buttonStates[4], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 4, context = context
+                    )
+                })
+                PersonSelectButton(text = buttonNames[5], state = buttonStates[5], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 5, context = context
+                    )
+                })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    FunctionButton(text = "전체 선택",
-                        onClick = { calculatorViewModel.endCheck(receipts = receiptViewModel.receipts.value, context = context) })
+                    FunctionButton(text = "전체 선택", onClick = {
+                        calculatorViewModel.endCheck(
+                            receipts = receiptViewModel.receipts.value, context = context
+                        )
+                    })
                 }
             }
 
@@ -232,20 +245,23 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = buttonNames[6],
-                    state = buttonStates[6],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 6, context = context) })
-                PersonSelectButton(text = buttonNames[7],
-                    state = buttonStates[7],
-                    onClick = { calculatorViewModel.personSelect(receipts = receiptViewModel.receipts.value, index = 7, context = context) })
+                PersonSelectButton(text = buttonNames[6], state = buttonStates[6], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 6, context = context
+                    )
+                })
+                PersonSelectButton(text = buttonNames[7], state = buttonStates[7], onClick = {
+                    calculatorViewModel.personSelect(
+                        receipts = receiptViewModel.receipts.value, index = 7, context = context
+                    )
+                })
 
                 CalculateButton(
-                    onClick = { calculatorViewModel.calculate(
-                        receipts = receipts,
-                        onNext = onNext,
-                        context = context
-                    )},
-                    check = changeMode
+                    onClick = {
+                        calculatorViewModel.calculate(
+                            receipts = receipts, onNext = onNext, context = context
+                        )
+                    }, check = changeMode
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))

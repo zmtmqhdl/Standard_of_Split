@@ -56,11 +56,11 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     }
 
     fun initializeTotalPay() {
+        setReceiptKey()
+        setProductKey(value = 0)
         val initialTotalPay =
             (0..7).associateWith { mutableMapOf<String, MutableMap<String, Int>>() }
         _totalPay.value.payment.value = initialTotalPay.toMutableMap()
-        setReceiptKey()
-        setProductKey(value = 0)
     }
 
     private fun updateTotalPay(

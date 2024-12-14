@@ -75,12 +75,10 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
             receipt.productName.value.isNotEmpty()
         }
         if (hasValidReceipt) {
-            val emptyReceiptIndices = _receipts.value.indices
-                .filter { index -> _receipts.value[index].productName.value.isEmpty() }
-                .sortedDescending()
-            emptyReceiptIndices.forEach { index ->
-                receiptDelete(index)
-            }
+            val currentReceipts = _receipts.value.filter { receipt ->
+                receipt.productName.value.isNotEmpty()
+            }.toMutableList()
+            _receipts.value = currentReceipts
         }
         return hasValidReceipt
     }

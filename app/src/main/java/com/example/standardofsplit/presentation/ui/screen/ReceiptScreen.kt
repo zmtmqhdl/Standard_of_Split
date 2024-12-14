@@ -45,10 +45,7 @@ import com.example.standardofsplit.presentation.ui.component.formatNumberWithCom
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import java.lang.String.format
 
 @Composable
@@ -143,28 +140,23 @@ fun ReceiptScreen(
     BackHandler { onBack() }
 
     if (showReceiptAddDialog) {
-        ReceiptAddDialog(
-            onDismiss = { showReceiptAddDialog = false },
-            onConfirm = { newName ->
-                receiptViewModel.receiptAdd(
-                    ReceiptClass(
-                        placeName = newName,
-                        productName = MutableStateFlow(mutableListOf()),
-                        productPrice = MutableStateFlow(mutableListOf()),
-                        productQuantity = MutableStateFlow(mutableListOf()),
-                    )
+        ReceiptAddDialog(onDismiss = { showReceiptAddDialog = false }, onConfirm = { newName ->
+            receiptViewModel.receiptAdd(
+                ReceiptClass(
+                    placeName = newName,
+                    productName = MutableStateFlow(mutableListOf()),
+                    productPrice = MutableStateFlow(mutableListOf()),
+                    productQuantity = MutableStateFlow(mutableListOf()),
                 )
-                showReceiptAddDialog = false
-            },
-            toastMessage = { message ->
-                showCustomToast(context, message)
-            }
-        )
+            )
+            showReceiptAddDialog = false
+        }, toastMessage = { message ->
+            showCustomToast(context, message)
+        })
     }
 
     showReceiptNameUpdateDialog?.let { index ->
-        ReceiptNameUpdateDialog(
-            onDismiss = { showReceiptNameUpdateDialog = null },
+        ReceiptNameUpdateDialog(onDismiss = { showReceiptNameUpdateDialog = null },
             onConfirm = { newName ->
                 receiptViewModel.receiptUpdate(index, newName)
                 showReceiptNameUpdateDialog = null
@@ -181,8 +173,7 @@ fun ReceiptScreen(
     }
 
     showProductAddDialog?.let { index ->
-        ProductAddDialog(
-            onDismiss = { showProductAddDialog = null },
+        ProductAddDialog(onDismiss = { showProductAddDialog = null },
             onConfirm = { name, price, quantity ->
                 receiptViewModel.productAdd(
                     index = index,
@@ -194,13 +185,11 @@ fun ReceiptScreen(
             },
             toastMessage = { message ->
                 showCustomToast(context, message)
-            }
-        )
+            })
     }
 
     showProductUpdateDialog?.let { (index, itemIndex) ->
-        ProductUpdateDialog(
-            onDismiss = { showProductUpdateDialog = null },
+        ProductUpdateDialog(onDismiss = { showProductUpdateDialog = null },
             onConfirm = { productName, price, quantity ->
                 receiptViewModel.productUpdate(
                     index = index,
@@ -294,10 +283,8 @@ fun ReceiptScreen(
                                         .padding(top = 10.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    AddButton(
-                                        text = "상품 추가",
-                                        onClick = { showProductAddDialog = index }
-                                    )
+                                    AddButton(text = "상품 추가",
+                                        onClick = { showProductAddDialog = index })
                                 }
                             }
                         }
@@ -311,10 +298,7 @@ fun ReceiptScreen(
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    AddButton(
-                        text = "영수증 추가",
-                        onClick = { showReceiptAddDialog = true }
-                    )
+                    AddButton(text = "영수증 추가", onClick = { showReceiptAddDialog = true })
                 }
             }
         }
@@ -323,15 +307,11 @@ fun ReceiptScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 50.dp)
         ) {
-            SubmitButton(
-                text = "정산 시작",
-                onClick = {
-                    receiptViewModel.receiptCheckAndNext(
-                        onNext = onNext,
-                        context = context
-                    )
-                }
-            )
+            SubmitButton(text = "정산 시작", onClick = {
+                receiptViewModel.receiptCheckAndNext(
+                    onNext = onNext, context = context
+                )
+            })
         }
     }
 }
