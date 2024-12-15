@@ -151,7 +151,7 @@ fun AddButton(
             .width(110.dp)
             .height(30.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(Color.Gray2),
+        colors = ButtonDefaults.buttonColors(Color.Green),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(
