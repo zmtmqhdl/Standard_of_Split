@@ -103,8 +103,8 @@ private fun StartScreenContent(
 fun StartScreen(
     onNext: () -> Unit,
 ) {
-    val viewModel: StartViewModel = hiltViewModel()
-    val personCount by viewModel.personCount.collectAsState()
+    val startViewModel: StartViewModel = hiltViewModel()
+    val personCount by startViewModel.personCount.collectAsState()
 
     val context = LocalContext.current
     var backPressedTime by remember { mutableLongStateOf(0L) }
@@ -149,8 +149,8 @@ fun StartScreen(
     }
     StartScreenContent(
         personCount = personCount,
-        onIncrement = viewModel::incrementCount,
-        onDecrement = viewModel::decrementCount,
+        onIncrement = startViewModel::incrementCount,
+        onDecrement = startViewModel::decrementCount,
         onNext = onNext
     )
 }
