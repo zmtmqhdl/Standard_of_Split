@@ -108,7 +108,6 @@ fun CalculatorScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                // text = receipts.value[receiptKey].productName.value[productKey],
                 Text(
                     text = receipts[receiptKey].productName.toString(),
                     fontSize = 48.sp,
