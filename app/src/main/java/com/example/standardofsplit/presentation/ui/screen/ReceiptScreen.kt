@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.ui.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -123,10 +124,12 @@ private fun ProductList(
 
 @Composable
 fun ReceiptScreen(
+    receiptViewModel: ReceiptViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val receiptViewModel: ReceiptViewModel = hiltViewModel()
+//    val receiptViewModel: ReceiptViewModel = hiltViewModel()
+    Log.d("reicept", "ViewModel Address: ${receiptViewModel.hashCode()}")
 
     val receipts by receiptViewModel.receipts.collectAsState()
     val context = LocalContext.current

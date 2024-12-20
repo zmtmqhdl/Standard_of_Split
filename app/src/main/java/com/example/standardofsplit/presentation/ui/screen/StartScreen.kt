@@ -101,9 +101,10 @@ private fun StartScreenContent(
 
 @Composable
 fun StartScreen(
+    startViewModel: StartViewModel,
     onNext: () -> Unit,
 ) {
-    val startViewModel: StartViewModel = hiltViewModel()
+//    val startViewModel: StartViewModel = hiltViewModel()
     val personCount by startViewModel.personCount.collectAsState()
 
     val context = LocalContext.current

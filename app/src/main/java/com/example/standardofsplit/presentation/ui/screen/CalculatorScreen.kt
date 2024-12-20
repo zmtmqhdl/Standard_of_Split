@@ -1,5 +1,7 @@
 package com.example.standardofsplit.presentation.ui.screen
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -43,15 +45,17 @@ import com.example.standardofsplit.presentation.viewModel.StartViewModel
 
 @Composable
 fun CalculatorScreen(
+    startViewModel: StartViewModel,
+    receiptViewModel: ReceiptViewModel,
     onNext: () -> Unit, onBack: () -> Unit
 ) {
-    val startViewModel: StartViewModel = hiltViewModel()
-    val receiptViewModel: ReceiptViewModel = hiltViewModel()
+//    val startViewModel: StartViewModel = hiltViewModel()
+//    val receiptViewModel: ReceiptViewModel = hiltViewModel()
     val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
-    val personCount by startViewModel.personCount.collectAsState(0)
+    Log.d("cal", "ViewModel Address: ${receiptViewModel.hashCode()}")
 
-    val receipts by receiptViewModel.receipts.collectAsState()
+    val personCount by startViewModel.personCount.collectAsState(0)
 
     val receiptKey by calculatorViewModel.receiptKey.collectAsState(0)
     val productKey by calculatorViewModel.productKey.collectAsState(0)
@@ -60,14 +64,20 @@ fun CalculatorScreen(
     val changeMode by calculatorViewModel.changeMode.collectAsState(false)
     val index by calculatorViewModel.index.collectAsState(0)
 
+    val receipts by receiptViewModel.receipts.collectAsState()
+    val productName by receipts[receiptKey].productName.collectAsState()
+    val productPrice by receipts[receiptKey].productPrice.collectAsState()
+    val productQuantity by receipts[receiptKey].productQuantity.collectAsState()
+
     val context = LocalContext.current
     val showButtonNameChangeDialog = remember { mutableStateOf(false) }
 
     val total by remember {
         mutableStateOf(
-            formatNumberWithCommas((receipts[receiptKey].productQuantity.value[productKey] * receipts[receiptKey].productPrice.value[productKey]).toString())
+            formatNumberWithCommas((productPrice[productKey] * productQuantity[productKey]).toString())
         )
     }
+
 
     LaunchedEffect(Unit) {
         calculatorViewModel.initializeTotalPay()
@@ -88,7 +98,6 @@ fun CalculatorScreen(
             name = currentName,
         )
     }
-
     Column {
         Box(
             modifier = Modifier
@@ -109,7 +118,7 @@ fun CalculatorScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = receipts[receiptKey].productName.toString(),
+                    text = productName[productKey],
                     fontSize = 48.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
@@ -153,17 +162,17 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 0, context = context
-                    )
-                })
-
-                PersonSelectButton(text = buttonNames[1], state = buttonStates[1], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 1, context = context
-                    )
-                })
+//                PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 0, context = context
+//                    )
+//                })
+//
+//                PersonSelectButton(text = buttonNames[1], state = buttonStates[1], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 1, context = context
+//                    )
+//                })
                 Box(
                     modifier = Modifier
                         .width(216.dp)
@@ -174,87 +183,87 @@ fun CalculatorScreen(
                         text1 = "OFF", text2 = "ON", onClick = {}, changeMode = changeMode
                     )
                 }
-            }
-
+//            }
+//
             Spacer(modifier = Modifier.height(5.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                PersonSelectButton(text = buttonNames[2], state = buttonStates[2], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 2, context = context
-                    )
-                })
-                PersonSelectButton(text = buttonNames[3], state = buttonStates[3], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 3, context = context
-                    )
-                })
-                Box(
-                    modifier = Modifier
-                        .width(216.dp)
-                        .height(105.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    FunctionButton(text = "되돌리기", onClick = { calculatorViewModel.rollback() })
-                }
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                PersonSelectButton(text = buttonNames[4], state = buttonStates[4], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 4, context = context
-                    )
-                })
-                PersonSelectButton(text = buttonNames[5], state = buttonStates[5], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 5, context = context
-                    )
-                })
-                Box(
-                    modifier = Modifier
-                        .width(216.dp)
-                        .height(105.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    FunctionButton(text = "전체 선택", onClick = {
-                        calculatorViewModel.endCheck(
-                            receipts = receiptViewModel.receipts.value, context = context
-                        )
-                    })
-                }
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                PersonSelectButton(text = buttonNames[6], state = buttonStates[6], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 6, context = context
-                    )
-                })
-                PersonSelectButton(text = buttonNames[7], state = buttonStates[7], onClick = {
-                    calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 7, context = context
-                    )
-                })
-
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentHeight(),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                PersonSelectButton(text = buttonNames[2], state = buttonStates[2], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 2, context = context
+//                    )
+//                })
+//                PersonSelectButton(text = buttonNames[3], state = buttonStates[3], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 3, context = context
+//                    )
+//                })
+//                Box(
+//                    modifier = Modifier
+//                        .width(216.dp)
+//                        .height(105.dp),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    FunctionButton(text = "되돌리기", onClick = { calculatorViewModel.rollback() })
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(5.dp))
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentHeight(),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                PersonSelectButton(text = buttonNames[4], state = buttonStates[4], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 4, context = context
+//                    )
+//                })
+//                PersonSelectButton(text = buttonNames[5], state = buttonStates[5], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 5, context = context
+//                    )
+//                })
+//                Box(
+//                    modifier = Modifier
+//                        .width(216.dp)
+//                        .height(105.dp),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    FunctionButton(text = "전체 선택", onClick = {
+//                        calculatorViewModel.endCheck(
+//                            receipts = receiptViewModel.receipts.value, context = context
+//                        )
+//                    })
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(5.dp))
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentHeight(),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                PersonSelectButton(text = buttonNames[6], state = buttonStates[6], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 6, context = context
+//                    )
+//                })
+//                PersonSelectButton(text = buttonNames[7], state = buttonStates[7], onClick = {
+//                    calculatorViewModel.personSelect(
+//                        receipts = receiptViewModel.receipts.value, index = 7, context = context
+//                    )
+//                })
+//
                 CalculateButton(
                     onClick = {
                         calculatorViewModel.calculate(
