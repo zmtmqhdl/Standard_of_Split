@@ -121,7 +121,7 @@ fun PersonSelectButton(
                 containerColor = when {
                     isDisabled -> Color.Black
                     state -> Color.Gray1
-                    else -> Color.Gray1
+                    else -> Color.Gray2
                 },
                 contentColor = if (isDisabled) Color.Black else Color.White,
                 disabledContainerColor = Color.Black,
@@ -192,7 +192,7 @@ fun FunctionButton(
             .width(353.dp)
             .height(53.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(Color.Gray1),
+        colors = ButtonDefaults.buttonColors(Color.Orange),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(text = text, style = Typography.functionButtonTextStyle)
@@ -211,9 +211,7 @@ fun CalculateButton(
             .width(216.dp)
             .height(105.dp),
         shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Gray1, contentColor = Color.White
-        ),
+        colors = ButtonDefaults.buttonColors(Color.Orange),
         contentPadding = PaddingValues(0.dp)
     ) {
         Text(

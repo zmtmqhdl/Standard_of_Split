@@ -128,7 +128,6 @@ fun ReceiptScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
 ) {
-//    val receiptViewModel: ReceiptViewModel = hiltViewModel()
     Log.d("reicept", "ViewModel Address: ${receiptViewModel.hashCode()}")
 
     val receipts by receiptViewModel.receipts.collectAsState()

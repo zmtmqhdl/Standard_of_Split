@@ -57,8 +57,9 @@ fun CalculatorScreen(
     val productKey by calculatorViewModel.productKey.collectAsState()
     val buttonNames by calculatorViewModel.buttonNames.collectAsState()
     val buttonStates by calculatorViewModel.buttonStates.collectAsState()
-    val changeMode by calculatorViewModel.changeMode.collectAsState(false)
-    val index by calculatorViewModel.index.collectAsState(0)
+    val changeMode by calculatorViewModel.changeMode.collectAsState()
+    val index by calculatorViewModel.index.collectAsState()
+    val showButtonNameChangeDialog by calculatorViewModel.showButtonNameChangeDialog.collectAsState()
 
     val receipts by receiptViewModel.receipts.collectAsState()
     val productName by receipts[receiptKey].productName.collectAsState()
@@ -66,7 +67,6 @@ fun CalculatorScreen(
     val productQuantity by receipts[receiptKey].productQuantity.collectAsState()
 
     val context = LocalContext.current
-    val showButtonNameChangeDialog = remember { mutableStateOf(false) }
 
     val total by remember {
         mutableStateOf(
@@ -81,7 +81,7 @@ fun CalculatorScreen(
 
     BackHandler { onBack() }
 
-    if (showButtonNameChangeDialog.value) {
+    if (showButtonNameChangeDialog) {
         val currentName = buttonNames[index]
         ButtonNameChangeDialog(
             onConfirm = { newName ->
@@ -174,7 +174,7 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     NameChangeToggleButton(
-                        text1 = "OFF", text2 = "ON", onClick = {}, changeMode = changeMode
+                        text1 = "OFF", text2 = "ON", onClick =  { calculatorViewModel.setChangeMode() }, changeMode = changeMode
                     )
                 }
             }

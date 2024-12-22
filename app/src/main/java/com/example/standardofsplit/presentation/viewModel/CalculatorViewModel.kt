@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -20,8 +21,8 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     private val _buttonNames = MutableStateFlow(MutableList(8) { "X" })
     val buttonNames: StateFlow<MutableList<String>> = _buttonNames
 
-    private val _buttonStates = MutableStateFlow(List(8) { false })
-    val buttonStates: StateFlow<List<Boolean>> = _buttonStates
+    private val _buttonStates = MutableStateFlow(MutableList(8) { false })
+    val buttonStates: StateFlow<MutableList<Boolean>> = _buttonStates
 
     private val _buttonPermissions = MutableStateFlow(List(8) { false })
 
@@ -35,6 +36,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     val changeMode: StateFlow<Boolean> = _changeMode
 
     private val _showButtonNameChangeDialog = MutableStateFlow(false)
+    val showButtonNameChangeDialog: StateFlow<Boolean> = _showButtonNameChangeDialog
 
     private val _index = MutableStateFlow(0)
     val index: StateFlow<Int> = _index
@@ -48,11 +50,11 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun resetButtonStates() {
-        _buttonStates.value = List(8) { false }
+        _buttonStates.value = MutableList(8) { false }
     }
 
     private fun trueButtonStates() {
-        _buttonStates.value = List(8) { true }
+        _buttonStates.value = MutableList(8) { true }
     }
 
     fun initializeTotalPay() {
@@ -124,20 +126,18 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         personCount: Int
 
     ) {
-        val updatedButtonNames = _buttonNames.value.toMutableList()
-        val updatedButtonPermissions = _buttonPermissions.value.toMutableList()
-        for (i in 0..7) {
-            if (i < personCount) {
-                updatedButtonNames[i] = "인원$i"
-                updatedButtonPermissions[i] = true
-            }
+        _buttonNames.value = _buttonNames.value.mapIndexed { index, name ->
+            if (index < personCount) "인원$index" else name
+        }.toMutableList()
+
+        _buttonPermissions.value = _buttonPermissions.value.mapIndexed { index, _ ->
+            index < personCount
         }
-        _buttonNames.value = updatedButtonNames
-        _buttonPermissions.value = updatedButtonPermissions
     }
 
     fun updateButtonNames(index: Int, newName: String) {
         _buttonNames.value = _buttonNames.value.toMutableList().apply { this[index] = newName }
+        _showButtonNameChangeDialog.value = false
     }
 
     fun rollback() {
