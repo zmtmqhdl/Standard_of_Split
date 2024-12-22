@@ -17,7 +17,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     private val _stack = MutableStateFlow<MutableList<Any>>(mutableListOf())
 
-    private val _buttonNames = MutableStateFlow<MutableList<String>>(mutableListOf())
+    private val _buttonNames = MutableStateFlow(MutableList(8) { "X" })
     val buttonNames: StateFlow<MutableList<String>> = _buttonNames
 
     private val _buttonStates = MutableStateFlow(List(8) { false })
@@ -123,14 +123,11 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     fun initializeButtonNames(
         personCount: Int
     ) {
-        _buttonNames.value.clear()
         for (i in 0..7) {
             if (i < personCount) {
-                _buttonNames.value.add("X")
+                _buttonNames.value = _buttonNames.value.toMutableList().apply { this[i] = "인원$i" }
                 _buttonPermissions.value =
                     _buttonPermissions.value.toMutableList().apply { this[i] = true }
-            } else {
-                _buttonNames.value.add("인원$i")
             }
         }
     }
