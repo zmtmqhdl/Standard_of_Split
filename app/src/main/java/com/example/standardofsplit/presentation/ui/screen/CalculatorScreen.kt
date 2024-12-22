@@ -74,7 +74,6 @@ fun CalculatorScreen(
         )
     }
 
-
     LaunchedEffect(Unit) {
         calculatorViewModel.initializeTotalPay()
         calculatorViewModel.initializeButtonNames(personCount = personCount)
@@ -158,12 +157,12 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = "0", state = buttonStates[0], onClick = {
+                PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 0, context = context
                     )
                 })
-                PersonSelectButton(text = "1", state = buttonStates[1], onClick = {
+                PersonSelectButton(text = buttonNames[1], state = buttonStates[1], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 1, context = context
                     )
@@ -188,12 +187,12 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = "2", state = buttonStates[2], onClick = {
+                PersonSelectButton(text = buttonNames[2], state = buttonStates[2], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 2, context = context
                     )
                 })
-                PersonSelectButton(text = "3", state = buttonStates[3], onClick = {
+                PersonSelectButton(text = buttonNames[3], state = buttonStates[3], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 3, context = context
                     )
@@ -216,12 +215,12 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = "buttonNames[4]", state = buttonStates[4], onClick = {
+                PersonSelectButton(text = buttonNames[4], state = buttonStates[4], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 4, context = context
                     )
                 })
-                PersonSelectButton(text = "buttonNames[5]", state = buttonStates[5], onClick = {
+                PersonSelectButton(text = buttonNames[5], state = buttonStates[5], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 5, context = context
                     )
@@ -248,12 +247,12 @@ fun CalculatorScreen(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersonSelectButton(text = "buttonNames[6]", state = buttonStates[6], onClick = {
+                PersonSelectButton(text = buttonNames[6], state = buttonStates[6], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 6, context = context
                     )
                 })
-                PersonSelectButton(text = "buttonNames[7]", state = buttonStates[7], onClick = {
+                PersonSelectButton(text = buttonNames[7], state = buttonStates[7], onClick = {
                     calculatorViewModel.personSelect(
                         receipts = receiptViewModel.receipts.value, index = 7, context = context
                     )

@@ -122,14 +122,18 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     fun initializeButtonNames(
         personCount: Int
+
     ) {
+        val updatedButtonNames = _buttonNames.value.toMutableList()
+        val updatedButtonPermissions = _buttonPermissions.value.toMutableList()
         for (i in 0..7) {
             if (i < personCount) {
-                _buttonNames.value = _buttonNames.value.toMutableList().apply { this[i] = "인원$i" }
-                _buttonPermissions.value =
-                    _buttonPermissions.value.toMutableList().apply { this[i] = true }
+                updatedButtonNames[i] = "인원$i"
+                updatedButtonPermissions[i] = true
             }
         }
+        _buttonNames.value = updatedButtonNames
+        _buttonPermissions.value = updatedButtonPermissions
     }
 
     fun updateButtonNames(index: Int, newName: String) {
