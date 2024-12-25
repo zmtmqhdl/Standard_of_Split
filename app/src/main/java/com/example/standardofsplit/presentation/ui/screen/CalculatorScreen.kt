@@ -270,7 +270,8 @@ fun CalculatorScreen(
                         calculatorViewModel.calculate(
                             receipts = receipts, onNext = onNext, context = context
                         )
-                    }, check = changeMode
+                    },
+                    check = changeMode
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))

@@ -159,6 +159,9 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     private fun lastCheck(receipts: List<ReceiptClass>): Boolean {
         val receiptCount = receipts.size
         val productCount = receipts[receiptCount - 1].productName.value.size
+        Log.d("rc", receiptCount.toString())
+        Log.d("pc", productCount.toString())
+        Log.d("n", (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value).toString())
         return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
     }
 
