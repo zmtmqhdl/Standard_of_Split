@@ -51,6 +51,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     private fun resetButtonStates() {
         _buttonStates.value = MutableList(8) { false }
+        Log.d("states", _buttonStates.toString())
     }
 
     private fun trueButtonStates() {
@@ -194,7 +195,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         if (lastCheck(receipts = receipts)) {
             onNext()
         } else {
-            if (_buttonStates.value == List(8) { false }) {
+            if (_buttonStates.value != List(8) { false }) {
                 updateTotalPay(
                     payList = _buttonStates.value.mapIndexedNotNull { index, value ->
                         if (value) index else null
