@@ -113,11 +113,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _productKey.value -= 1
     }
 
-    fun openButtonNameChangeDialog(index: Int) {
-        _showButtonNameChangeDialog.value = true
-        _index.value = index
-    }
-
     fun closeButtonNameChangeDialog() {
         _showButtonNameChangeDialog.value = false
     }
@@ -133,6 +128,10 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _buttonPermissions.value = _buttonPermissions.value.mapIndexed { index, _ ->
             index < personCount
         }
+    }
+
+    fun indexUpdate(index: Int) {
+        _index.value = index
     }
 
     fun updateButtonNames(index: Int, newName: String) {

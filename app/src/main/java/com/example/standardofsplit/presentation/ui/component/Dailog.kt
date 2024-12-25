@@ -238,7 +238,6 @@ fun ButtonNameChangeDialog(
     name: String,
 ) {
     var newName by remember { mutableStateOf(name) }
-
     DialogContainer(onDismiss = onDismiss) {
         InputField("버튼 이름", newName) { newName = it }
         DialogButtons(
