@@ -159,13 +159,13 @@ fun CalculatorScreen(
                 PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
                     calculatorViewModel.indexUpdate(0)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 0, context = context
+                        index = 0, context = context
                     )
                 })
                 PersonSelectButton(text = buttonNames[1], state = buttonStates[1], onClick = {
                     calculatorViewModel.indexUpdate(1)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 1, context = context
+                        index = 1, context = context
                     )
                 })
                 Box(
@@ -191,13 +191,13 @@ fun CalculatorScreen(
                 PersonSelectButton(text = buttonNames[2], state = buttonStates[2], onClick = {
                     calculatorViewModel.indexUpdate(2)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 2, context = context
+                        index = 2, context = context
                     )
                 })
                 PersonSelectButton(text = buttonNames[3], state = buttonStates[3], onClick = {
                     calculatorViewModel.indexUpdate(3)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 3, context = context
+                        index = 3, context = context
                     )
                 })
                 Box(
@@ -221,13 +221,13 @@ fun CalculatorScreen(
                 PersonSelectButton(text = buttonNames[4], state = buttonStates[4], onClick = {
                     calculatorViewModel.indexUpdate(4)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 4, context = context
+                        index = 4, context = context
                     )
                 })
                 PersonSelectButton(text = buttonNames[5], state = buttonStates[5], onClick = {
                     calculatorViewModel.indexUpdate(5)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 5, context = context
+                        index = 5, context = context
                     )
                 })
                 Box(
@@ -238,7 +238,7 @@ fun CalculatorScreen(
                 ) {
                     FunctionButton(text = "전체 선택", onClick = {
                         calculatorViewModel.endCheck(
-                            receipts = receiptViewModel.receipts.value, context = context
+                            context = context
                         )
                     })
                 }
@@ -255,13 +255,13 @@ fun CalculatorScreen(
                 PersonSelectButton(text = buttonNames[6], state = buttonStates[6], onClick = {
                     calculatorViewModel.indexUpdate(6)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 6, context = context
+                        index = 6, context = context
                     )
                 })
                 PersonSelectButton(text = buttonNames[7], state = buttonStates[7], onClick = {
                     calculatorViewModel.indexUpdate(7)
                     calculatorViewModel.personSelect(
-                        receipts = receiptViewModel.receipts.value, index = 7, context = context
+                        index = 7, context = context
                     )
                 })
 

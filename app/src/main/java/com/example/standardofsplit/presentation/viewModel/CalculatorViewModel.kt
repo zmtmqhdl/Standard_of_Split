@@ -41,12 +41,15 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     private val _index = MutableStateFlow(0)
     val index: StateFlow<Int> = _index
 
+    private val _last = MutableStateFlow(false)
+
     fun setChangeMode() {
         _changeMode.value = !_changeMode.value
     }
 
     private fun buttonPush(index: Int) {
-        _buttonStates.value = _buttonStates.value.toMutableList().apply { this[index] = !this[index] }
+        _buttonStates.value =
+            _buttonStates.value.toMutableList().apply { this[index] = !this[index] }
     }
 
     private fun resetButtonStates() {
@@ -157,27 +160,20 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun lastCheck(receipts: List<ReceiptClass>): Boolean {
-        val receiptCount = receipts.size
-        val productCount = receipts[receiptCount - 1].productName.value.size
-        return (receiptCount - 1 == _receiptKey.value && productCount - 1 == _productKey.value)
-    }
-
-    fun personSelect(receipts: List<ReceiptClass>, index: Int, context: Context) {
+    fun personSelect(index: Int, context: Context) {
         if (_changeMode.value && _buttonPermissions.value[index]) {
             _showButtonNameChangeDialog.value = true
-        } else if (!_changeMode.value && lastCheck(receipts = receipts)) {
+        } else if (!_changeMode.value && _last.value) {
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
-        } else if (!_changeMode.value && !lastCheck(receipts = receipts)) {
+        } else if (!_changeMode.value && !_last.value) {
             buttonPush(index)
         }
     }
 
     fun endCheck(
-        receipts: List<ReceiptClass>,
         context: Context,
     ) {
-        if (lastCheck(receipts = receipts)) {
+        if (_last.value) {
             showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
         } else {
             trueButtonStates()
@@ -189,7 +185,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         onNext: () -> Unit,
         context: Context
     ) {
-        if (lastCheck(receipts = receipts)) {
+        if (_last.value) {
             onNext()
         } else {
             if (_buttonStates.value != List(8) { false }) {
@@ -199,20 +195,18 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
                     },
                     placeName = receipts[receiptKey.value].placeName,
                     productName = receipts[receiptKey.value].productName.value[productKey.value],
-                    productPrice =  receipts[receiptKey.value].productPrice.value[productKey.value],
+                    productPrice = receipts[receiptKey.value].productPrice.value[productKey.value],
                 )
                 resetButtonStates()
-                if (lastCheck(receipts = receipts)) {
-                    showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
-                } else {
-                    incrementProductKey()
-                    if (productKey.value == receipts[receiptKey.value].productPrice.value.size) {
-                        setProductKey(0)
-                        incrementReceiptKey()
-                    }
+                incrementProductKey()
+                if (receiptKey.value + 1 == receipts.size && productKey.value == receipts[receiptKey.value].productPrice.value.size) {
+                    _last.value = true
+                } else if (productKey.value == receipts[receiptKey.value].productPrice.value.size) {
+                    setProductKey(0)
+                    incrementReceiptKey()
                 }
             } else {
-                showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
+                showCustomToast(message = "정산할 인원을 선택해주세요.", context = context)
             }
         }
     }
