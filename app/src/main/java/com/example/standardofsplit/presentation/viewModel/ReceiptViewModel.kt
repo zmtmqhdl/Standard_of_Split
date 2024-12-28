@@ -1,7 +1,9 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
+import android.content.MutableContextWrapper
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
@@ -15,6 +17,12 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
 
     private val _receipts = MutableStateFlow<MutableList<ReceiptClass>>(mutableListOf())
     val receipts: StateFlow<MutableList<ReceiptClass>> = _receipts
+
+    private val _showProductAddDialog = MutableStateFlow(mutableStateOf<Int?>(null))
+    val showProductAddDialog: StateFlow<Boolean> = _showProductAddDialog
+
+    private val _showProductUpdateDialog = MutableStateFlow(false)
+    val showProductUpdateDialog: StateFlow<Boolean> = _showProductUpdateDialog
 
     init {
         _receipts.value.add(DEFAULT_RECEIPT)

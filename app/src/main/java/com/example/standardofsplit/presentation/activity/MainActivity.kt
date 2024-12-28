@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.standardofsplit.presentation.ui.navigator.Navigator
 import com.example.standardofsplit.presentation.ui.screen.*
 import com.example.standardofsplit.presentation.ui.theme.StandardOfSplitTheme
+import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +43,7 @@ private fun Navigation() {
 
     val startViewModel: StartViewModel = hiltViewModel()
     val receiptViewModel: ReceiptViewModel = hiltViewModel()
+    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = Screen.Start.route) {
         composable(Screen.Start.route) {
@@ -61,12 +63,15 @@ private fun Navigation() {
             CalculatorScreen(
                 startViewModel = startViewModel,
                 receiptViewModel = receiptViewModel,
+                calculatorViewModel = calculatorViewModel,
                 onNext = { navigator.navigateToResult() },
                 onBack = { navigator.navigateToReceipt() }
             )
         }
         composable(Screen.Result.route) {
             ResultScreen(
+                startViewModel = startViewModel,
+                calculatorViewModel = calculatorViewModel,
                 onBack = { navigator.navigateToCalculator() }
             )
         }

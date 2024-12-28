@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
 import androidx.activity.compose.BackHandler
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +21,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.R
 import com.example.standardofsplit.presentation.ui.component.CircleButton
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
-import com.example.standardofsplit.presentation.ui.component.showCustomToast
 import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
 
@@ -104,20 +98,13 @@ fun StartScreen(
     startViewModel: StartViewModel,
     onNext: () -> Unit,
 ) {
-//    val startViewModel: StartViewModel = hiltViewModel()
+
     val personCount by startViewModel.personCount.collectAsState()
 
     val context = LocalContext.current
-    var backPressedTime by remember { mutableLongStateOf(0L) }
 
     BackHandler {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - backPressedTime > 2000) {
-            backPressedTime = currentTime
-            showCustomToast(context, "뒤로가기 키를 누르면 종료됩니다.")
-        } else {
-            (context as? AppCompatActivity)?.finish()
-        }
+        startViewModel.exit(context = context)
     }
 
     Box(

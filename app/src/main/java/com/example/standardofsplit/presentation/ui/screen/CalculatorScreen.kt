@@ -46,9 +46,9 @@ import com.example.standardofsplit.presentation.viewModel.StartViewModel
 fun CalculatorScreen(
     startViewModel: StartViewModel,
     receiptViewModel: ReceiptViewModel,
+    calculatorViewModel: CalculatorViewModel,
     onNext: () -> Unit, onBack: () -> Unit
 ) {
-    val calculatorViewModel: CalculatorViewModel = hiltViewModel()
 
     val personCount by startViewModel.personCount.collectAsState()
 
@@ -58,6 +58,7 @@ fun CalculatorScreen(
     val buttonStates by calculatorViewModel.buttonStates.collectAsState()
     val changeMode by calculatorViewModel.changeMode.collectAsState()
     val index by calculatorViewModel.index.collectAsState()
+    val last by calculatorViewModel.last.collectAsState()
     val showButtonNameChangeDialog by calculatorViewModel.showButtonNameChangeDialog.collectAsState()
 
     val receipts by receiptViewModel.receipts.collectAsState()
@@ -206,7 +207,7 @@ fun CalculatorScreen(
                         .height(105.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    FunctionButton(text = "되돌리기", onClick = { calculatorViewModel.rollback() })
+                    FunctionButton(text = "되돌리기", onClick = { calculatorViewModel.rollback(context = context) })
                 }
             }
 
@@ -237,7 +238,7 @@ fun CalculatorScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     FunctionButton(text = "전체 선택", onClick = {
-                        calculatorViewModel.endCheck(
+                        calculatorViewModel.totalSelect(
                             context = context
                         )
                     })
@@ -271,7 +272,7 @@ fun CalculatorScreen(
                             receipts = receipts, onNext = onNext, context = context
                         )
                     },
-                    check = changeMode
+                    check = last
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))

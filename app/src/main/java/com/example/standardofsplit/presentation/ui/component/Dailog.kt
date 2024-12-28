@@ -262,7 +262,7 @@ fun ButtonNameChangeDialog(
 
 
 @Composable
-fun Reset_Confirm_Dialog(
+fun ResetDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -357,7 +357,7 @@ fun Reset_Confirm_Dialog(
 
 
 @Composable
-fun Receipt_Detail_Dialog(
+fun DetailDialog(
     name: String,
     onDismiss: () -> Unit,
     receiptDetails: Map<String, Map<String, Int>>

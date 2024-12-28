@@ -15,6 +15,7 @@ import javax.inject.Inject
 class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     private val _totalPay = MutableStateFlow(TotalPay())
+    val totalPay: StateFlow<TotalPay> = _totalPay
 
     private val _stack = MutableStateFlow<MutableList<Any>>(mutableListOf())
 
@@ -42,6 +43,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     val index: StateFlow<Int> = _index
 
     private val _last = MutableStateFlow(false)
+    val last: StateFlow<Boolean> = _last
 
     fun setChangeMode() {
         _changeMode.value = !_changeMode.value
@@ -54,7 +56,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     private fun resetButtonStates() {
         _buttonStates.value = MutableList(8) { false }
-        Log.d("states", _buttonStates.toString())
     }
 
     private fun trueButtonStates() {
@@ -75,22 +76,20 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         productName: String,
         productPrice: Int,
     ) {
-        try {
-            val dividedPrice: Int =
-                (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
-            val current = _totalPay.value.payment.value
+        val dividedPrice: Int =
+            (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+        val current = _totalPay.value.payment.value
 
-            for (i in payList) {
-                val updatedProducts = current[i]?.get(placeName) ?: mutableMapOf()
-                updatedProducts[productName] = dividedPrice
-                current[i] =
-                    current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(
-                        placeName to updatedProducts
-                    )
-            }
-            _totalPay.value.payment.value = current
-        } catch (_: Exception) {
+        for (i in payList) {
+            val updatedProducts = current[i]?.get(placeName) ?: mutableMapOf()
+            updatedProducts[productName] = dividedPrice
+            current[i] =
+                current[i]?.apply { this[placeName] = updatedProducts } ?: mutableMapOf(
+                    placeName to updatedProducts
+                )
         }
+        _totalPay.value.payment.value = current
+        _stack.value.add(_totalPay.value)
     }
 
     private fun setReceiptKey() {
@@ -126,10 +125,11 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     ) {
         _buttonNames.value = _buttonNames.value.mapIndexed { index, name ->
-            if (index < personCount) "인원$index" else name
+            val tmp = index + 1
+            if (index < personCount) "인원$tmp" else name
         }.toMutableList()
 
-        _buttonPermissions.value = _buttonPermissions.value.mapIndexed { index, _ ->
+        _buttonPermissions.value = List(_buttonPermissions.value.size) { index ->
             index < personCount
         }
     }
@@ -143,7 +143,8 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _showButtonNameChangeDialog.value = false
     }
 
-    fun rollback() {
+    fun rollback(context: Context) {
+        _last.value = false
         val currentStack = _stack.value
         if (currentStack.isNotEmpty()) {
             val lastElement = currentStack.removeAt(currentStack.size - 1)
@@ -153,6 +154,8 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
                 if (_receiptKey.value > 0) {
                     decrementReceiptKey()
                     setProductKey(lastElement.payment.value.size - 1)
+                } else {
+                    showCustomToast(message = "첫 정산입니다.", context = context)
                 }
             } else {
                 decrementProductKey()
@@ -170,7 +173,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun endCheck(
+    fun totalSelect(
         context: Context,
     ) {
         if (_last.value) {
@@ -198,12 +201,15 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
                     productPrice = receipts[receiptKey.value].productPrice.value[productKey.value],
                 )
                 resetButtonStates()
-                incrementProductKey()
-                if (receiptKey.value + 1 == receipts.size && productKey.value == receipts[receiptKey.value].productPrice.value.size) {
+                if (receiptKey.value + 1 == receipts.size && productKey.value + 1 == receipts[receiptKey.value].productPrice.value.size) {
                     _last.value = true
-                } else if (productKey.value == receipts[receiptKey.value].productPrice.value.size) {
-                    setProductKey(0)
-                    incrementReceiptKey()
+                    showCustomToast(message = "정산이 완료되었습니다. 정산을 확인해주세요.", context = context)
+                } else {
+                    incrementProductKey()
+                    if (productKey.value == receipts[receiptKey.value].productPrice.value.size && !_last.value) {
+                        setProductKey(0)
+                        incrementReceiptKey()
+                    }
                 }
             } else {
                 showCustomToast(message = "정산할 인원을 선택해주세요.", context = context)

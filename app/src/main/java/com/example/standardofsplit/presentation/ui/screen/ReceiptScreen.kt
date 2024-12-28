@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -34,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.ui.component.AddButton
 import com.example.standardofsplit.presentation.ui.component.ProductAddDialog
@@ -128,7 +126,6 @@ fun ReceiptScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
 ) {
-    Log.d("reicept", "ViewModel Address: ${receiptViewModel.hashCode()}")
 
     val receipts by receiptViewModel.receipts.collectAsState()
     val context = LocalContext.current
@@ -321,6 +318,6 @@ fun ReceiptScreen(
 }
 
 @SuppressLint("DefaultLocale")
-private fun formatNumberWithCommas(number: Int): Int {
+fun formatNumberWithCommas(number: Int): Int {
     return format("%,d", number).toInt()
 }
