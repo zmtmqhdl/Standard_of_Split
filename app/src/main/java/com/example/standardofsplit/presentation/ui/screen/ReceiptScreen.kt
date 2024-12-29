@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable

@@ -349,7 +349,7 @@ fun DetailDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,
-            color = Color.White,
+            color = Color.Gray2,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(600.dp)
@@ -380,7 +380,7 @@ fun DetailDialog(
                         item {
                             Text(
                                 text = placeName,
-                                style = Typography.dialogItemStyle,
+                                style = Typography.dialogBlackBigTextStyle,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                             products.forEach { (productName, amount) ->
@@ -392,11 +392,11 @@ fun DetailDialog(
                                 ) {
                                     Text(
                                         text = productName,
-                                        style = Typography.dialogTextStyle
+                                        style = Typography.dialogBlackTextStyle
                                     )
                                     Text(
                                         text = "${formatNumberWithCommas(amount.toString())}원",
-                                        style = Typography.dialogTextStyle
+                                        style = Typography.dialogBlackTextStyle
                                     )
                                 }
                             }

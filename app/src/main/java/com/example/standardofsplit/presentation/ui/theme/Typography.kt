@@ -130,16 +130,6 @@ object Typography {
         color = Color.White
     )
 
-    val dialogItemStyle = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        color = Color.White,
-    )
-    val dialogTextStyle = TextStyle(
-        fontSize = 16.sp,
-        color = Color.White
-    )
-
     val itemDisplayStyle = TextStyle(
         fontSize = 48.sp,
         color = Color.White,
@@ -155,5 +145,16 @@ object Typography {
     val resultCardPayStyle = TextStyle(
         fontSize = 24.sp,
         color = Color.White
+    )
+
+    val dialogBlackTextStyle = TextStyle(
+        fontSize = 16.sp,
+        color = Color.Black
+    )
+
+    val dialogBlackBigTextStyle = TextStyle(
+        fontSize = 20.sp,
+        color = Color.Black,
+        fontWeight = FontWeight.Bold
     )
 }

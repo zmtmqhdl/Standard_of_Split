@@ -77,9 +77,7 @@ fun ResultScreen(
 
 
     var selectedPerson by remember {
-        mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(
-            null
-        )
+        mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null)
     }
 
     val personTotals = (0..7).map { personIndex ->
@@ -136,11 +134,12 @@ fun ResultScreen(
                                     if (leftIndex < personCount) {
                                         selectedPerson = Pair(
                                             personTotals[leftIndex].first,
-                                            totalPay.payment.value[leftIndex + 1] ?: emptyMap()
+                                            totalPay.payment.value[leftIndex] ?: emptyMap()
                                         )
-                                        resultViewModel.changeResetDialog()
+                                        resultViewModel.changeDetailDialog()
                                     }
-                                })
+                                }
+                            )
 
                             val rightIndex = 2 * i + 1
                             ResultCard(name = if (rightIndex < personCount) personTotals[rightIndex].first else "",
@@ -150,11 +149,12 @@ fun ResultScreen(
                                     if (rightIndex < personCount) {
                                         selectedPerson = Pair(
                                             personTotals[rightIndex].first,
-                                            totalPay.payment.value[rightIndex + 1] ?: emptyMap()
+                                            totalPay.payment.value[rightIndex] ?: emptyMap()
                                         )
-                                        resultViewModel.changeResetDialog()
+                                        resultViewModel.changeDetailDialog()
                                     }
-                                })
+                                }
+                            )
                         }
                     }
                 }

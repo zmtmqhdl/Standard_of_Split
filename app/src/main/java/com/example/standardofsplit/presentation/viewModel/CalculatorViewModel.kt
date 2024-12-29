@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -58,7 +59,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun trueButtonStates() {
-        _buttonStates.value = MutableList(8) { true }
+        _buttonStates.value = _buttonPermissions.value.toMutableList()
     }
 
     fun initializeTotalPay() {
@@ -77,6 +78,8 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     ) {
         val dividedPrice: Int =
             (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+        Log.d("payList", payList.toString())
+        Log.d("dividedPrice", dividedPrice.toString())
         val current = _totalPay.value.payment.value
 
         for (i in payList) {
@@ -91,7 +94,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _stack.value.add(_totalPay.value)
     }
 
-    private fun setReceiptKey() {
+    fun setReceiptKey() {
         _receiptKey.value = 0
     }
 
@@ -103,7 +106,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _receiptKey.value -= 1
     }
 
-    private fun setProductKey(value: Int) {
+    fun setProductKey(value: Int) {
         _productKey.value = value
     }
 
@@ -122,9 +125,9 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     fun initializeButtonNames(
         personCount: Int
     ) {
-        _buttonNames.value = _buttonNames.value.mapIndexed { index, name ->
+        _buttonNames.value = List(_buttonNames.value.size) { index ->
             val tmp = index + 1
-            if (index < personCount) "인원$tmp" else name
+            if (index < personCount) "인원$tmp" else "X"
         }.toMutableList()
 
         _buttonPermissions.value = List(_buttonPermissions.value.size) { index ->
@@ -141,10 +144,14 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         _showButtonNameChangeDialog.value = false
     }
 
+    fun lastSet() {
+        _last.value = false
+    }
+
     fun rollback(context: Context) {
         _last.value = false
         val currentStack = _stack.value
-        if (currentStack.isNotEmpty()) {
+        if (currentStack.isNotEmpty() && !_changeMode.value) {
             val lastElement = currentStack.removeAt(currentStack.size - 1)
             _totalPay.value = lastElement as TotalPay
             _stack.value = currentStack

@@ -77,6 +77,9 @@ fun CalculatorScreen(
     LaunchedEffect(Unit) {
         calculatorViewModel.initializeTotalPay()
         calculatorViewModel.initializeButtonNames(personCount = personCount)
+        calculatorViewModel.setReceiptKey()
+        calculatorViewModel.setProductKey(value = 0)
+        calculatorViewModel.lastSet()
     }
 
     BackHandler { onBack() }
