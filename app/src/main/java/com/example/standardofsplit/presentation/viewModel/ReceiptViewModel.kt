@@ -1,9 +1,6 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
-import android.content.MutableContextWrapper
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.presentation.ui.component.showCustomToast
@@ -18,15 +15,50 @@ class ReceiptViewModel @Inject constructor() : ViewModel() {
     private val _receipts = MutableStateFlow<MutableList<ReceiptClass>>(mutableListOf())
     val receipts: StateFlow<MutableList<ReceiptClass>> = _receipts
 
-    private val _showProductAddDialog = MutableStateFlow(mutableStateOf<Int?>(null))
-    val showProductAddDialog: StateFlow<Boolean> = _showProductAddDialog
+    private val _showReceiptAddDialog = MutableStateFlow(false)
+    val showReceiptAddDialog: StateFlow<Boolean> = _showReceiptAddDialog
 
-    private val _showProductUpdateDialog = MutableStateFlow(false)
-    val showProductUpdateDialog: StateFlow<Boolean> = _showProductUpdateDialog
+    private val _showReceiptNameUpdateDialog = MutableStateFlow<Int?>(null)
+    val showReceiptNameUpdateDialog: StateFlow<Int?> = _showReceiptNameUpdateDialog
+
+    private val _showProductAddDialog = MutableStateFlow<Int?>(null)
+    val showProductAddDialog: StateFlow<Int?> = _showProductAddDialog
+
+    private val _showProductUpdateDialog = MutableStateFlow<Pair<Int, Int>?>(null)
+    val showProductUpdateDialog: StateFlow<Pair<Int, Int>?> = _showProductUpdateDialog
 
     init {
         _receipts.value.add(DEFAULT_RECEIPT)
     }
+
+    fun changeProductUpdateDialog(mode: Pair<Int, Int>?) {
+        if (mode == null) {
+            _showProductUpdateDialog.value = null
+        } else {
+            _showProductUpdateDialog.value = mode
+        }
+    }
+
+    fun changeReceiptAddDialog() {
+        _showReceiptAddDialog.value = !showReceiptAddDialog.value
+    }
+
+    fun changeProductAddDialog(mode: Int?) {
+        if (mode == null) {
+            _showProductAddDialog.value = null
+        } else {
+            _showProductAddDialog.value = mode
+        }
+    }
+
+    fun changeReceiptNameUpdateDialog(mode: Int?) {
+        if (mode == null) {
+            _showReceiptNameUpdateDialog.value = null
+        } else {
+            _showReceiptNameUpdateDialog.value = mode
+        }
+    }
+
 
     fun receiptAdd(receipt: ReceiptClass) {
         val currentReceipts = _receipts.value.toMutableList()

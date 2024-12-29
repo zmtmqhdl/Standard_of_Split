@@ -105,7 +105,7 @@ object Typography {
     val receiptItemTextStyle = TextStyle(
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
-        color = androidx.compose.ui.graphics.Color.White,
+        color = Color.White
     )
 
     val inputFieldHeadTextStyle = TextStyle(
@@ -116,5 +116,44 @@ object Typography {
 
     val inputFieldTextStyle = TextStyle(
         fontSize = 18.sp,
+    )
+
+    val dialogTitle1Style = TextStyle(
+        textAlign = TextAlign.Center,
+        fontSize = 20.sp,
+        color = Color.White
+    )
+
+    val dialogTitle2Style = TextStyle(
+        textAlign = TextAlign.Center,
+        fontSize = 15.sp,
+        color = Color.White
+    )
+
+    val dialogItemStyle = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        color = Color.White,
+    )
+    val dialogTextStyle = TextStyle(
+        fontSize = 16.sp,
+        color = Color.White
+    )
+
+    val itemDisplayStyle = TextStyle(
+        fontSize = 48.sp,
+        color = Color.White,
+        textAlign = TextAlign.Center,
+    )
+
+    val resultCardStyle = TextStyle(
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Yellow
+    )
+
+    val resultCardPayStyle = TextStyle(
+        fontSize = 24.sp,
+        color = Color.White
     )
 }

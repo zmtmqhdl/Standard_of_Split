@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.ui.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -24,9 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -130,40 +129,44 @@ fun ReceiptScreen(
     val receipts by receiptViewModel.receipts.collectAsState()
     val context = LocalContext.current
 
-    var showReceiptAddDialog by remember { mutableStateOf(false) }
-    var showReceiptNameUpdateDialog by remember { mutableStateOf<Int?>(null) }
+    val showReceiptAddDialog by receiptViewModel.showReceiptAddDialog.collectAsState()
+    val showReceiptNameUpdateDialog by receiptViewModel.showReceiptNameUpdateDialog.collectAsState()
 
     val expandedStates = remember { mutableStateListOf<Boolean>() }
-    var showProductAddDialog by remember { mutableStateOf<Int?>(null) }
-    var showProductUpdateDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    val showProductAddDialog by receiptViewModel.showProductAddDialog.collectAsState()
+    val showProductUpdateDialog by receiptViewModel.showProductUpdateDialog.collectAsState()
 
     BackHandler { onBack() }
 
     if (showReceiptAddDialog) {
-        ReceiptAddDialog(onDismiss = { showReceiptAddDialog = false }, onConfirm = { newName ->
-            receiptViewModel.receiptAdd(
-                ReceiptClass(
-                    placeName = newName,
-                    productName = MutableStateFlow(mutableListOf()),
-                    productPrice = MutableStateFlow(mutableListOf()),
-                    productQuantity = MutableStateFlow(mutableListOf()),
+        ReceiptAddDialog(
+            onDismiss = { receiptViewModel.changeReceiptAddDialog() },
+            onConfirm = { newName ->
+                receiptViewModel.receiptAdd(
+                    ReceiptClass(
+                        placeName = newName,
+                        productName = MutableStateFlow(mutableListOf()),
+                        productPrice = MutableStateFlow(mutableListOf()),
+                        productQuantity = MutableStateFlow(mutableListOf()),
+                    )
                 )
-            )
-            showReceiptAddDialog = false
-        }, toastMessage = { message ->
-            showCustomToast(context, message)
-        })
+                receiptViewModel.changeReceiptAddDialog()
+            },
+            toastMessage = { message ->
+                showCustomToast(context, message)
+            })
     }
 
     showReceiptNameUpdateDialog?.let { index ->
-        ReceiptNameUpdateDialog(onDismiss = { showReceiptNameUpdateDialog = null },
+        ReceiptNameUpdateDialog(
+            onDismiss = { receiptViewModel.changeReceiptNameUpdateDialog(mode = null) },
             onConfirm = { newName ->
                 receiptViewModel.receiptUpdate(index, newName)
-                showReceiptNameUpdateDialog = null
+                receiptViewModel.changeReceiptNameUpdateDialog(mode = null)
             },
             onDelete = {
                 receiptViewModel.receiptDelete(index)
-                showReceiptNameUpdateDialog = null
+                receiptViewModel.changeReceiptNameUpdateDialog(mode = null)
             },
             toastMessage = { message ->
                 showCustomToast(context, message)
@@ -173,7 +176,7 @@ fun ReceiptScreen(
     }
 
     showProductAddDialog?.let { index ->
-        ProductAddDialog(onDismiss = { showProductAddDialog = null },
+        ProductAddDialog(onDismiss = { receiptViewModel.changeProductAddDialog(mode = null) },
             onConfirm = { name, price, quantity ->
                 receiptViewModel.productAdd(
                     index = index,
@@ -181,7 +184,7 @@ fun ReceiptScreen(
                     productQuantity = quantity,
                     productPrice = price
                 )
-                showProductAddDialog = null
+                receiptViewModel.changeProductAddDialog(mode = null)
             },
             toastMessage = { message ->
                 showCustomToast(context, message)
@@ -189,7 +192,8 @@ fun ReceiptScreen(
     }
 
     showProductUpdateDialog?.let { (index, itemIndex) ->
-        ProductUpdateDialog(onDismiss = { showProductUpdateDialog = null },
+        ProductUpdateDialog(
+            onDismiss = { receiptViewModel.changeProductUpdateDialog(mode = null) },
             onConfirm = { productName, price, quantity ->
                 receiptViewModel.productUpdate(
                     index = index,
@@ -198,11 +202,11 @@ fun ReceiptScreen(
                     productQuantity = quantity,
                     productPrice = price
                 )
-                showProductUpdateDialog = null
+                receiptViewModel.changeProductUpdateDialog(mode = null)
             },
             onDelete = {
                 receiptViewModel.deleteReceiptItem(index, itemIndex)
-                showProductUpdateDialog = null
+                receiptViewModel.changeProductUpdateDialog(mode = null)
             },
             productName = receipts[index].productName.value[itemIndex],
             price = receipts[index].productPrice.value[itemIndex],
@@ -219,6 +223,14 @@ fun ReceiptScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             itemsIndexed(receipts) { index, receipt ->
+                val productNames by receipt.productName.collectAsState()
+                val productPrices by receipt.productPrice.collectAsState()
+                val productQuantities by receipt.productQuantity.collectAsState()
+                val totalCost = formatNumberWithCommas(
+                    productPrices.zip(productQuantities) { price, quantity ->
+                        price * quantity
+                    }.sum().toString()
+                )
                 if (expandedStates.size <= index) {
                     expandedStates.add(false)
                 }
@@ -241,17 +253,10 @@ fun ReceiptScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            val productPrices by receipt.productPrice.collectAsState()
-                            val productQuantities by receipt.productQuantity.collectAsState()
-                            val totalCost = formatNumberWithCommas(
-                                productPrices.zip(productQuantities) { price, quantity ->
-                                    price * quantity
-                                }.sum().toString()
-                            )
                             Text(
                                 text = "${receipt.placeName} (${totalCost}원)",
                                 modifier = Modifier.clickable {
-                                    showReceiptNameUpdateDialog = index
+                                    receiptViewModel.changeReceiptNameUpdateDialog(mode = index)
                                 },
                                 style = Typography.receiptHeadTextStyle
                             )
@@ -263,16 +268,17 @@ fun ReceiptScreen(
                             )
                         }
                         if (expandedStates[index]) {
-                            val productNames by receipt.productName.collectAsState()
-                            val productPrices by receipt.productPrice.collectAsState()
-                            val productQuantities by receipt.productQuantity.collectAsState()
                             Column {
                                 HorizontalDivider(modifier = Modifier.padding(top = 15.dp))
                                 ReceiptColumnHeaders()
                                 HorizontalDivider()
                                 productPrices.indices.forEach { i ->
                                     ProductList(
-                                        onClick = { showProductUpdateDialog = Pair(index, i) },
+                                        onClick = {
+                                            receiptViewModel.changeProductUpdateDialog(
+                                                mode = Pair(index, i)
+                                            )
+                                        },
                                         productName = productNames[i],
                                         price = productPrices[i],
                                         quantity = productQuantities[i]
@@ -285,7 +291,7 @@ fun ReceiptScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     AddButton(text = "상품 추가",
-                                        onClick = { showProductAddDialog = index })
+                                        onClick = { receiptViewModel.changeProductAddDialog(mode = index) })
                                 }
                             }
                         }
@@ -299,7 +305,9 @@ fun ReceiptScreen(
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    AddButton(text = "영수증 추가", onClick = { showReceiptAddDialog = true })
+                    AddButton(
+                        text = "영수증 추가",
+                        onClick = { receiptViewModel.changeReceiptAddDialog() })
                 }
             }
         }
@@ -318,6 +326,6 @@ fun ReceiptScreen(
 }
 
 @SuppressLint("DefaultLocale")
-fun formatNumberWithCommas(number: Int): Int {
-    return format("%,d", number).toInt()
+fun formatNumberWithCommas(number: Int): String {
+    return format("%,d", number).toString()
 }

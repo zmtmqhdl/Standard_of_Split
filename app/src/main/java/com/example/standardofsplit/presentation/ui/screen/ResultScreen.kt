@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.presentation.ui.component.DetailDialog
 import com.example.standardofsplit.presentation.ui.component.ResetDialog
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
+import com.example.standardofsplit.presentation.ui.theme.Typography
 import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import com.example.standardofsplit.presentation.viewModel.ResultViewModel
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
@@ -48,14 +49,11 @@ private fun ResultCard(
             ) {
                 Text(
                     text = name,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Yellow
+                    style = Typography.resultCardStyle
                 )
                 Text(
                     text = "${formatNumberWithCommas(amount)}원",
-                    fontSize = 24.sp,
-                    color = Color.White
+                    style = Typography.resultCardPayStyle
                 )
                 Spacer(modifier = Modifier.height(24.dp))
             }

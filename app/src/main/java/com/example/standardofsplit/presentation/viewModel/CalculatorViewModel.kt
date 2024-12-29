@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -122,7 +121,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     fun initializeButtonNames(
         personCount: Int
-
     ) {
         _buttonNames.value = _buttonNames.value.mapIndexed { index, name ->
             val tmp = index + 1

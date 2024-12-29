@@ -13,7 +13,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -247,20 +246,6 @@ fun ButtonNameChangeDialog(
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun ResetDialog(
     onDismiss: () -> Unit,
@@ -269,7 +254,7 @@ fun ResetDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,
-            color = Color.White,
+            color = Color.Gray2,
             modifier = Modifier.wrapContentSize()
         ) {
             Column(
@@ -278,16 +263,12 @@ fun ResetDialog(
             ) {
                 Text(
                     text = "정산을 다시 하시겠습니까?",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
+                    style = Typography.dialogTitle1Style,
                     modifier = Modifier.padding(top = 15.dp)
                 )
                 Text(
                     text = "정산 내역이 초기화됩니다.",
-                    color = Color.White,
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
+                    style = Typography.dialogTitle2Style,
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
 
@@ -317,7 +298,7 @@ fun ResetDialog(
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White
+                            containerColor = Color.Gray2
                         ),
                         shape = RoundedCornerShape(0.dp)
                     ) {
@@ -343,7 +324,7 @@ fun ResetDialog(
                                 )
                             },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White
+                            containerColor = Color.Gray2
                         ),
                         shape = RoundedCornerShape(0.dp)
                     ) {
@@ -399,9 +380,7 @@ fun DetailDialog(
                         item {
                             Text(
                                 text = placeName,
-                                fontSize = 24.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
+                                style = Typography.dialogItemStyle,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                             products.forEach { (productName, amount) ->
@@ -413,13 +392,11 @@ fun DetailDialog(
                                 ) {
                                     Text(
                                         text = productName,
-                                        fontSize = 16.sp,
-                                        color = Color.White
+                                        style = Typography.dialogTextStyle
                                     )
                                     Text(
                                         text = "${formatNumberWithCommas(amount.toString())}원",
-                                        fontSize = 16.sp,
-                                        color = Color.White
+                                        style = Typography.dialogTextStyle
                                     )
                                 }
                             }
@@ -443,9 +420,7 @@ fun DetailDialog(
                 ) {
                     Text(
                         text = "총합: ${formatNumberWithCommas(total.toString())}원",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        style = Typography.calculatorButtonTextStyle
                     )
                 }
 

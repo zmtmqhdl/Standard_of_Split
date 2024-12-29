@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.presentation.ui.component.ButtonNameChangeDialog
 import com.example.standardofsplit.presentation.ui.component.CalculateButton
 import com.example.standardofsplit.presentation.ui.component.FunctionButton
@@ -41,6 +40,7 @@ import com.example.standardofsplit.presentation.ui.component.formatNumberWithCom
 import com.example.standardofsplit.presentation.viewModel.CalculatorViewModel
 import com.example.standardofsplit.presentation.viewModel.ReceiptViewModel
 import com.example.standardofsplit.presentation.viewModel.StartViewModel
+import com.example.standardofsplit.presentation.ui.theme.Typography
 
 @Composable
 fun CalculatorScreen(
@@ -107,16 +107,12 @@ fun CalculatorScreen(
             ) {
                 Text(
                     text = receipts[receiptKey].placeName,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
+                    style = Typography.dialogTitle1Style,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
                     text = productName[productKey],
-                    fontSize = 48.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
+                    style = Typography.itemDisplayStyle,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -124,7 +120,7 @@ fun CalculatorScreen(
                     modifier = Modifier
                         .border(
                             width = 2.dp,
-                            color = Color(0xFFDCD0FF),
+                            color = Color.White,
                             shape = RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
