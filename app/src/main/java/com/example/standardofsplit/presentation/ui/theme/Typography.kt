@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.ui.theme
 
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -142,6 +143,12 @@ object Typography {
         color = Color.Yellow
     )
 
+    val resultDetailStyle = TextStyle(
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+    )
+
     val resultCardPayStyle = TextStyle(
         fontSize = 24.sp,
         color = Color.White
@@ -155,6 +162,19 @@ object Typography {
     val dialogBlackBigTextStyle = TextStyle(
         fontSize = 20.sp,
         color = Color.Black,
+        fontWeight = FontWeight.Bold
+    )
+
+    val accountBeforeStyle = TextStyle(
+        fontSize = 17.sp,
+        color = Color.Gray1,
+        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Italic
+    )
+
+    val accountAfterStyle = TextStyle(
+        fontSize = 17.sp,
+        color = Color.Gray1,
         fontWeight = FontWeight.Bold
     )
 }

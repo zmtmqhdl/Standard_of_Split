@@ -3,7 +3,16 @@ package com.example.standardofsplit.presentation.ui.screen
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.standardofsplit.presentation.ui.component.AccountDialog
 import com.example.standardofsplit.presentation.ui.component.DetailDialog
 import com.example.standardofsplit.presentation.ui.component.ResetDialog
 import com.example.standardofsplit.presentation.ui.component.SubmitButton
@@ -74,7 +82,9 @@ fun ResultScreen(
 
     val showDetailDialog by resultViewModel.showDetailDialog.collectAsState()
     val showResetDialog by resultViewModel.showResetDialog.collectAsState()
+    val showAccountDialog by resultViewModel.showAccountDialog.collectAsState()
 
+    val accountText by resultViewModel.accountText.collectAsState()
 
     var selectedPerson by remember {
         mutableStateOf<Pair<String, Map<String, Map<String, Int>>>?>(null)
@@ -99,6 +109,16 @@ fun ResultScreen(
             onDismiss = { resultViewModel.changeDetailDialog() },
             name = selectedPerson!!.first,
             receiptDetails = selectedPerson!!.second
+        )
+    }
+
+    if (showAccountDialog) {
+        AccountDialog(
+            onConfirm = { newName ->
+                resultViewModel.accountTextUpdate(newName = newName)
+                resultViewModel.changeAccountDialog()
+            },
+            onDismiss = { resultViewModel.changeAccountDialog() },
         )
     }
 
@@ -164,9 +184,22 @@ fun ResultScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(bottom = 50.dp), contentAlignment = Alignment.Center
+                .padding(bottom = 50.dp),
+            contentAlignment = Alignment.Center
         ) {
-            SubmitButton(text = "공유하기", onClick = { /* 나중에 기능 추가 */ })
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = accountText,
+                    style = resultViewModel.changeAccountTextStyle(),
+                    modifier = Modifier.clickable {
+                        resultViewModel.changeAccountDialog()
+                    }.padding(bottom = 10.dp),
+                )
+                SubmitButton(text = "공유하기", onClick = { })
+            }
         }
     }
 }

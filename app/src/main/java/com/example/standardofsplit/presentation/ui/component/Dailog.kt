@@ -12,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.standardofsplit.presentation.ui.theme.Color
 import com.example.standardofsplit.presentation.ui.theme.Shape
@@ -349,7 +347,7 @@ fun DetailDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = Shape.RoundedCRectangle,
-            color = Color.Gray2,
+            color = androidx.compose.ui.graphics.Color.DarkGray,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(600.dp)
@@ -362,9 +360,7 @@ fun DetailDialog(
             ) {
                 Text(
                     text = name,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Yellow,
+                    style = Typography.resultDetailStyle,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -372,7 +368,7 @@ fun DetailDialog(
                     modifier = Modifier
                         .weight(1f)
                         .width(500.dp)
-                        .background(Color.White, shape = RoundedCornerShape(10.dp))
+                        .background(Color.Gray2, shape = RoundedCornerShape(10.dp))
                         .padding(10.dp)
                 ) {
                     val entries = receiptDetails.entries.toList()
@@ -434,5 +430,27 @@ fun DetailDialog(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun AccountDialog(
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var newName by remember { mutableStateOf("") }
+
+    DialogContainer(onDismiss = onDismiss) {
+        InputField(text = "계좌 번호", value = newName, onValueChange = { newName = it })
+        DialogButtons(
+            onConfirm = {
+                if (newName.isEmpty()) {
+                    onConfirm("계좌")
+                } else {
+                    onConfirm(newName)
+                }
+            },
+            onDismiss = onDismiss,
+        )
     }
 }
