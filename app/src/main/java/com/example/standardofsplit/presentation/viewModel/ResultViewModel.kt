@@ -2,6 +2,7 @@ package com.example.standardofsplit.presentation.viewModel
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import android.view.View
@@ -55,10 +56,11 @@ class ResultViewModel @Inject constructor() : ViewModel() {
         _accountText.value = newName
     }
 
-    fun capture(context: Context, view: View) {
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    fun capture(context: Context, rootView: View) {
+        val bitmap = Bitmap.createBitmap(rootView.width, rootView.height, Bitmap.Config.ARGB_8888)
         val canvas = android.graphics.Canvas(bitmap)
-        view.draw(canvas)
+        rootView.draw(canvas)
+
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, "${System.currentTimeMillis()}_정산내역.png")
             put(MediaStore.Images.Media.MIME_TYPE, "image/png")
@@ -78,7 +80,15 @@ class ResultViewModel @Inject constructor() : ViewModel() {
                     values.clear()
                     values.put(MediaStore.Images.Media.IS_PENDING, 0)
                     contentResolver.update(imageUri, values, null, null)
+
                     showCustomToast(message = "정산 내역이 갤러리에 저장되었습니다.", context = context)
+
+                    val shareIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_STREAM, imageUri)
+                        type = "image/png"
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
                 } else {
                     showCustomToast(message = "파일을 열 수 없습니다.", context = context)
                 }

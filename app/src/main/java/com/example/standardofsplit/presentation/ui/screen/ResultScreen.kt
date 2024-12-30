@@ -1,5 +1,6 @@
 package com.example.standardofsplit.presentation.ui.screen
 
+import android.view.View
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -75,7 +76,7 @@ fun ResultScreen(
     startViewModel: StartViewModel, calculatorViewModel: CalculatorViewModel, onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val rootView = (context as android.app.Activity).window.decorView
+    val rootView = (context as android.app.Activity).window.decorView.findViewById<View>(android.R.id.content)
 
     val resultViewModel: ResultViewModel = hiltViewModel()
 
@@ -203,7 +204,7 @@ fun ResultScreen(
                     }.padding(bottom = 10.dp),
                 )
                 SubmitButton(text = "공유하기", onClick = {
-                    resultViewModel.capture(context, rootView)
+                    resultViewModel.capture(context = context, rootView = rootView)
                 })
             }
         }
