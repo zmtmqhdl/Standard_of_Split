@@ -445,7 +445,7 @@ fun AccountDialog(
         DialogButtons(
             onConfirm = {
                 if (newName.isEmpty()) {
-                    onConfirm("계좌")
+                    onConfirm("계좌 입력")
                 } else {
                     onConfirm(newName)
                 }

@@ -1,7 +1,6 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -78,8 +77,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     ) {
         val dividedPrice: Int =
             (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
-        Log.d("payList", payList.toString())
-        Log.d("dividedPrice", dividedPrice.toString())
         val current = _totalPay.value.payment.value
 
         for (i in payList) {
