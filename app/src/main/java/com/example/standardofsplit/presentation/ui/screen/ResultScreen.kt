@@ -75,6 +75,7 @@ fun ResultScreen(
     startViewModel: StartViewModel, calculatorViewModel: CalculatorViewModel, onBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val rootView = (context as android.app.Activity).window.decorView
 
     val resultViewModel: ResultViewModel = hiltViewModel()
 
@@ -201,7 +202,9 @@ fun ResultScreen(
                         resultViewModel.changeAccountDialog()
                     }.padding(bottom = 10.dp),
                 )
-                SubmitButton(text = "공유하기", onClick = { })
+                SubmitButton(text = "공유하기", onClick = {
+                    resultViewModel.capture(context, rootView)
+                })
             }
         }
     }

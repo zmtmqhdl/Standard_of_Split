@@ -1,6 +1,7 @@
 package com.example.standardofsplit.presentation.viewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.standardofsplit.data.model.ReceiptClass
 import com.example.standardofsplit.data.model.TotalPay
@@ -74,9 +75,10 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         placeName: String,
         productName: String,
         productPrice: Int,
+        productQuantity: Int,
     ) {
         val dividedPrice: Int =
-            (kotlin.math.ceil((productPrice.toDouble() / payList.size) / 10) * 10).toInt()
+            (kotlin.math.ceil((productPrice.toDouble() * productQuantity / payList.size) / 10) * 10).toInt()
         val current = _totalPay.value.payment.value
 
         for (i in payList) {
@@ -201,6 +203,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
                     placeName = receipts[receiptKey.value].placeName,
                     productName = receipts[receiptKey.value].productName.value[productKey.value],
                     productPrice = receipts[receiptKey.value].productPrice.value[productKey.value],
+                    productQuantity = receipts[receiptKey.value].productQuantity.value[productKey.value]
                 )
                 resetButtonStates()
                 if (receiptKey.value + 1 == receipts.size && productKey.value + 1 == receipts[receiptKey.value].productPrice.value.size) {
