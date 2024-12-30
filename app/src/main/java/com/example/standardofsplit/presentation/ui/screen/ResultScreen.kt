@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.standardofsplit.presentation.ui.component.AccountDialog
@@ -73,6 +74,8 @@ private fun ResultCard(
 fun ResultScreen(
     startViewModel: StartViewModel, calculatorViewModel: CalculatorViewModel, onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val resultViewModel: ResultViewModel = hiltViewModel()
 
     val personCount by startViewModel.personCount.collectAsState()
