@@ -44,7 +44,7 @@ private fun ResultCard(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 180.dp, height = 160.dp)
+            .size(width = 140.dp, height = 120.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(if (isActive) Color.DarkGray else Color.Black)
             .clickable(
@@ -65,7 +65,7 @@ private fun ResultCard(
                     text = "${formatNumberWithCommas(amount)}원",
                     style = Typography.resultCardPayStyle
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -203,7 +203,7 @@ fun ResultScreen(
                         resultViewModel.changeAccountDialog()
                     }.padding(bottom = 25.dp),
                 )
-                SubmitButton(text = "공유하기", onClick = {
+                SubmitButton(text = "저장 & 공유", onClick = {
                     resultViewModel.capture(context = context, rootView = rootView)
                 })
             }
