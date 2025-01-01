@@ -147,14 +147,15 @@ fun CalculatorScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .padding(bottom = 40.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 PersonSelectButton(text = buttonNames[0], state = buttonStates[0], onClick = {
                     calculatorViewModel.indexUpdate(0)
@@ -171,7 +172,8 @@ fun CalculatorScreen(
                 Box(
                     modifier = Modifier
                         .width(216.dp)
-                        .height(105.dp),
+                        .height(105.dp)
+                        .padding(bottom = 18.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     NameChangeToggleButton(
@@ -203,7 +205,8 @@ fun CalculatorScreen(
                 Box(
                     modifier = Modifier
                         .width(216.dp)
-                        .height(105.dp),
+                        .height(105.dp)
+                        .padding(bottom = 18.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     FunctionButton(text = "되돌리기", onClick = { calculatorViewModel.rollback(context = context) })
@@ -233,7 +236,8 @@ fun CalculatorScreen(
                 Box(
                     modifier = Modifier
                         .width(216.dp)
-                        .height(105.dp),
+                        .height(105.dp)
+                        .padding(bottom = 18.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     FunctionButton(text = "전체 선택", onClick = {

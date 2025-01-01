@@ -201,7 +201,7 @@ fun ResultScreen(
                     style = resultViewModel.changeAccountTextStyle(),
                     modifier = Modifier.clickable {
                         resultViewModel.changeAccountDialog()
-                    }.padding(bottom = 10.dp),
+                    }.padding(bottom = 25.dp),
                 )
                 SubmitButton(text = "공유하기", onClick = {
                     resultViewModel.capture(context = context, rootView = rootView)

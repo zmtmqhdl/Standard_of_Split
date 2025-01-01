@@ -113,7 +113,7 @@ fun PersonSelectButton(
     val isDisabled = text == "X"
     Button(
         onClick = onClick,
-        modifier = modifier.size(105.dp),
+        modifier = modifier.size(85.dp),
         shape = Shape.RoundedCRectangle,
         enabled = !isDisabled,
         colors = ButtonDefaults.run {
@@ -209,7 +209,7 @@ fun CalculateButton(
         onClick = onClick,
         modifier = modifier
             .width(216.dp)
-            .height(105.dp),
+            .height(85.dp),
         shape = Shape.RoundedCRectangle,
         colors = ButtonDefaults.buttonColors(Color.Orange),
         contentPadding = PaddingValues(0.dp)
