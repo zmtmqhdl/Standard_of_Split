@@ -88,7 +88,6 @@ fun ResultScreen(
     val showDetailDialog by resultViewModel.showDetailDialog.collectAsState()
     val showResetDialog by resultViewModel.showResetDialog.collectAsState()
     val showAccountDialog by resultViewModel.showAccountDialog.collectAsState()
-
     val accountText by resultViewModel.accountText.collectAsState()
 
     var selectedPerson by remember {
