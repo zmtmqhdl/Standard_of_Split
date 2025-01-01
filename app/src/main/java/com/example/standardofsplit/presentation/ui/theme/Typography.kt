@@ -13,12 +13,6 @@ object Typography {
         color = Color.White
     )
 
-    val productAddButtonTextStyle = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 13.sp,
-        color = Color.White
-    )
-
     val circleButtonTextStyle = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 45.sp,

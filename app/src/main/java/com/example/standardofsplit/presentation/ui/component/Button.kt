@@ -37,27 +37,6 @@ fun SubmitButton(
 }
 
 @Composable
-fun ProductAddButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .width(80.dp)
-            .height(30.dp),
-        shape = Shape.RoundedCRectangle,
-        colors = ButtonDefaults.buttonColors(Color.Gray2),
-        contentPadding = PaddingValues(0.dp),
-    ) {
-        Text(
-            text = text, style = Typography.productAddButtonTextStyle
-        )
-    }
-}
-
-@Composable
 fun CircleButton(
     text: String,
     onClick: () -> Unit,
