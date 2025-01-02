@@ -139,7 +139,7 @@ fun ResultScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(760.dp)
+                    .height(650.dp)
                     .padding(top = 10.dp)
             ) {
                 Column(
