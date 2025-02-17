@@ -16,21 +16,23 @@
 <br>
 
 ## 🗓️ 개발 기간
-2024.10 ~ 진행 중
+2024.10 ~ 2025.01
 
 <br>
 
 ## 📁 프로젝트 상세 설명
 작성 예정
-  <br>
+<br>
 
 
 
 <br>
 
 ## ✏️ 배운 내용
-
-
+- MVVM 구조를 바탕으로 UI와 ViewModel 분리를 통한 APP 설계
+- Clean Architecture를 통해 domain, data, presentation 각 모듈의 역할 학습
+- Hilt를 이용한 의존성 주입
+- Navigation을 통한 화면 전환
 <br>
 
 ## 🛠️ 사용 기술
