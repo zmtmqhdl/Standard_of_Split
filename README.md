@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/323e8f69-e1f1-4158-bbc0-febc61010bfb" width="40%">
+  <img src="https://github.com/user-attachments/assets/bd74e70d-9a22-4a6b-8551-919b4f87c4e6" width="40%">
 </p>
 
 ## 🖥️ N빵의 정석
-모임에서 발생한 비용을 정확하게 정산을 하기 희망하는 사람들을 위한 Android App
+모임 비용을 정확하게 정산하기 희망하는 모임원을 위한 Android APP
 
 <br>
 
