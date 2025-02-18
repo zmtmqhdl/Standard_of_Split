@@ -44,10 +44,11 @@ APP 실행 후 영수증을 기반으로 데이터를 입력 후 N등분 계산�
 <br>
 
 ## ✏️ 배운 내용
-- MVVM 구조를 바탕으로 UI와 ViewModel 분리를 통한 APP 설계
-- Clean Architecture를 통해 domain, data, presentation 각 모듈의 역할 학습
-- Hilt를 이용한 의존성 주입
-- Navigation을 통한 화면 전환
+- Jetpack Compose를 사용해 선언형 UI 프로그래밍을 통해 APP 개발의 효율성을 극대화
+- MVVM + Clean Architecutre 구조를 도입하여 APP 개발의 유지보수성 및 확장성을 확보
+- Dialog를 Custom 후 사용하여 원하는 형태의 Dialog를 만들 수 있었고, 이를 통해 입력받은 데이터를 UI에 적용
+- Hilt를 사용하여 ViewModel에 의존성 주입을 적용하였고, 생명주기 관린와 의존성 처리를 효율적으로 개선
+- Navigation을 통한 화면 전환법 학습
   
 <br>
 
