@@ -24,6 +24,7 @@
 APP 실행 후 영수증을 기반으로 데이터를 입력 후 N등분 계산을 진행합니다.
 
   <br>
+  
   (1) 시작 화면
   <img src="https://github.com/user-attachments/assets/84b4048a-a780-4d76-9e84-4d5092aa7176" width="30%">
   -, + 버튼을 인원 수에 맞게 눌러 인원을 설정한 후 시작 버튼을 눌러 다음 화면으로 이동합니다.
@@ -47,6 +48,7 @@ APP 실행 후 영수증을 기반으로 데이터를 입력 후 N등분 계산�
 - Clean Architecture를 통해 domain, data, presentation 각 모듈의 역할 학습
 - Hilt를 이용한 의존성 주입
 - Navigation을 통한 화면 전환
+  
 <br>
 
 ## 🛠️ 사용 기술
